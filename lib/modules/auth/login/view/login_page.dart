@@ -147,7 +147,8 @@ class _LoginPageState extends State<LoginPage> {
                           color: AppColors.red,
                           action: () {
                             if (formKey.currentState!.validate()){
-                              Navigator.of(context).pushNamed(PageRoutesName.home);
+                              // Navigator.of(context).pushNamedAndRemoveUntil(PageRoutesName.home,(route) => false);
+                            Navigator.of(context).pushNamed(PageRoutesName.home);
                             }
                           },
                           text: "Login",

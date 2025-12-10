@@ -61,7 +61,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide(color: AppColors.red, width: 3),
+            borderSide: BorderSide(color: AppColors.red, width: 2),
           ),
           prefixIcon: widget.prefixIcon,
           suffixIcon: widget.isPassword

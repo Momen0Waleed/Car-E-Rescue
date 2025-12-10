@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:car_e_rescue/core/routes/app_routes.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: PageRoutesName.splash,
       onGenerateRoute: AppRoutes.onGenerateRoute,
+      builder: BotToastInit(),
+      navigatorObservers: [BotToastNavigatorObserver()],
     );
   }
 }
