@@ -1,5 +1,8 @@
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
-import 'package:car_e_rescue/modules/auth/login/login_page.dart';
+import 'package:car_e_rescue/modules/auth/login/view/login_page.dart';
+import 'package:car_e_rescue/modules/auth/sign_up/view/client_sign_up_screen.dart';
+import 'package:car_e_rescue/modules/auth/sign_up/view/provider_sign_up_screen.dart';
+import 'package:car_e_rescue/modules/auth/user_type/view/user_type_screen.dart';
 import 'package:car_e_rescue/modules/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -8,9 +11,14 @@ abstract class AppRoutes {
     switch (settings.name) {
       case PageRoutesName.splash:
         return _slideRoute(const SplashScreen());
+      case PageRoutesName.userType:
+        return _slideRoute(const UserTypeScreen());
       case PageRoutesName.login:
         return _slideRoute(const LoginPage());
-
+      case PageRoutesName.clientSignUp:
+        return _slideRoute(const ClientSignUpScreen());
+      case PageRoutesName.providerSignUp:
+        return _slideRoute(const ProviderSignUpScreen());
       default: return _slideRoute(const SplashScreen());
     }
   }

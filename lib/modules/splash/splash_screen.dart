@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(Duration(seconds: 4), () {
       Navigator.of(
         context,
-      ).pushNamedAndRemoveUntil(PageRoutesName.login, (route) => false);
+      ).pushNamedAndRemoveUntil(PageRoutesName.userType, (route) => false);
     });
   }
 
