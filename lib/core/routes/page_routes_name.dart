@@ -5,5 +5,6 @@ abstract class PageRoutesName{
   static const String clientSignUp = "/Client-Sign-Up";
   static const String providerSignUp = "/Provider-Sign-Up";
   static const String forgetPassword = "/Forget-Password";
+  static const String home = "/Home";
 
 }

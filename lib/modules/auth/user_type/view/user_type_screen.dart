@@ -1,8 +1,8 @@
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
+import 'package:car_e_rescue/modules/auth/user_type/view/widgets/selected_user_widget.dart';
 import 'package:car_e_rescue/modules/auth/user_type/view_model/user_type_view_model.dart';
-import 'package:car_e_rescue/modules/auth/user_type/widgets/selected_user_widget.dart';
-import 'package:car_e_rescue/modules/auth/widgets/custom_button.dart';
+import 'package:car_e_rescue/modules/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
