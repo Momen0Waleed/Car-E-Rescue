@@ -1,4 +1,5 @@
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
+import 'package:car_e_rescue/modules/auth/forget_password/view/forget_password_screen.dart';
 import 'package:car_e_rescue/modules/auth/login/view/login_page.dart';
 import 'package:car_e_rescue/modules/auth/sign_up/view/client_sign_up_screen.dart';
 import 'package:car_e_rescue/modules/auth/sign_up/view/provider_sign_up_screen.dart';
@@ -22,24 +23,13 @@ abstract class AppRoutes {
         return _slideRoute(const ProviderSignUpScreen());
       case PageRoutesName.home:
         return _slideRoute(const HomeScreen());
+      case PageRoutesName.forgetPassword:
+        return _slideRoute(const ForgetPasswordScreen());
 
       default:
         return _slideRoute(const SplashScreen());
     }
   }
-
-  // static PageRouteBuilder _fadeRoute(Widget page) {
-  //   return PageRouteBuilder(
-  //     pageBuilder: (context, animation, secondaryAnimation) => page,
-  //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-  //       return FadeTransition(
-  //         opacity: animation,
-  //         child: child,
-  //       );
-  //     },
-  //     transitionDuration: const Duration(milliseconds: 500),
-  //   );
-  // }
 
   static PageRouteBuilder _slideRoute(Widget page) {
     return PageRouteBuilder(
