@@ -17,10 +17,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 4), () {
-      Navigator.of(
-        context,
-      ).pushNamedAndRemoveUntil(PageRoutesName.userType, (route) => false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Timer(const Duration(seconds: 4), () {
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil(PageRoutesName.userType, (route) => false);
+      });
     });
   }
 
@@ -48,4 +50,3 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
-

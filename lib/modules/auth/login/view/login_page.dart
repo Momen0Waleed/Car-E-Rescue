@@ -121,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
                           alignment: Alignment.centerRight,
                           child: Bounceable(
                             onTap: () {
-                              /// Navigate to forget password screen
+                              Navigator.of(context).pushNamed(PageRoutesName.forgetPassword);
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,

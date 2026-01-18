@@ -14,12 +14,14 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     var theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Forget Password",style: theme.textTheme.titleMedium!.copyWith(
           color: AppColors.red,
           fontWeight: FontWeight.bold
         ),),
       ),
-      body: Container(),
+      body: Container()
     );
+    // padding: EdgeInsets.symmetric(vertical: 5),
   }
 }
