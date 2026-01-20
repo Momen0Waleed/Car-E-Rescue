@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "374332222698",
+    "project_id": "car-e-rescue",
+    "storage_bucket": "car-e-rescue.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374332222698:android:cbf4f2c83afc71a8a37b93",
+        "android_client_info": {
+          "package_name": "com.example.car_e_rescue"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBuTB1zSSEacVGDW3cW11iSKgK_YZm2Qg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,9 +1,11 @@
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
-import 'package:car_e_rescue/modules/auth/login/view/login_page.dart';
-import 'package:car_e_rescue/modules/auth/sign_up/view/client_sign_up_screen.dart';
-import 'package:car_e_rescue/modules/auth/sign_up/view/provider_sign_up_screen.dart';
+import 'package:car_e_rescue/modules/auth/forget_password/view/forget_password_screen.dart';
+import 'package:car_e_rescue/modules/auth/login/view/login_view.dart';
+import 'package:car_e_rescue/modules/auth/sign_up/view/client_sign_up_view.dart';
+import 'package:car_e_rescue/modules/auth/sign_up/view/provider_sign_up_view.dart';
 import 'package:car_e_rescue/modules/auth/user_type/view/user_type_screen.dart';
-import 'package:car_e_rescue/modules/home/view/home_screen.dart';
+import 'package:car_e_rescue/modules/home/view/client_home_view.dart';
+import 'package:car_e_rescue/modules/home/view/provider_home_view.dart';
 import 'package:car_e_rescue/modules/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -15,31 +17,22 @@ abstract class AppRoutes {
       case PageRoutesName.userType:
         return _slideRoute(const UserTypeScreen());
       case PageRoutesName.login:
-        return _slideRoute(const LoginPage());
+        return _slideRoute(const LoginView());
       case PageRoutesName.clientSignUp:
-        return _slideRoute(const ClientSignUpScreen());
+        return _slideRoute(const ClientSignUpView());
       case PageRoutesName.providerSignUp:
-        return _slideRoute(const ProviderSignUpScreen());
-      case PageRoutesName.home:
-        return _slideRoute(const HomeScreen());
+        return _slideRoute(const ProviderSignUpView());
+      case PageRoutesName.clientHome:
+        return _slideRoute(const ClientHomeView());
+      case PageRoutesName.providerHome:
+        return _slideRoute(const ProviderHomeView());
+      case PageRoutesName.forgetPassword:
+        return _slideRoute(const ForgetPasswordScreen());
 
       default:
         return _slideRoute(const SplashScreen());
     }
   }
-
-  // static PageRouteBuilder _fadeRoute(Widget page) {
-  //   return PageRouteBuilder(
-  //     pageBuilder: (context, animation, secondaryAnimation) => page,
-  //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-  //       return FadeTransition(
-  //         opacity: animation,
-  //         child: child,
-  //       );
-  //     },
-  //     transitionDuration: const Duration(milliseconds: 500),
-  //   );
-  // }
 
   static PageRouteBuilder _slideRoute(Widget page) {
     return PageRouteBuilder(
