@@ -3,34 +3,30 @@ import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/core/constants/validators/app_validators.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
-import 'package:car_e_rescue/modules/auth/sign_up/view_model/sign_up_view_model.dart';
+import 'package:car_e_rescue/modules/auth/login/view_model/login_view_model.dart';
 import 'package:car_e_rescue/modules/widgets/custom_button.dart';
 import 'package:car_e_rescue/modules/widgets/custom_text_field.dart';
 import 'package:car_e_rescue/modules/widgets/navigate_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
-import 'package:provider/provider.dart' show Consumer, ChangeNotifierProvider;
+import 'package:provider/provider.dart';
 
-class ClientSignUpScreen extends StatefulWidget {
-  const ClientSignUpScreen({super.key});
+class LoginView extends StatefulWidget {
+  const LoginView({super.key});
 
   @override
-  State<ClientSignUpScreen> createState() => _SignUpScreenState();
+  State<LoginView> createState() => _LoginViewState();
 }
 
-class _SignUpScreenState extends State<ClientSignUpScreen> {
+class _LoginViewState extends State<LoginView> {
   var formKey = GlobalKey<FormState>();
-  TextEditingController nameController = TextEditingController();
   TextEditingController mailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-
-  double _formSpacing = 20;
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return ChangeNotifierProvider(
-      create: (context) => SignUpViewModel(),
+      create: (context) => LoginViewModel(),
       child: Scaffold(
         floatingActionButton: NavigateBackButton(),
         floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
@@ -98,77 +94,82 @@ class _SignUpScreenState extends State<ClientSignUpScreen> {
                     Form(
                       key: formKey,
                       child: Column(
-                        spacing: _formSpacing,
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Sign Up",
+                            "LOGIN",
                             style: theme.textTheme.titleLarge!.copyWith(
                               color: AppColors.red,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          CustomTextField(
-                            title: "Full Name",
-                            controller: nameController,
-                            validator: AppValidators.validateEmptyField,
-                          ),
-                          CustomTextField(
-                            title: "Phone Number",
-                            controller: phoneController,
-                            validator: AppValidators.validateEgyptianPhone,
-                          ),
+                          SizedBox(height: 25),
                           CustomTextField(
                             title: "Email",
                             controller: mailController,
                             validator: AppValidators.validateEmail,
                           ),
+                          SizedBox(height: 25),
                           CustomTextField(
                             title: "Password",
+                            isPassword: true,
                             controller: passwordController,
                             validator: AppValidators.validatePassword,
-                            isPassword: true,
                           ),
-                          // CustomButton(
-                          //   text: "Sign Up",
-                          //   color: AppColors.red,
-                          //   action: () {
-                          //     if (formKey.currentState!.validate()){
-                          //       Navigator.of(context).pushReplacementNamed(PageRoutesName.login);
-                          //     }else{
-                          //       setState(() {
-                          //         _formSpacing = 8;
-                          //       });
-                          //     }
-                          //   },
-                          // ),
-                          Consumer<SignUpViewModel>(
+                          SizedBox(height: 8),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Bounceable(
+                              onTap: () {
+                                Navigator.of(
+                                  context,
+                                ).pushNamed(PageRoutesName.forgetPassword);
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    "Forgot Password?",
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                      color: AppColors.red,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 16,
+                                    color: AppColors.red,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 25),
+                          Consumer<LoginViewModel>(
                             builder: (context, provider, child) {
                               return CustomButton(
-                                text: "Sign Up",
                                 color: AppColors.red,
                                 action: () async {
                                   if (formKey.currentState!.validate()) {
-                                      bool value = await provider.clientSignUpActionButton(
-                                        mailController: mailController,
-                                        passwordController: passwordController,
-                                        nameController: nameController,
-                                        phoneController: phoneController,
-                                      );
-                                      if (value) {
-                                        SnackbarService.showSuccessNotification(
-                                          "Client is created Successfully ",
-                                        );
-                                        Navigator.of(context).pushReplacementNamed(PageRoutesName.login);
-                                      }
+                                    String? nextRoute = await provider.loginAndGetRoute(
+                                      mailController: mailController,
+                                      passwordController: passwordController,
+                                    );
 
-                                  } else {
-                                    setState(() {
-                                      _formSpacing = 8;
-                                    });
+                                    if (nextRoute != null) {
+                                      SnackbarService.showSuccessNotification("Welcome Back!");
+                                      // Navigator.of(context).pushReplacementNamed(
+                                      //   nextRoute,
+                                      // );
+                                      Navigator.of(context).pushNamedAndRemoveUntil(
+                                        nextRoute,
+                                            (route) => false,
+                                      );
+                                    }
                                   }
                                 },
+                                text: "Login",
                               );
                             },
                           ),
@@ -206,15 +207,15 @@ class _SignUpScreenState extends State<ClientSignUpScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          "If you already have an account, Please ",
+                          "If you don't have an account, Please ",
                           style: theme.textTheme.bodyLarge,
                         ),
                         Bounceable(
                           onTap: () {
-                            Navigator.of(context).pushReplacementNamed(PageRoutesName.login);
+                            Navigator.of(context).pop();
                           },
                           child: Text(
-                            "Login Now",
+                            "Sign Up Now",
                             style: theme.textTheme.bodyLarge!.copyWith(
                               color: AppColors.red,
                               decorationStyle: TextDecorationStyle.solid,
@@ -226,7 +227,6 @@ class _SignUpScreenState extends State<ClientSignUpScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20,)
                   ],
                 ),
               ),

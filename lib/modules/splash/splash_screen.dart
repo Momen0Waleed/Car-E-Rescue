@@ -1,9 +1,8 @@
 import 'dart:async';
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/core/constants/theme/theme_manager.dart';
-import 'package:car_e_rescue/core/routes/page_routes_name.dart';
+import 'package:car_e_rescue/modules/splash/logic/splash_logic.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -14,16 +13,31 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final SplashLogic _logic = SplashLogic();
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Timer(const Duration(seconds: 4), () {
-        Navigator.of(
-          context,
-        ).pushNamedAndRemoveUntil(PageRoutesName.userType, (route) => false);
-      });
-    });
+    _handleStartUp();
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   Timer(const Duration(seconds: 4), () {
+    //     Navigator.of(
+    //       context,
+    //     ).pushNamedAndRemoveUntil(PageRoutesName.userType, (route) => false);
+    //   });
+    // });
+  }
+
+  Future<void> _handleStartUp() async {
+    await Future.delayed(const Duration(seconds: 4));
+
+    String nextRoute = await _logic.decideNextRoute(context);
+
+    if (mounted) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        nextRoute,
+            (route) => false,
+      );
+    }
   }
 
   var theme = ThemeManager.themeManager;
