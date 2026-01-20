@@ -4,7 +4,8 @@ import 'package:car_e_rescue/modules/auth/login/view/login_view.dart';
 import 'package:car_e_rescue/modules/auth/sign_up/view/client_sign_up_view.dart';
 import 'package:car_e_rescue/modules/auth/sign_up/view/provider_sign_up_view.dart';
 import 'package:car_e_rescue/modules/auth/user_type/view/user_type_screen.dart';
-import 'package:car_e_rescue/modules/home/view/home_screen.dart';
+import 'package:car_e_rescue/modules/home/view/client_home_view.dart';
+import 'package:car_e_rescue/modules/home/view/provider_home_view.dart';
 import 'package:car_e_rescue/modules/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -21,8 +22,10 @@ abstract class AppRoutes {
         return _slideRoute(const ClientSignUpView());
       case PageRoutesName.providerSignUp:
         return _slideRoute(const ProviderSignUpView());
-      case PageRoutesName.home:
-        return _slideRoute(const HomeScreen());
+      case PageRoutesName.clientHome:
+        return _slideRoute(const ClientHomeView());
+      case PageRoutesName.providerHome:
+        return _slideRoute(const ProviderHomeView());
       case PageRoutesName.forgetPassword:
         return _slideRoute(const ForgetPasswordScreen());
 

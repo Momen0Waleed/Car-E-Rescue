@@ -152,15 +152,21 @@ class _LoginViewState extends State<LoginView> {
                                 color: AppColors.red,
                                 action: () async {
                                   if (formKey.currentState!.validate()) {
-                                    // Navigator.of(context).pushNamedAndRemoveUntil(PageRoutesName.home,(route) => false);
-                                    bool success = await provider.loginActionButton(
+                                    String? nextRoute = await provider.loginAndGetRoute(
                                       mailController: mailController,
                                       passwordController: passwordController,
                                     );
 
-                                    if (success) {
+                                    if (nextRoute != null) {
                                       SnackbarService.showSuccessNotification("Welcome Back!");
-                                      Navigator.of(context).pushReplacementNamed(PageRoutesName.home);
+                                      Navigator.of(context).pushReplacementNamed(
+                                        nextRoute,
+                                      );
+                                      ///TODO: don't forget to remove all the last screens
+                                      // Navigator.of(context).pushNamedAndRemoveUntil(
+                                      //   nextRoute,
+                                      //       (route) => false,
+                                      // );
                                     }
                                   }
                                 },
