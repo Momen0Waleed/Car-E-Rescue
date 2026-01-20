@@ -18,7 +18,6 @@ class CustomTextField extends StatefulWidget {
   final bool isPassword;
   final int? maxlines;
   final int? minlines;
-
   final TextEditingController? controller;
   final String? Function(String?)? validator;
 
