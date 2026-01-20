@@ -1,4 +1,3 @@
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:car_e_rescue/core/constants/images/images_dir.dart';
 import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
@@ -10,26 +9,23 @@ import 'package:car_e_rescue/modules/widgets/custom_text_field.dart';
 import 'package:car_e_rescue/modules/widgets/navigate_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' show Consumer, ChangeNotifierProvider;
 
-class ProviderSignUpScreen extends StatefulWidget {
-  const ProviderSignUpScreen({super.key});
+class ClientSignUpView extends StatefulWidget {
+  const ClientSignUpView({super.key});
 
   @override
-  State<ProviderSignUpScreen> createState() => _ProviderSignUpScreenState();
+  State<ClientSignUpView> createState() => _SignUpViewState();
 }
 
-class _ProviderSignUpScreenState extends State<ProviderSignUpScreen> {
+class _SignUpViewState extends State<ClientSignUpView> {
   var formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController mailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+
   double _formSpacing = 20;
-
-  List<String> services = ["Tiers", "Battery", "Electricity", "Other.."];
-  String? selectedService;
-
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -97,7 +93,7 @@ class _ProviderSignUpScreenState extends State<ProviderSignUpScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
-                  spacing: 20,
+                  spacing: 30,
                   children: [
                     Form(
                       key: formKey,
@@ -123,28 +119,6 @@ class _ProviderSignUpScreenState extends State<ProviderSignUpScreen> {
                             controller: phoneController,
                             validator: AppValidators.validateEgyptianPhone,
                           ),
-                          CustomDropdown<String>(
-                            items: services,
-                            hintText: "Select Service",
-                            onChanged: (value) {
-                              setState(() {
-                                selectedService = value;
-                              });
-                            },
-                            decoration: CustomDropdownDecoration(
-                              closedFillColor: AppColors.white,
-                              closedBorder: BoxBorder.all(
-                                width: 1.5,
-                                color: Colors.black45,
-                              ),
-                              headerStyle: theme.textTheme.bodyLarge!.copyWith(
-                                color: AppColors.black,
-                              ),
-                              hintStyle: theme.textTheme.bodyLarge!.copyWith(
-                                color: Colors.black45,
-                              ),
-                            ),
-                          ),
                           CustomTextField(
                             title: "Email",
                             controller: mailController,
@@ -153,9 +127,22 @@ class _ProviderSignUpScreenState extends State<ProviderSignUpScreen> {
                           CustomTextField(
                             title: "Password",
                             controller: passwordController,
-                            validator:AppValidators.validatePassword,
+                            validator: AppValidators.validatePassword,
                             isPassword: true,
                           ),
+                          // CustomButton(
+                          //   text: "Sign Up",
+                          //   color: AppColors.red,
+                          //   action: () {
+                          //     if (formKey.currentState!.validate()){
+                          //       Navigator.of(context).pushReplacementNamed(PageRoutesName.login);
+                          //     }else{
+                          //       setState(() {
+                          //         _formSpacing = 8;
+                          //       });
+                          //     }
+                          //   },
+                          // ),
                           Consumer<SignUpViewModel>(
                             builder: (context, provider, child) {
                               return CustomButton(
@@ -163,26 +150,19 @@ class _ProviderSignUpScreenState extends State<ProviderSignUpScreen> {
                                 color: AppColors.red,
                                 action: () async {
                                   if (formKey.currentState!.validate()) {
-                                    if (selectedService != null) {
-                                      bool value = await provider.providerSignUpActionButton(
+                                      bool value = await provider.clientSignUpActionButton(
                                         mailController: mailController,
                                         passwordController: passwordController,
                                         nameController: nameController,
                                         phoneController: phoneController,
-                                        selectedService: selectedService!,
                                       );
                                       if (value) {
                                         SnackbarService.showSuccessNotification(
-                                          "Provider is created Successfully ",
+                                          "Client is created Successfully ",
                                         );
                                         Navigator.of(context).pushReplacementNamed(PageRoutesName.login);
                                       }
-                                    } else {
-                                      SnackbarService.showErrorNotification(
-                                        "Please Choose Service",
-                                      );
-                                      _formSpacing = 20;
-                                    }
+
                                   } else {
                                     setState(() {
                                       _formSpacing = 8;
@@ -231,9 +211,7 @@ class _ProviderSignUpScreenState extends State<ProviderSignUpScreen> {
                         ),
                         Bounceable(
                           onTap: () {
-                            Navigator.of(
-                              context,
-                            ).pushReplacementNamed(PageRoutesName.login);
+                            Navigator.of(context).pushReplacementNamed(PageRoutesName.login);
                           },
                           child: Text(
                             "Login Now",
@@ -248,7 +226,7 @@ class _ProviderSignUpScreenState extends State<ProviderSignUpScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 20,)
                   ],
                 ),
               ),

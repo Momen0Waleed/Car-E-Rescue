@@ -1,8 +1,8 @@
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
 import 'package:car_e_rescue/modules/auth/forget_password/view/forget_password_screen.dart';
-import 'package:car_e_rescue/modules/auth/login/view/login_page.dart';
-import 'package:car_e_rescue/modules/auth/sign_up/view/client_sign_up_screen.dart';
-import 'package:car_e_rescue/modules/auth/sign_up/view/provider_sign_up_screen.dart';
+import 'package:car_e_rescue/modules/auth/login/view/login_view.dart';
+import 'package:car_e_rescue/modules/auth/sign_up/view/client_sign_up_view.dart';
+import 'package:car_e_rescue/modules/auth/sign_up/view/provider_sign_up_view.dart';
 import 'package:car_e_rescue/modules/auth/user_type/view/user_type_screen.dart';
 import 'package:car_e_rescue/modules/home/view/home_screen.dart';
 import 'package:car_e_rescue/modules/splash/splash_screen.dart';
@@ -16,11 +16,11 @@ abstract class AppRoutes {
       case PageRoutesName.userType:
         return _slideRoute(const UserTypeScreen());
       case PageRoutesName.login:
-        return _slideRoute(const LoginPage());
+        return _slideRoute(const LoginView());
       case PageRoutesName.clientSignUp:
-        return _slideRoute(const ClientSignUpScreen());
+        return _slideRoute(const ClientSignUpView());
       case PageRoutesName.providerSignUp:
-        return _slideRoute(const ProviderSignUpScreen());
+        return _slideRoute(const ProviderSignUpView());
       case PageRoutesName.home:
         return _slideRoute(const HomeScreen());
       case PageRoutesName.forgetPassword:
