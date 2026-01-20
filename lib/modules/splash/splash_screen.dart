@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/core/constants/theme/theme_manager.dart';
-import 'package:car_e_rescue/core/routes/page_routes_name.dart';
 import 'package:car_e_rescue/modules/splash/logic/splash_logic.dart';
 import 'package:flutter/material.dart';
 

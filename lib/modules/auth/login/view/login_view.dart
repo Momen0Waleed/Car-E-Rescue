@@ -159,14 +159,13 @@ class _LoginViewState extends State<LoginView> {
 
                                     if (nextRoute != null) {
                                       SnackbarService.showSuccessNotification("Welcome Back!");
-                                      Navigator.of(context).pushReplacementNamed(
-                                        nextRoute,
-                                      );
-                                      ///TODO: don't forget to remove all the last screens
-                                      // Navigator.of(context).pushNamedAndRemoveUntil(
+                                      // Navigator.of(context).pushReplacementNamed(
                                       //   nextRoute,
-                                      //       (route) => false,
                                       // );
+                                      Navigator.of(context).pushNamedAndRemoveUntil(
+                                        nextRoute,
+                                            (route) => false,
+                                      );
                                     }
                                   }
                                 },
