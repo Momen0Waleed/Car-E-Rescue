@@ -2,6 +2,7 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:car_e_rescue/core/constants/images/images_dir.dart';
 import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
+import 'package:car_e_rescue/core/constants/validators/app_validators.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
 import 'package:car_e_rescue/modules/auth/sign_up/view_model/sign_up_view_model.dart';
 import 'package:car_e_rescue/modules/widgets/custom_button.dart';
@@ -115,25 +116,12 @@ class _ProviderSignUpScreenState extends State<ProviderSignUpScreen> {
                           CustomTextField(
                             title: "Full Name",
                             controller: nameController,
-                            validator: (String? value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please enter your name";
-                              }
-                              return null;
-                            },
+                            validator: AppValidators.validateEmptyField,
                           ),
                           CustomTextField(
                             title: "Phone Number",
                             controller: phoneController,
-                            validator: (String? value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please enter your phone number";
-                              }
-                              if (!RegExp(r'^01[0125]\d{8}$').hasMatch(value)) {
-                                return "Please enter a valid Egyptian phone number";
-                              }
-                              return null;
-                            },
+                            validator: AppValidators.validateEgyptianPhone,
                           ),
                           CustomDropdown<String>(
                             items: services,
@@ -160,22 +148,12 @@ class _ProviderSignUpScreenState extends State<ProviderSignUpScreen> {
                           CustomTextField(
                             title: "Email",
                             controller: mailController,
-                            validator: (String? value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please enter your email";
-                              }
-                              return null;
-                            },
+                            validator: AppValidators.validateEmail,
                           ),
                           CustomTextField(
                             title: "Password",
                             controller: passwordController,
-                            validator: (String? value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please enter your password";
-                              }
-                              return null;
-                            },
+                            validator:AppValidators.validatePassword,
                             isPassword: true,
                           ),
                           Consumer<SignUpViewModel>(
@@ -197,7 +175,7 @@ class _ProviderSignUpScreenState extends State<ProviderSignUpScreen> {
                                         SnackbarService.showSuccessNotification(
                                           "Provider is created Successfully ",
                                         );
-                                        Navigator.of(context).pop();
+                                        Navigator.of(context).pushReplacementNamed(PageRoutesName.login);
                                       }
                                     } else {
                                       SnackbarService.showErrorNotification(
