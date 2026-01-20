@@ -3,6 +3,7 @@ import 'package:car_e_rescue/core/routes/app_routes.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart' show EasyLoading;
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: PageRoutesName.splash,
       onGenerateRoute: AppRoutes.onGenerateRoute,
-      builder: BotToastInit(),
+      builder: EasyLoading.init(builder: BotToastInit()),
       navigatorObservers: [BotToastNavigatorObserver()],
     );
   }

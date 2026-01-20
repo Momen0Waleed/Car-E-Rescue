@@ -9,7 +9,6 @@ import 'package:car_e_rescue/modules/widgets/custom_text_field.dart';
 import 'package:car_e_rescue/modules/widgets/navigate_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
 class ProviderSignUpScreen extends StatefulWidget {
@@ -182,20 +181,19 @@ class _ProviderSignUpScreenState extends State<ProviderSignUpScreen> {
                           Consumer<SignUpViewModel>(
                             builder: (context, provider, child) {
                               return CustomButton(
+                                text: "Sign Up",
                                 color: AppColors.red,
-                                action: () {
+                                action: () async {
                                   if (formKey.currentState!.validate()) {
                                     if (selectedService != null) {
-                                      bool value = provider
-                                          .providerSignUpActionButton(
-                                            mailController: mailController,
-                                            passwordController:
-                                                passwordController,
-                                            nameController: nameController,
-                                            phoneController: phoneController,
-                                          );
+                                      bool value = await provider.providerSignUpActionButton(
+                                        mailController: mailController,
+                                        passwordController: passwordController,
+                                        nameController: nameController,
+                                        phoneController: phoneController,
+                                        selectedService: selectedService!,
+                                      );
                                       if (value) {
-                                        EasyLoading.dismiss();
                                         SnackbarService.showSuccessNotification(
                                           "Provider is created Successfully ",
                                         );
@@ -213,7 +211,6 @@ class _ProviderSignUpScreenState extends State<ProviderSignUpScreen> {
                                     });
                                   }
                                 },
-                                text: "Sign Up",
                               );
                             },
                           ),

@@ -4,7 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 void configLoading(){
   EasyLoading.instance
-    ..displayDuration = const Duration(milliseconds: 2000)
+    ..displayDuration = const Duration(milliseconds: 4000)
     ..indicatorType = EasyLoadingIndicatorType.fadingCircle
     ..loadingStyle = EasyLoadingStyle.custom
     ..indicatorSize = 45.0

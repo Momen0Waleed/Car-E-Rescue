@@ -140,6 +140,7 @@ class _SignUpScreenState extends State<ClientSignUpScreen> {
                           isPassword: true,
                         ),
                         CustomButton(
+                          text: "Sign Up",
                           color: AppColors.red,
                           action: () {
                             if (formKey.currentState!.validate()){
@@ -150,7 +151,6 @@ class _SignUpScreenState extends State<ClientSignUpScreen> {
                               });
                             }
                           },
-                          text: "Sign Up",
                         ),
                       ],
                     ),

@@ -1,26 +1,52 @@
-import 'package:car_e_rescue/core/utils/firebase_authentication_utils.dart';
+import 'package:car_e_rescue/core/constants/services/snackbar_service.dart' show SnackbarService;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class SignUpViewModel extends ChangeNotifier {
-  bool providerSignUpActionButton({
+  Future<bool> providerSignUpActionButton({
     required TextEditingController mailController,
     required TextEditingController passwordController,
     required TextEditingController nameController,
     required TextEditingController phoneController,
-  }) {
-    EasyLoading.show();
-    FirebaseAuthenticationUtils.createUserWithEmailAndPassword(
-      emailAddress: mailController.text,
-      password: passwordController.text,
-    ).then((value) async {
-      await FirebaseAuth.instance.currentUser!.updateDisplayName(
-        nameController.text,
+    required String selectedService,
+  }) async {
+    try {
+      EasyLoading.show(status: 'Creating Account...');
+
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+        email: mailController.text,
+        password: passwordController.text,
       );
-      await FirebaseAuth.instance.currentUser!.reload();
-      return value;
-    });
-    return false;
+
+      if (userCredential.user != null) {
+        String uid = userCredential.user!.uid;
+
+        await userCredential.user!.updateDisplayName(nameController.text);
+
+        await FirebaseFirestore.instance
+            .collection("providers")
+            .doc(uid) // Use the UID as the document ID
+            .set({
+          "uid": uid,
+          "name": nameController.text,
+          "phone": phoneController.text,
+          "email": mailController.text,
+          "service": selectedService,
+          "createdAt": DateTime.now(),
+          "role": "provider", // Useful for managing access later
+        });
+
+        return true;
+      }
+      return false;
+    } catch (e) {
+      SnackbarService.showErrorNotification(e.toString());
+      return false;
+    } finally {
+      EasyLoading.dismiss();
+    }
   }
 }
