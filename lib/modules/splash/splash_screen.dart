@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _handleStartUp() async {
     await Future.delayed(const Duration(seconds: 4));
 
-    String nextRoute = await _logic.decideNextRoute();
+    String nextRoute = await _logic.decideNextRoute(context);
 
     if (mounted) {
       Navigator.of(context).pushNamedAndRemoveUntil(
