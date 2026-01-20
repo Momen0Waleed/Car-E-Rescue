@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart' show FirebaseFirestore;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart' show SharedPreferences;
 
 class LoginRepo {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -35,5 +36,21 @@ class LoginRepo {
     }
 
     throw Exception("User data not found in any collection.");
+  }
+
+  Future<void> saveUserRoleLocally(String role) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_role', role);
+  }
+
+  Future<String?> getUserRoleLocally() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('user_role');
+  }
+
+  // Clear role on logout
+  Future<void> clearLocalData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('user_role');
   }
 }

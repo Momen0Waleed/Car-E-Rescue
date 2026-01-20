@@ -20,13 +20,14 @@ class LoginViewModel extends ChangeNotifier {
         passwordController.text,
       );
 
-      // 2. Fetch User Data from Firestore
       String uid = userCredential.user!.uid;
       Map<String, dynamic> userData = await _repository.getUserData(uid);
 
       if (userData['role'] == 'client') {
+        await _repository.saveUserRoleLocally('client');
         return PageRoutesName.clientHome;
       } else {
+        await _repository.saveUserRoleLocally('provider');
         return PageRoutesName.providerHome;
       }
     } catch (e) {
