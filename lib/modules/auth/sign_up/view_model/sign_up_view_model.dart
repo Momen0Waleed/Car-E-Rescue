@@ -1,10 +1,13 @@
 import 'package:car_e_rescue/core/constants/services/snackbar_service.dart' show SnackbarService;
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:car_e_rescue/modules/auth/sign_up/model/sign_up_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../model/sign_up_model.dart';
 
 class SignUpViewModel extends ChangeNotifier {
+  final SignUpRepo _repository = SignUpRepo();
+
   Future<bool> providerSignUpActionButton({
     required TextEditingController mailController,
     required TextEditingController passwordController,
@@ -15,30 +18,23 @@ class SignUpViewModel extends ChangeNotifier {
     try {
       EasyLoading.show(status: 'Creating Account...');
 
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-        email: mailController.text,
-        password: passwordController.text,
+      UserCredential userCredential = await _repository.createUser(
+        mailController.text,
+        passwordController.text,
       );
 
       if (userCredential.user != null) {
-        String uid = userCredential.user!.uid;
+        UserModel provider = UserModel(
+          uid: userCredential.user!.uid,
+          name: nameController.text,
+          email: mailController.text,
+          phone: phoneController.text,
+          role: "provider",
+          service: selectedService,
+          createdAt: DateTime.now(),
+        );
 
-        await userCredential.user!.updateDisplayName(nameController.text);
-
-        await FirebaseFirestore.instance
-            .collection("providers")
-            .doc(uid) // Use the UID as the document ID
-            .set({
-          "uid": uid,
-          "name": nameController.text,
-          "phone": phoneController.text,
-          "email": mailController.text,
-          "service": selectedService,
-          "createdAt": DateTime.now(),
-          "role": "provider", // Useful for managing access later
-        });
-
+        await _repository.saveUserData(provider, "providers");
         return true;
       }
       return false;
@@ -59,34 +55,27 @@ class SignUpViewModel extends ChangeNotifier {
     try {
       EasyLoading.show(status: 'Creating Account...');
 
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-        email: mailController.text,
-        password: passwordController.text,
+      UserCredential userCredential = await _repository.createUser(
+        mailController.text,
+        passwordController.text,
       );
 
       if (userCredential.user != null) {
-        String uid = userCredential.user!.uid;
+        UserModel client = UserModel(
+          uid: userCredential.user!.uid,
+          name: nameController.text,
+          email: mailController.text,
+          phone: phoneController.text,
+          role: "client",
+          createdAt: DateTime.now(),
+        );
 
-        await userCredential.user!.updateDisplayName(nameController.text);
-
-        await FirebaseFirestore.instance
-            .collection("clients")
-            .doc(uid) // Use the UID as the document ID
-            .set({
-          "uid": uid,
-          "name": nameController.text,
-          "phone": phoneController.text,
-          "email": mailController.text,
-          "createdAt": DateTime.now(),
-          "role": "client", // Useful for managing access later
-        });
-
+        await _repository.saveUserData(client, "clients");
         return true;
       }
       return false;
     } catch (e) {
-      debugPrint(e.toString());
+      // debugPrint(e.toString());
       SnackbarService.showErrorNotification(e.toString());
       return false;
     } finally {
