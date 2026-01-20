@@ -1,5 +1,5 @@
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
-import 'package:car_e_rescue/modules/auth/forget_password/view/forget_password_screen.dart';
+import 'package:car_e_rescue/modules/auth/forget_password/view/forget_password_view.dart';
 import 'package:car_e_rescue/modules/auth/login/view/login_view.dart';
 import 'package:car_e_rescue/modules/auth/sign_up/view/client_sign_up_view.dart';
 import 'package:car_e_rescue/modules/auth/sign_up/view/provider_sign_up_view.dart';
@@ -27,7 +27,7 @@ abstract class AppRoutes {
       case PageRoutesName.providerHome:
         return _slideRoute(const ProviderHomeView());
       case PageRoutesName.forgetPassword:
-        return _slideRoute(const ForgetPasswordScreen());
+        return _slideRoute(const ForgetPasswordView());
 
       default:
         return _slideRoute(const SplashScreen());
