@@ -12,12 +12,14 @@ class CustomTextField extends StatefulWidget {
 
     this.controller,
     this.validator,
+    this.keyboardType = TextInputType.text,
   });
   final String title;
   final Widget? prefixIcon;
   final bool isPassword;
   final int? maxlines;
   final int? minlines;
+  final TextInputType? keyboardType;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
 
@@ -38,6 +40,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         maxLines: widget.maxlines,
         minLines: widget.minlines,
         validator: widget.validator,
+        keyboardType: widget.keyboardType,
         obscureText: widget.isPassword ? obscurePassword : false,
         style: theme.bodyMedium!.copyWith(color: AppColors.black),
         cursorColor: AppColors.red,

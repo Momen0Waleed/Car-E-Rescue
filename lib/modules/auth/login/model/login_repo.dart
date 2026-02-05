@@ -1,41 +1,57 @@
-import 'package:cloud_firestore/cloud_firestore.dart' show FirebaseFirestore;
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart' show SharedPreferences;
+import 'package:car_e_rescue/core/constants/api/dio_client.dart';
+import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginRepo {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final Dio _dio = DioClient.instance;
 
-  Future<UserCredential> login(String email, String password) async {
+  // 1. Authenticate and return the access_token
+  Future<String> login(String email, String password) async {
     try {
-      return await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
+      final response = await _dio.post(
+        'auth/jwt/login',
+        data: {
+          'grant_type': 'password',
+          'username': email,
+          'password': password,
+          'scope': '',
+          'client_id': 'string',
+          'client_secret': '********',
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
       );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        throw Exception("No user found for that email.");
-      } else if (e.code == 'wrong-password') {
-        throw Exception("Wrong password provided.");
-      } else if (e.code == 'invalid-email') {
-        throw Exception("The email address is badly formatted.");
+
+      if (response.statusCode == 200) {
+        final token = response.data['access_token'];
+        // Optional: save token here if you want it persistent
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('auth_token', token);
+        return token;
       }
-      throw Exception(e.message ?? "An unknown error occurred.");
+      throw Exception("Login failed");
+    } on DioException catch (e) {
+      DioClient.logError(e);
+      String message = e.response?.data['detail'] ?? "Login failed";
+      if (message == "LOGIN_BAD_CREDENTIALS") {
+        message = "Invalid email or password.";
+      }
+      throw Exception(message);
     }
   }
 
-  Future<Map<String, dynamic>> getUserData(String uid) async {
-    var clientDoc = await _firestore.collection("clients").doc(uid).get();
-    if (clientDoc.exists) {
-      return clientDoc.data()!;
+  // 2. Fetch the profile using the JWT token to find the user's role
+  Future<Map<String, dynamic>> fetchUserProfile(String token) async {
+    try {
+      final response = await _dio.get(
+        'auth/user/verify', // Or the endpoint that returns current user data
+        data: {'token': token}, // Based on your previous verify API schema
+      );
+      return response.data;
+    } on DioException catch (e) {
+      throw Exception("Failed to load user profile");
     }
-
-    var providerDoc = await _firestore.collection("providers").doc(uid).get();
-    if (providerDoc.exists) {
-      return providerDoc.data()!;
-    }
-
-    throw Exception("User data not found in any collection.");
   }
 
   Future<void> saveUserRoleLocally(String role) async {
@@ -46,11 +62,5 @@ class LoginRepo {
   Future<String?> getUserRoleLocally() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('user_role');
-  }
-
-  // Clear role on logout
-  Future<void> clearLocalData() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('user_role');
   }
 }
