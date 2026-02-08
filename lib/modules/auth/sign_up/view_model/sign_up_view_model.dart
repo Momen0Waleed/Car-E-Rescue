@@ -37,8 +37,6 @@ class SignUpViewModel extends ChangeNotifier {
   }
 
   // For MechanicSignUpView
-  // sign_up_view_model.dart
-
   Future<bool> mechanicSignUpActionButton({
     required TextEditingController mailController,
     required TextEditingController passwordController,
@@ -60,7 +58,7 @@ class SignUpViewModel extends ChangeNotifier {
         "name": nameController.text.trim(),
         "phone": phoneController.text.trim(),
         "workshop_name": workshopNameController.text.trim(),
-        "experience_years": int.tryParse(experienceController.text) ?? 0, // Matches API int requirement
+        "experience_years": int.tryParse(experienceController.text) ?? 0,
         "is_available": true,
         "avg_rating": 0,
         "total_jobs": 0,

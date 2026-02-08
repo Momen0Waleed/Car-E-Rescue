@@ -23,9 +23,9 @@ abstract class AppRoutes {
       case PageRoutesName.providerSignUp:
         return _slideRoute(const ProviderSignUpView());
       case PageRoutesName.clientHome:
-        return _slideRoute(const ClientHomeView());
+        return _slideRoute( ClientHomeView());
       case PageRoutesName.providerHome:
-        return _slideRoute(const ProviderHomeView());
+        return _slideRoute( ProviderHomeView());
       case PageRoutesName.forgetPassword:
         return _slideRoute(const ForgetPasswordView());
 

@@ -71,4 +71,10 @@ class LoginRepo {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('user_role');
   }
+
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('auth_token');
+    await prefs.remove('user_role');
+  }
 }
