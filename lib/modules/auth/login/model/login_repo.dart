@@ -42,14 +42,22 @@ class LoginRepo {
   }
 
   // 2. Fetch the profile using the JWT token to find the user's role
+  // login_repo.dart
+
   Future<Map<String, dynamic>> fetchUserProfile(String token) async {
     try {
       final response = await _dio.get(
-        'auth/user/verify', // Or the endpoint that returns current user data
-        data: {'token': token}, // Based on your previous verify API schema
+        'users/account',
+        options: Options(
+          headers: {
+            'Authorization': 'bearer $token',
+          },
+        ),
       );
-      return response.data;
+
+      return response.data['user'];
     } on DioException catch (e) {
+      DioClient.logError(e);
       throw Exception("Failed to load user profile");
     }
   }

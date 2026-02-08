@@ -153,6 +153,7 @@ class _LoginViewState extends State<LoginView> {
                                 action: () async {
                                   if (formKey.currentState!.validate()) {
                                     String? nextRoute = await provider.loginAndGetRoute(
+                                      context: context,
                                       mailController: mailController,
                                       passwordController: passwordController,
                                     );

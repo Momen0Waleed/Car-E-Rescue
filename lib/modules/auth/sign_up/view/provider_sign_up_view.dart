@@ -1,4 +1,3 @@
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:car_e_rescue/core/constants/images/images_dir.dart';
 import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
@@ -28,7 +27,7 @@ class _ProviderSignUpViewState extends State<ProviderSignUpView> {
 
   TextEditingController workshopController = TextEditingController();
   TextEditingController experienceController = TextEditingController();
-  double _formSpacing = 20;
+  // double _formSpacing = 20;
 
   List<String> services = ["Tiers", "Battery", "Electricity", "Other.."];
   String? selectedService;
@@ -105,7 +104,7 @@ class _ProviderSignUpViewState extends State<ProviderSignUpView> {
                     Form(
                       key: formKey,
                       child: Column(
-                        spacing: _formSpacing,
+                        spacing: 20,
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
