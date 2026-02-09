@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 abstract class ThemeManager {
   static ThemeData themeManager = ThemeData(
-      primaryColor: AppColors.red,
+    primaryColor: AppColors.red,
     scaffoldBackgroundColor: AppColors.white,
     appBarTheme: AppBarTheme(
       elevation: 0,
