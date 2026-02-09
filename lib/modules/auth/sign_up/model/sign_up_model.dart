@@ -1,45 +1,33 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class UserModel {
-  final String uid;
-  final String name;
+  final String id;
   final String email;
-  final String phone;
+  final String name;
   final String role;
-  final String? service; // Optional for clients, required for providers
-  final DateTime createdAt;
+
+  // Optional fields based on role
+  final String? workshopName;
+  final int? experienceYears;
+  final String? carType;
 
   UserModel({
-    required this.uid,
-    required this.name,
+    required this.id,
     required this.email,
-    required this.phone,
+    required this.name,
     required this.role,
-    required this.createdAt,
-    this.service,
+    this.workshopName,
+    this.experienceYears,
+    this.carType,
   });
-
-  Map<String, dynamic> toMap() {
-    return {
-      "uid": uid,
-      "name": name,
-      "phone": phone,
-      "email": email,
-      "role": role,
-      "service": service,
-      "createdAt": createdAt,
-    };
-  }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      uid: map['uid'] ?? '',
-      name: map['name'] ?? '',
+      id: map['id'] ?? '',
       email: map['email'] ?? '',
-      phone: map['phone'] ?? '',
+      name: map['name'] ?? '',
       role: map['role'] ?? '',
-      service: map['service'],
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      workshopName: map['workshop_name'],
+      experienceYears: map['experience_years'],
+      carType: map['car_type'],
     );
   }
 }
