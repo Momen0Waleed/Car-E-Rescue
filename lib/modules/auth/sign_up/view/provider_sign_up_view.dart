@@ -1,4 +1,3 @@
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:car_e_rescue/core/constants/images/images_dir.dart';
 import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
@@ -25,7 +24,10 @@ class _ProviderSignUpViewState extends State<ProviderSignUpView> {
   TextEditingController mailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
-  double _formSpacing = 20;
+
+  TextEditingController workshopController = TextEditingController();
+  TextEditingController experienceController = TextEditingController();
+  // double _formSpacing = 20;
 
   List<String> services = ["Tiers", "Battery", "Electricity", "Other.."];
   String? selectedService;
@@ -102,7 +104,7 @@ class _ProviderSignUpViewState extends State<ProviderSignUpView> {
                     Form(
                       key: formKey,
                       child: Column(
-                        spacing: _formSpacing,
+                        spacing: 20,
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -123,27 +125,39 @@ class _ProviderSignUpViewState extends State<ProviderSignUpView> {
                             controller: phoneController,
                             validator: AppValidators.validateEgyptianPhone,
                           ),
-                          CustomDropdown<String>(
-                            items: services,
-                            hintText: "Select Service",
-                            onChanged: (value) {
-                              setState(() {
-                                selectedService = value;
-                              });
-                            },
-                            decoration: CustomDropdownDecoration(
-                              closedFillColor: AppColors.white,
-                              closedBorder: BoxBorder.all(
-                                width: 1.5,
-                                color: Colors.black45,
-                              ),
-                              headerStyle: theme.textTheme.bodyLarge!.copyWith(
-                                color: AppColors.black,
-                              ),
-                              hintStyle: theme.textTheme.bodyLarge!.copyWith(
-                                color: Colors.black45,
-                              ),
-                            ),
+                          // CustomDropdown<String>(
+                          //   items: services,
+                          //   hintText: "Select Service",
+                          //   onChanged: (value) {
+                          //     setState(() {
+                          //       selectedService = value;
+                          //     });
+                          //   },
+                          //   decoration: CustomDropdownDecoration(
+                          //     closedFillColor: AppColors.white,
+                          //     closedBorder: BoxBorder.all(
+                          //       width: 1.5,
+                          //       color: Colors.black45,
+                          //     ),
+                          //     headerStyle: theme.textTheme.bodyLarge!.copyWith(
+                          //       color: AppColors.black,
+                          //     ),
+                          //     hintStyle: theme.textTheme.bodyLarge!.copyWith(
+                          //       color: Colors.black45,
+                          //     ),
+                          //   ),
+                          // ),
+                          CustomTextField(
+                            title: "Workshop Name",
+                            controller: workshopController,
+                            validator: AppValidators.validateEmptyField,
+                          ),
+
+                          CustomTextField(
+                            title: "Years of Experience",
+                            controller: experienceController,
+                            keyboardType: TextInputType.number,
+                            validator: AppValidators.validateEmptyField,
                           ),
                           CustomTextField(
                             title: "Email",
@@ -163,30 +177,18 @@ class _ProviderSignUpViewState extends State<ProviderSignUpView> {
                                 color: AppColors.red,
                                 action: () async {
                                   if (formKey.currentState!.validate()) {
-                                    if (selectedService != null) {
-                                      bool value = await provider.providerSignUpActionButton(
-                                        mailController: mailController,
-                                        passwordController: passwordController,
-                                        nameController: nameController,
-                                        phoneController: phoneController,
-                                        selectedService: selectedService!,
-                                      );
-                                      if (value) {
-                                        SnackbarService.showSuccessNotification(
-                                          "Provider is created Successfully ",
-                                        );
-                                        Navigator.of(context).pushReplacementNamed(PageRoutesName.login);
-                                      }
-                                    } else {
-                                      SnackbarService.showErrorNotification(
-                                        "Please Choose Service",
-                                      );
-                                      _formSpacing = 20;
+                                    bool value = await provider.mechanicSignUpActionButton(
+                                      mailController: mailController,
+                                      passwordController: passwordController,
+                                      nameController: nameController,
+                                      phoneController: phoneController,
+                                      workshopNameController: workshopController,
+                                      experienceController: experienceController,
+                                    );
+                                    if (value) {
+                                      SnackbarService.showSuccessNotification("Provider is created Successfully");
+                                      Navigator.of(context).pushReplacementNamed(PageRoutesName.login);
                                     }
-                                  } else {
-                                    setState(() {
-                                      _formSpacing = 8;
-                                    });
                                   }
                                 },
                               );

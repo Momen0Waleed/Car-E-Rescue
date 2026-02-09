@@ -2,50 +2,11 @@ import 'package:car_e_rescue/core/constants/services/snackbar_service.dart' show
 import 'package:car_e_rescue/modules/auth/sign_up/model/sign_up_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../model/sign_up_model.dart';
 
 class SignUpViewModel extends ChangeNotifier {
   final SignUpRepo _repository = SignUpRepo();
 
-  Future<bool> providerSignUpActionButton({
-    required TextEditingController mailController,
-    required TextEditingController passwordController,
-    required TextEditingController nameController,
-    required TextEditingController phoneController,
-    required String selectedService,
-  }) async {
-    try {
-      EasyLoading.show(status: 'Creating Account...');
-
-      UserCredential userCredential = await _repository.createUser(
-        mailController.text,
-        passwordController.text,
-      );
-
-      if (userCredential.user != null) {
-        UserModel provider = UserModel(
-          uid: userCredential.user!.uid,
-          name: nameController.text,
-          email: mailController.text,
-          phone: phoneController.text,
-          role: "provider",
-          service: selectedService,
-          createdAt: DateTime.now(),
-        );
-
-        await _repository.saveUserData(provider, "providers");
-        return true;
-      }
-      return false;
-    } catch (e) {
-      SnackbarService.showErrorNotification(e.toString());
-      return false;
-    } finally {
-      EasyLoading.dismiss();
-    }
-  }
-
+  // For ClientSignUpView
   Future<bool> clientSignUpActionButton({
     required TextEditingController mailController,
     required TextEditingController passwordController,
@@ -53,30 +14,60 @@ class SignUpViewModel extends ChangeNotifier {
     required TextEditingController phoneController,
   }) async {
     try {
-      EasyLoading.show(status: 'Creating Account...');
-
-      UserCredential userCredential = await _repository.createUser(
-        mailController.text,
-        passwordController.text,
-      );
-
-      if (userCredential.user != null) {
-        UserModel client = UserModel(
-          uid: userCredential.user!.uid,
-          name: nameController.text,
-          email: mailController.text,
-          phone: phoneController.text,
-          role: "client",
-          createdAt: DateTime.now(),
-        );
-
-        await _repository.saveUserData(client, "clients");
-        return true;
-      }
-      return false;
+      EasyLoading.show(status: 'Creating Client...');
+      await _repository.registerUser({
+        "email": mailController.text.trim(),
+        "password": passwordController.text,
+        "is_active": true,
+        "is_superuser": false,
+        "is_verified": false,
+        "role": "user",
+        "name": nameController.text.trim(),
+        "phone": phoneController.text.trim(),
+        "car_type": "",
+        "car_model": ""
+      });
+      return true;
     } catch (e) {
-      // debugPrint(e.toString());
-      SnackbarService.showErrorNotification(e.toString());
+      SnackbarService.showErrorNotification(e.toString().replaceAll("Exception: ", ""));
+      return false;
+    } finally {
+      EasyLoading.dismiss();
+    }
+  }
+
+  // For MechanicSignUpView
+  Future<bool> mechanicSignUpActionButton({
+    required TextEditingController mailController,
+    required TextEditingController passwordController,
+    required TextEditingController nameController,
+    required TextEditingController phoneController,
+    required TextEditingController workshopNameController, // Changed to Controller
+    required TextEditingController experienceController,   // Added for experience
+  }) async {
+    try {
+      EasyLoading.show(status: 'Creating Mechanic...');
+
+      await _repository.registerMechanic({
+        "email": mailController.text.trim(),
+        "password": passwordController.text,
+        "is_active": true,
+        "is_superuser": false,
+        "is_verified": false,
+        "role": "mechanic",
+        "name": nameController.text.trim(),
+        "phone": phoneController.text.trim(),
+        "workshop_name": workshopNameController.text.trim(),
+        "experience_years": int.tryParse(experienceController.text) ?? 0,
+        "is_available": true,
+        "avg_rating": 0,
+        "total_jobs": 0,
+        "review_count": 0
+      });
+
+      return true;
+    } catch (e) {
+      SnackbarService.showErrorNotification(e.toString().replaceAll("Exception: ", ""));
       return false;
     } finally {
       EasyLoading.dismiss();
