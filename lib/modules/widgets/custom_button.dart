@@ -29,7 +29,7 @@ class CustomButton extends StatelessWidget {
         child: Center(
           child: Text(
             text,
-            style: theme.textTheme.titleLarge!.copyWith(
+            style: theme.textTheme.bodyLarge!.copyWith(
               color: color == AppColors.red ? AppColors.white : AppColors.red,
             fontWeight: FontWeight.bold
             ),

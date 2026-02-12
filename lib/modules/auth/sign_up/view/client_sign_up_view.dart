@@ -84,7 +84,6 @@ class _SignUpViewState extends State<ClientSignUpView> {
                       style: theme.textTheme.titleLarge!.copyWith(
                         color: AppColors.white,
                         fontSize: 36,
-                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -104,10 +103,7 @@ class _SignUpViewState extends State<ClientSignUpView> {
                         children: [
                           Text(
                             "Sign Up",
-                            style: theme.textTheme.titleLarge!.copyWith(
-                              color: AppColors.red,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: theme.textTheme.titleLarge,
                           ),
                           CustomTextField(
                             title: "Full Name",
@@ -130,19 +126,6 @@ class _SignUpViewState extends State<ClientSignUpView> {
                             validator: AppValidators.validatePassword,
                             isPassword: true,
                           ),
-                          // CustomButton(
-                          //   text: "Sign Up",
-                          //   color: AppColors.red,
-                          //   action: () {
-                          //     if (formKey.currentState!.validate()){
-                          //       Navigator.of(context).pushReplacementNamed(PageRoutesName.login);
-                          //     }else{
-                          //       setState(() {
-                          //         _formSpacing = 8;
-                          //       });
-                          //     }
-                          //   },
-                          // ),
                           Consumer<SignUpViewModel>(
                             builder: (context, provider, child) {
                               return CustomButton(
@@ -162,7 +145,6 @@ class _SignUpViewState extends State<ClientSignUpView> {
                                         );
                                         Navigator.of(context).pushReplacementNamed(PageRoutesName.login);
                                       }
-
                                   } else {
                                     setState(() {
                                       _formSpacing = 8;
@@ -187,9 +169,7 @@ class _SignUpViewState extends State<ClientSignUpView> {
                         ),
                         Text(
                           " OR ",
-                          style: theme.textTheme.bodyLarge!.copyWith(
-                            color: AppColors.black,
-                          ),
+                          style: theme.textTheme.bodyMedium,
                         ),
                         Expanded(
                           child: Divider(
@@ -201,30 +181,32 @@ class _SignUpViewState extends State<ClientSignUpView> {
                         ),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "If you already have an account, Please ",
-                          style: theme.textTheme.bodyLarge,
-                        ),
-                        Bounceable(
-                          onTap: () {
-                            Navigator.of(context).pushReplacementNamed(PageRoutesName.login);
-                          },
-                          child: Text(
-                            "Login Now",
-                            style: theme.textTheme.bodyLarge!.copyWith(
-                              color: AppColors.red,
-                              decorationStyle: TextDecorationStyle.solid,
-                              decoration: TextDecoration.underline,
-                              decorationColor: AppColors.red,
-                              fontWeight: FontWeight.bold,
+                    FittedBox(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "If you already have an account, Please ",
+                            style: theme.textTheme.bodySmall,
+                          ),
+                          Bounceable(
+                            onTap: () {
+                              Navigator.of(context).pushReplacementNamed(PageRoutesName.login);
+                            },
+                            child: Text(
+                              "Login Now",
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                color: AppColors.red,
+                                decorationStyle: TextDecorationStyle.solid,
+                                decoration: TextDecoration.underline,
+                                decorationColor: AppColors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     SizedBox(height: 20,)
                   ],

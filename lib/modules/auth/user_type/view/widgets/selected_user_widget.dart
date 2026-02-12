@@ -18,7 +18,6 @@ class _SelectedUserWidgetState extends State<SelectedUserWidget> {
   var theme = Theme.of(context);
   var provider = Provider.of<UserTypeViewModel>(context);
 
-
     return Row(
       children: [
         Expanded(
@@ -50,7 +49,6 @@ class _SelectedUserWidgetState extends State<SelectedUserWidget> {
                       "Client",
                       style: theme.textTheme.titleLarge!.copyWith(
                         color: provider.setUnSelectedContainerColor(),
-                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
