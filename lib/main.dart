@@ -1,4 +1,5 @@
 import 'package:bot_toast/bot_toast.dart';
+import 'package:car_e_rescue/core/constants/theme/theme_manager.dart';
 import 'package:car_e_rescue/core/providers/user_provider.dart';
 import 'package:car_e_rescue/core/routes/app_routes.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
@@ -8,9 +9,6 @@ import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
   runApp(const MyApp());
 }
 
@@ -24,6 +22,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => UserProvider()),
       ],
       child: MaterialApp(
+        theme: ThemeManager.themeManager,
         debugShowCheckedModeBanner: false,
         initialRoute: PageRoutesName.splash,
         onGenerateRoute: AppRoutes.onGenerateRoute,

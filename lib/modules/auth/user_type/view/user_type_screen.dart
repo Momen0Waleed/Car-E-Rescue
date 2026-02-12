@@ -31,21 +31,14 @@ class _UserTypeScreenState extends State<UserTypeScreen> {
                     children: [
                       Text(
                         "Welcome to Car E-Rescue",
-                        style: theme.textTheme.titleLarge!.copyWith(
-                          color: Colors.red,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: theme.textTheme.titleLarge,
                       ),
+                      SizedBox(height: 10,),
                       Text(
                         "Now you can fix your car easily",
-                        style: theme.textTheme.bodyLarge!.copyWith(
-                          color: AppColors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: theme.textTheme.bodyLarge,
                       ),
-                      SizedBox(height: 100),
+                      SizedBox(height: 60),
                       SelectedUserWidget(),
                       SizedBox(height: 80),
                       CustomButton(

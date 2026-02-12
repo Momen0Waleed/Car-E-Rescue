@@ -209,7 +209,7 @@ class _ProviderSignUpViewState extends State<ProviderSignUpView> {
                         ),
                         Text(
                           " OR ",
-                          style: theme.textTheme.bodyLarge!.copyWith(
+                          style: theme.textTheme.bodyMedium!.copyWith(
                             color: AppColors.black,
                           ),
                         ),
@@ -223,32 +223,34 @@ class _ProviderSignUpViewState extends State<ProviderSignUpView> {
                         ),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "If you already have an account, Please ",
-                          style: theme.textTheme.bodyLarge,
-                        ),
-                        Bounceable(
-                          onTap: () {
-                            Navigator.of(
-                              context,
-                            ).pushReplacementNamed(PageRoutesName.login);
-                          },
-                          child: Text(
-                            "Login Now",
-                            style: theme.textTheme.bodyLarge!.copyWith(
-                              color: AppColors.red,
-                              decorationStyle: TextDecorationStyle.solid,
-                              decoration: TextDecoration.underline,
-                              decorationColor: AppColors.red,
-                              fontWeight: FontWeight.bold,
+                    FittedBox(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "If you already have an account, Please ",
+                            style: theme.textTheme.bodySmall,
+                          ),
+                          Bounceable(
+                            onTap: () {
+                              Navigator.of(
+                                context,
+                              ).pushReplacementNamed(PageRoutesName.login);
+                            },
+                            child: Text(
+                              "Login Now",
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                color: AppColors.red,
+                                decorationStyle: TextDecorationStyle.solid,
+                                decoration: TextDecoration.underline,
+                                decorationColor: AppColors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     SizedBox(height: 20),
                   ],

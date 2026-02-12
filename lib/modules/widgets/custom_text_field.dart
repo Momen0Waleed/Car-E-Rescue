@@ -42,13 +42,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
         validator: widget.validator,
         keyboardType: widget.keyboardType,
         obscureText: widget.isPassword ? obscurePassword : false,
-        style: theme.bodyMedium!.copyWith(color: AppColors.black),
+        style: theme.bodySmall!.copyWith(color: AppColors.black),
         cursorColor: AppColors.red,
         decoration: InputDecoration(
           filled: true,
           fillColor: AppColors.white,
           hintText: widget.title,
-          hintStyle: theme.bodyMedium!.copyWith(color: Colors.black45),
+          hintStyle: theme.bodySmall!.copyWith(color: Colors.black45),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
             borderSide: BorderSide(width: 1, color: Colors.black45),

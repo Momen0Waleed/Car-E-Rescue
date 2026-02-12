@@ -189,7 +189,7 @@ class _LoginViewState extends State<LoginView> {
                         ),
                         Text(
                           " OR ",
-                          style: theme.textTheme.bodyLarge!.copyWith(
+                          style: theme.textTheme.bodyMedium!.copyWith(
                             color: AppColors.black,
                           ),
                         ),
@@ -203,30 +203,33 @@ class _LoginViewState extends State<LoginView> {
                         ),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "If you don't have an account, Please ",
-                          style: theme.textTheme.bodyLarge,
-                        ),
-                        Bounceable(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(
-                            "Sign Up Now",
-                            style: theme.textTheme.bodyLarge!.copyWith(
-                              color: AppColors.red,
-                              decorationStyle: TextDecorationStyle.solid,
-                              decoration: TextDecoration.underline,
-                              decorationColor: AppColors.red,
-                              fontWeight: FontWeight.bold,
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "If you don't have an account, Please ",
+                            style: theme.textTheme.bodySmall,
+                          ),
+                          Bounceable(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              "Sign Up Now",
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                color: AppColors.red,
+                                decorationStyle: TextDecorationStyle.solid,
+                                decoration: TextDecoration.underline,
+                                decorationColor: AppColors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
