@@ -21,9 +21,7 @@ class DioClient {
   static void logError(DioException e) {
     if (e.response != null) {
       // This helps you see "REGISTER_USER_ALREADY_EXISTS" in your Flutter console
-      print("API Error: ${e.response?.data['detail']}");
     } else {
-      print("Connection Error: ${e.message}");
     }
   }
 }

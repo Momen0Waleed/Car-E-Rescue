@@ -1,3 +1,4 @@
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/create_request/model/location_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -9,7 +10,11 @@ class CreateRequestViewModel extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
 
-  // Use MapController for OpenStreetMap
+  final LocationRepository _repository = LocationRepository();
+  bool _isSuccess = false;
+  bool get isSuccess => _isSuccess;
+  String? token;
+
   final MapController _mapController = MapController();
 
   double? get latitude => _latitude;
@@ -17,12 +22,6 @@ class CreateRequestViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   MapController get mapController => _mapController;
-
-  void updateLocation(LatLng point) {
-    _latitude = point.latitude;
-    _longitude = point.longitude;
-    notifyListeners(); //
-  }
 
   Future<void> requestLocation() async {
     _isLoading = true;
@@ -55,5 +54,38 @@ class CreateRequestViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<bool> sendLocation() async {
+    token ??= await _repository.getSavedToken();
+    if (_latitude == null || _longitude == null || token == null) return false;
+
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _repository.updateUserLocation(
+        lat: _latitude!,
+        lng: _longitude!,
+        token: token!,
+      );
+      _isSuccess = true;
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      _isSuccess = false;
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  void updateLocation(LatLng point) {
+    _latitude = point.latitude;
+    _longitude = point.longitude;
+    _isSuccess = false; // Reset if user picks a new spot
+    notifyListeners();
   }
 }
