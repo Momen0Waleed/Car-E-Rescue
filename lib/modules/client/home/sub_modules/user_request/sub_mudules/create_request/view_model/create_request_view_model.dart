@@ -1,3 +1,4 @@
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/create_request/model/create_request_repo.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/create_request/model/location_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -22,6 +23,21 @@ class CreateRequestViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   MapController get mapController => _mapController;
+
+  final CreateRequestRepo _requestRepo = CreateRequestRepo();
+  String _selectedRequestType = "tiers and wheels";
+  String get selectedRequestType => _selectedRequestType;
+  final List<String> requestTypes = [
+    "tiers and wheels", "Interior", "Glass", "Paint & Finish", "Body Work",
+    "Preventive Maintenance", "Diagnostics", "CLIMATE CONTROL", "Drivetrain",
+    "Manual Transmission", "Automatic Transmission", "Suspension & Steering",
+    "Brake Systems", "Lighting & Accessories", "Computer & Sensors",
+    "Battery & Charging", "Cooling System", "Exhaust System", "Fuel System",
+    "Core Engine Repair", "Other"
+  ];
+
+  String? _requestStatus;
+  String? get requestStatus => _requestStatus;
 
   Future<void> requestLocation() async {
     _isLoading = true;
@@ -85,7 +101,43 @@ class CreateRequestViewModel extends ChangeNotifier {
   void updateLocation(LatLng point) {
     _latitude = point.latitude;
     _longitude = point.longitude;
-    _isSuccess = false; // Reset if user picks a new spot
+    _isSuccess = false;
     notifyListeners();
+  }
+
+
+  void updateRequestType(String type) {
+    _selectedRequestType = type;
+    notifyListeners();
+  }
+
+
+  Future<bool> finalizeRequest() async {
+
+    token ??= await _repository.getSavedToken();
+
+    if (token == null) {
+      return false;
+    }
+
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+
+      _requestStatus = await _requestRepo.createRescueRequest(
+        requestType: _selectedRequestType,
+        token: token!,
+      );
+
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }

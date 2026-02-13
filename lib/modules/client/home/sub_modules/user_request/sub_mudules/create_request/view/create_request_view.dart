@@ -1,4 +1,7 @@
+import 'package:car_e_rescue/core/routes/page_routes_name.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/create_request/view/first_page.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/create_request/view/second_page.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/create_request/view/third_page.dart';
 import 'package:car_e_rescue/modules/widgets/navigate_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -48,8 +51,8 @@ class _CreateRequestViewState extends State<CreateRequestView> {
                           setState(() => _currentPage = page),
                       children: [
                         FirstPage(vm: viewModel),
-                        const Center(child: Text("2nd Page")),
-                        const Center(child: Text("3rd Page")),
+                        SecondPage(vm: viewModel),
+                        ThirdPage(vm: viewModel),
                       ],
                     ),
                   ),
@@ -75,13 +78,16 @@ class _CreateRequestViewState extends State<CreateRequestView> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           TextButton(
+            style: ButtonStyle(
+              textStyle: WidgetStateProperty.all(TextStyle(color: AppColors.red)),
+            ),
             onPressed: _currentPage == 0
                 ? null
                 : () => _pageController.previousPage(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.ease,
                   ),
-            child: const Text("Back"),
+            child: Text("Back"),
           ),
           ElevatedButton(
             style: ButtonStyle(
@@ -99,9 +105,35 @@ class _CreateRequestViewState extends State<CreateRequestView> {
                           curve: Curves.ease,
                         );
                       }
+                    } else if (_currentPage == 1) {
+                      // Page 2: Check selection and finalize request
+                      // Since selectedRequestType has a default value, it is always "selected"
+                      bool apiSuccess = await vm.finalizeRequest();
+                      if (apiSuccess) {
+                        _pageController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.ease,
+                        );
+                      }
+
+                    }else if (_currentPage == 2) {
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        PageRoutesName.clientHome,
+                            (route) => false,
+                      );
                     }
                   },
-            child: const Text("Next"),
+            child: vm.isLoading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : Text(_currentPage == 2 ? "Finish" : "Next"),
           ),
         ],
       ),
