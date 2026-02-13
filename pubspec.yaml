@@ -25,6 +25,10 @@ dependencies:
   lottie: ^3.3.2
   dio: ^5.9.1
   auto_size_text: ^3.0.0
+  carousel_slider: ^5.1.2
+  geolocator: ^14.0.2
+  flutter_map: ^8.2.2
+  latlong2: ^0.9.1
 
 
 dev_dependencies:

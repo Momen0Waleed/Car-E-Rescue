@@ -18,6 +18,13 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
+
+    configurations.all {
+        resolutionStrategy {
+            force("androidx.core:core:1.13.1")
+            force("androidx.core:core-ktx:1.13.1")
+        }
+    }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
