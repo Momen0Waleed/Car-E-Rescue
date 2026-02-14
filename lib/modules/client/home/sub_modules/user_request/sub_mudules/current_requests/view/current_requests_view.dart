@@ -1,7 +1,6 @@
 import 'package:car_e_rescue/core/constants/images/images_dir.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
-import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/model/user_request_model.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/view_model/current_request_view_model.dart';
 import 'package:car_e_rescue/modules/widgets/custom_button.dart';
 import 'package:car_e_rescue/modules/widgets/navigate_back_button.dart';
@@ -168,8 +167,7 @@ Widget _buildRequestDetails(BuildContext context,CurrentRequestViewModel viewMod
               onTap: () async {
                 final confirm = await showEnsureDeletionDialog(context);
                 if (confirm == true) {
-                  bool success = await viewModel.deleteCurrentRequest();
-
+                  await viewModel.deleteCurrentRequest();
                   // if (success && context.mounted) {
                   //   3. Navigate back to Home or show success
                     // Navigator.of(context).pushReplacementNamed(PageRoutesName.clientHome);
