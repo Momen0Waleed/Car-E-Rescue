@@ -8,8 +8,10 @@ class CustomButton extends StatelessWidget {
     required this.color,
     required this.action,
     required this.text,
+    this.width,
   });
   final Color color;
+  final double? width;
   final Function()? action;
   final String text;
 
@@ -19,7 +21,7 @@ class CustomButton extends StatelessWidget {
     return Bounceable(
       onTap: action,
       child: Container(
-        width: double.infinity,
+        width: width ?? double.infinity,
         height: 50,
         decoration: BoxDecoration(
           color: color,
@@ -29,6 +31,7 @@ class CustomButton extends StatelessWidget {
         child: Center(
           child: Text(
             text,
+            textAlign: TextAlign.center,
             style: theme.textTheme.bodyLarge!.copyWith(
               color: color == AppColors.red ? AppColors.white : AppColors.red,
             fontWeight: FontWeight.bold

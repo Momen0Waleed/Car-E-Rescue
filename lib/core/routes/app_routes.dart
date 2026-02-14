@@ -49,6 +49,8 @@ abstract class AppRoutes {
         return _slideRoute(const CurrentRequestsView());
       case PageRoutesName.clientProfile:
         return _slideRoute(const ClientProfileView());
+        case PageRoutesName.clientCurrentRequest:
+        return _slideRoute(const CurrentRequestsView());
 
       default:
         return _slideRoute(const SplashScreen());

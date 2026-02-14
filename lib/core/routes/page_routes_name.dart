@@ -14,5 +14,6 @@ abstract class PageRoutesName{
   static const String availableMech = "/Available-Mech";
   static const String currentRequests = "/Current-Requests";
   static const String clientProfile = "/Client-Profile";
+  static const String clientCurrentRequest = "/Client-Current-Request";
 
 }

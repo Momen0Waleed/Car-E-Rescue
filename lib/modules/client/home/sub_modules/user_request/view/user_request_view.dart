@@ -129,7 +129,9 @@ class _UserRequestViewState extends State<UserRequestView> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Icon(Icons.list,color: AppColors.red,size: 40,),
+                          // Icon(Icons.list,color: AppColors.red,size: 40,),
+                          Image.asset(ImagesDir.currentRequestIcon,width: 50,height: 50),
+
                           Text("Current\nRequests",textAlign: TextAlign.center,style: theme.textTheme.bodyLarge!.copyWith(
                             color: AppColors.red,
                           ),),
