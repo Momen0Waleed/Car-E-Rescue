@@ -24,7 +24,7 @@ class _RequestHistoryViewState extends State<RequestHistoryView> {
             floatingActionButton: NavigateBackButton(),
             floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
             body: viewModel.isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? Center(child: CircularProgressIndicator(color: AppColors.red,))
                 : viewModel.historyRequests.isEmpty // Check for empty list
                 ? _buildEmptyState(context)
                 : _buildHistoryList(context, viewModel),

@@ -6,7 +6,9 @@ import 'package:car_e_rescue/modules/auth/sign_up/view/provider_sign_up_view.dar
 import 'package:car_e_rescue/modules/auth/user_type/view/user_type_screen.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_diagnose/view/user_diagnose_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_profile/view/client_profile_view.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/available_mech_view/model/mechanic_data_model.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/available_mech_view/view/available_mech_view.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/available_mech_view/view/mechanic_location_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/create_request/view/create_request_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/view/current_requests_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/request_history/view/request_history_view.dart';
@@ -47,8 +49,11 @@ abstract class AppRoutes {
         return _slideRoute(const AvailableMechView());
       case PageRoutesName.clientProfile:
         return _slideRoute(const ClientProfileView());
-        case PageRoutesName.clientCurrentRequest:
+      case PageRoutesName.clientCurrentRequest:
         return _slideRoute(const CurrentRequestsView());
+      case PageRoutesName.mechanicLocation:
+        final mechanic = settings.arguments as MechanicDataModel;
+        return _slideRoute(MechanicLocationView(mechanic: mechanic));
 
       default:
         return _slideRoute(const SplashScreen());
