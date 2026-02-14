@@ -27,7 +27,7 @@ class _CurrentRequestsViewState extends State<CurrentRequestsView> {
             floatingActionButton: NavigateBackButton(),
             floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
             body: viewModel.isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? Center(child: CircularProgressIndicator(color: AppColors.red,))
                 : viewModel.currentRequest == null
                 ? _buildEmptyState(context)
                 : _buildRequestDetails(context,viewModel),

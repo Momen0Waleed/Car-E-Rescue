@@ -59,11 +59,11 @@ class _FirstPageState extends State<FirstPage> {
             backgroundColor: AppColors.red,
             onPressed: widget.vm.requestLocation,
             child: widget.vm.isLoading
-                ? const SizedBox(
+                ? SizedBox(
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(
-                      color: Colors.white,
+                      color: AppColors.white,
                       strokeWidth: 2,
                     ),
                   )
