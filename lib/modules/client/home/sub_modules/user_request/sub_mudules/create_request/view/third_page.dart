@@ -1,4 +1,7 @@
+import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
+import 'package:car_e_rescue/core/routes/page_routes_name.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/create_request/view_model/create_request_view_model.dart';
+import 'package:car_e_rescue/modules/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
 class ThirdPage extends StatefulWidget {
@@ -23,6 +26,15 @@ class _ThirdPageState extends State<ThirdPage> {
             widget.vm.requestStatus ?? "Request Submitted",
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 20),
+          CustomButton(
+            width: MediaQuery.of(context).size.width / 1.5,
+            action: () => Navigator.of(
+              context,
+            ).pushReplacementNamed(PageRoutesName.clientCurrentRequest),
+            text: "Track your Request",
+            color: AppColors.red,
           ),
         ],
       ),

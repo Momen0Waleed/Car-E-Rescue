@@ -116,7 +116,7 @@ class _UserRequestViewState extends State<UserRequestView> {
                   flex: 2,
                   child: Bounceable(
                     onTap: (){
-                      Navigator.of(context).pushNamed(PageRoutesName.currentRequests);
+                      Navigator.of(context).pushNamed(PageRoutesName.clientCurrentRequest);
                     },
                     child: Container(
                       height: 125,

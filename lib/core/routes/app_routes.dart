@@ -45,8 +45,6 @@ abstract class AppRoutes {
         return _slideRoute(const RequestHistoryView());
       case PageRoutesName.availableMech:
         return _slideRoute(const AvailableMechView());
-      case PageRoutesName.currentRequests:
-        return _slideRoute(const CurrentRequestsView());
       case PageRoutesName.clientProfile:
         return _slideRoute(const ClientProfileView());
         case PageRoutesName.clientCurrentRequest:
