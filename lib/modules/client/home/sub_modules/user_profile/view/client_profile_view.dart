@@ -54,6 +54,11 @@ class _ClientProfileViewState extends State<ClientProfileView> {
         body: Consumer<UserProvider>(
           builder: (context, userProvider, child) {
             final user = userProvider.currentUser;
+
+            if (user == null) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
             return Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -71,7 +76,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                       ),
                       child: Center(
                         child: Text(
-                          "Role: ${user!.role}",
+                          "Role: ${user.role}",
                           textAlign: TextAlign.center,
                           style: theme.textTheme.bodyMedium!.copyWith(
                             color: AppColors.white,
