@@ -26,25 +26,25 @@ class RequestHistoryViewModel extends ChangeNotifier {
 
 
       ///For Testing UI
-//   Future<void> loadRequestHistory() async {
-//     isLoading = true;
-//     notifyListeners();
-//
-//     // Wait a moment to simulate network delay
-//     await Future.delayed(const Duration(seconds: 1));
-//
-//     // MOCK DATA: Create a list with 20 different requests to test scrolling
-//     historyRequests = List.generate(20, (index) => UserRequestModel(
-//       requestId: 100 + index,
-//       mechanicId: "uuid-$index",
-//       mechanicName: "Mechanic $index",
-//       status: index % 2 == 0 ? "Completed" : "Canceled",
-//       type: index == 0 ? "engine" : "tiers and wheels",
-//       createdAt: "2024-02-1${index}T10:00:00",
-//       completedAt: "2024-02-1${index}T11:00:00",
-//     ));
-//
-//     isLoading = false;
-//     notifyListeners();
-//   }
+  // Future<void> loadRequestHistory() async {
+  //   isLoading = true;
+  //   notifyListeners();
+  //
+  //   // Wait a moment to simulate network delay
+  //   await Future.delayed(const Duration(seconds: 1));
+  //
+  //   // MOCK DATA: Create a list with 20 different requests to test scrolling
+  //   historyRequests = List.generate(20, (index) => UserRequestModel(
+  //     requestId: 100 + index,
+  //     mechanicId: "uuid-$index",
+  //     mechanicName: "Mechanic $index",
+  //     status: index % 2 == 0 ? "Completed" : "Canceled",
+  //     type: index == 0 ? "engine" : "tiers and wheels",
+  //     createdAt: "2024-02-1${index}T10:00:00",
+  //     completedAt: "2024-02-1${index}T11:00:00",
+  //   ));
+  //
+  //   isLoading = false;
+  //   notifyListeners();
+  // }
 }

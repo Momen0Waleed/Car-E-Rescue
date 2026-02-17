@@ -38,7 +38,7 @@ class LoginViewModel extends ChangeNotifier {
         return PageRoutesName.clientHome;
       } else {
         await _repository.saveUserRoleLocally('provider');
-        return PageRoutesName.providerHome;
+        return PageRoutesName.mechanicHome;
       }
     } catch (e) {
       SnackbarService.showErrorNotification(e.toString().replaceAll("Exception: ", ""));

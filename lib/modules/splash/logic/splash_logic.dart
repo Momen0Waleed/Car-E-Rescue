@@ -29,7 +29,7 @@ class SplashLogic {
         // Navigate based on the role returned by your API
         return (role == 'user' || role == 'client')
             ? PageRoutesName.clientHome
-            : PageRoutesName.providerHome;
+            : PageRoutesName.mechanicHome;
 
       } catch (e) {
         // If the token is expired or the fetch fails, send to login

@@ -14,7 +14,10 @@ import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mu
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/request_history/view/request_history_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/view/user_request_view.dart';
 import 'package:car_e_rescue/modules/client/home/view/client_home_view.dart';
-import 'package:car_e_rescue/modules/mechanic/home/view/provider_home_view.dart';
+import 'package:car_e_rescue/modules/mechanic/home/sub_modules/available_requests/view/mechanic_available_requests_view.dart';
+import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_profile/view/mechanic_profile_view.dart';
+import 'package:car_e_rescue/modules/mechanic/home/sub_modules/workshop_location/view/workshop_location_view.dart';
+import 'package:car_e_rescue/modules/mechanic/home/view/mechanic_home_view.dart';
 import 'package:car_e_rescue/modules/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -33,8 +36,8 @@ abstract class AppRoutes {
         return _slideRoute(const ProviderSignUpView());
       case PageRoutesName.clientHome:
         return _slideRoute(ClientHomeView());
-      case PageRoutesName.providerHome:
-        return _slideRoute(ProviderHomeView());
+      case PageRoutesName.mechanicHome:
+        return _slideRoute(MechanicHomeView());
       case PageRoutesName.forgetPassword:
         return _slideRoute(const ForgetPasswordView());
       case PageRoutesName.userRequest:
@@ -54,6 +57,14 @@ abstract class AppRoutes {
       case PageRoutesName.mechanicLocation:
         final mechanic = settings.arguments as MechanicDataModel;
         return _slideRoute(MechanicLocationView(mechanic: mechanic));
+
+      case PageRoutesName.mechanicProfile:
+        return _slideRoute(const MechanicProfileView());
+        case PageRoutesName.mechanicAvailableRequests:
+        return _slideRoute(const MechanicAvailableRequestsView());
+      case PageRoutesName.workshopLocation:
+        return _slideRoute(const WorkshopLocationView());
+
 
       default:
         return _slideRoute(const SplashScreen());

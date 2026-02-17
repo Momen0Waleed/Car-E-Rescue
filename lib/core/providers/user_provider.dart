@@ -13,7 +13,6 @@ class UserProvider extends ChangeNotifier {
 
   void updateUserInfo({String? name, String? phone, String? email, String? carType, String? carModel}) {
     if (_currentUser != null) {
-      // Assign to the private variable _currentUser, not the getter
       _currentUser = _currentUser!.copyWith(
         name: name ?? _currentUser!.name,
         phone: phone ?? _currentUser!.phone,

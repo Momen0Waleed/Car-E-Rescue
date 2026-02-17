@@ -18,9 +18,11 @@ class ClientHomeView extends StatelessWidget {
         centerTitle: false,
         automaticallyImplyLeading: false,
         backgroundColor: AppColors.red,
-        title: Text(
-          "Welcome, ${user?.name ?? 'Client'}",
-          style: TextStyle(color: AppColors.white),
+        title: FittedBox(
+          child: Text(
+            "Welcome, ${user?.name ?? 'Client'}",
+            style: TextStyle(color: AppColors.white),
+          ),
         ),
         actionsPadding: EdgeInsetsGeometry.all(0),
         actions: [

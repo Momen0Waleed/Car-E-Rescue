@@ -6,7 +6,7 @@ abstract class PageRoutesName{
   static const String providerSignUp = "/Provider-Sign-Up";
   static const String forgetPassword = "/Forget-Password";
   static const String clientHome = "/Client-Home";
-  static const String providerHome = "/Provider-Home";
+  static const String mechanicHome = "/Mechanic-Home";
   static const String userRequest = "/User-Request";
   static const String userDiagnose = "/User-Diagnose";
   static const String createRequest = "/Create-Request";
@@ -16,5 +16,8 @@ abstract class PageRoutesName{
   static const String clientProfile = "/Client-Profile";
   static const String clientCurrentRequest = "/Client-Current-Request";
   static const String mechanicLocation = "/Mechanic-Location";
+  static const String mechanicProfile = "/Mechanic-Profile";
+  static const String mechanicAvailableRequests = "/Mechanic-Available-Requests";
+  static const String workshopLocation = "/Mechanic-WorkShop-Location";
 
 }
