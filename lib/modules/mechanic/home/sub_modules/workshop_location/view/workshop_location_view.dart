@@ -53,8 +53,8 @@ class WorkshopLocationView extends StatelessWidget {
                     backgroundColor: AppColors.red,
                     onPressed: vm.requestLocation,
                     child: vm.isLoading
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Icon(Icons.my_location, color: Colors.white),
+                        ? CircularProgressIndicator(color: AppColors.white)
+                        : Icon(Icons.my_location, color: AppColors.white),
                   ),
                 ),
                 // Confirm Button

@@ -59,7 +59,7 @@ abstract class AppRoutes {
         return _slideRoute(MechanicLocationView(mechanic: mechanic));
 
       case PageRoutesName.mechanicProfile:
-        return _slideRoute(const MechanicProfileView());
+        return _slideRoute(MechanicProfileView());
         case PageRoutesName.mechanicAvailableRequests:
         return _slideRoute(const MechanicAvailableRequestsView());
       case PageRoutesName.workshopLocation:

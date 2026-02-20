@@ -18,10 +18,30 @@ class MechanicHomeView extends StatefulWidget {
 class _MechanicHomeViewState extends State<MechanicHomeView> {
   bool available = false;
   bool workShopLocationWasSet = false;
+
   @override
   void initState() {
     super.initState();
-    _checkWorkshopStatus();
+    _initializeMechanicHome();
+  }
+
+  Future<void> _initializeMechanicHome() async {
+    await _checkWorkshopStatus();
+
+    if (!mounted) return;
+
+    if (!workShopLocationWasSet) {
+      final confirm = await setLocationDialog(context);
+
+      if (confirm == true && mounted) {
+        final result = await Navigator.of(context).pushNamed(PageRoutesName.workshopLocation);
+        if (result == true) {
+          setState(() => workShopLocationWasSet = true);
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('workShopLocationWasSet', true);
+        }
+      }
+    }
   }
 
   Future<void> _checkWorkshopStatus() async {
@@ -113,19 +133,12 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
                               return;
                             }
 
-                            // Refresh status from prefs
-                            final prefs = await SharedPreferences.getInstance();
-                            workShopLocationWasSet = prefs.getBool('workShopLocationWasSet') ?? false;
-
-                            // Inside "Available Requests" onTap:
                             if (workShopLocationWasSet) {
                               Navigator.of(context).pushNamed(PageRoutesName.mechanicAvailableRequests);
                             } else {
-                              // Use workshopLocation to avoid the MechanicDataModel crash
-                              final result = await Navigator.of(context).pushNamed(PageRoutesName.workshopLocation);
-                              if (result == true) {
-                                setState(() => workShopLocationWasSet = true);
-                              }
+                              SnackbarService.showErrorNotification("Set your Workshop Location to View Requests");
+                              Duration(seconds: 2);
+                              Navigator.of(context).pushNamed(PageRoutesName.mechanicProfile);
                             }
                           },
                           child: Container(
@@ -156,4 +169,44 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
       ),
     );
   }
+}
+
+
+Future<bool?> setLocationDialog(BuildContext context) {
+  return showDialog<bool>(
+    context: context,
+    barrierDismissible: true,
+    builder: (context) {
+      var theme = Theme.of(context);
+      return AlertDialog(
+        backgroundColor: AppColors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text("Workshop Location", style: theme.textTheme.titleMedium),
+        content: Text(
+          "Do you want to set the workshop location now?",
+          style: theme.textTheme.bodyMedium,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false); // Cancel
+            },
+            child: Text("Not Now", style: theme.textTheme.bodyMedium),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.red),
+            onPressed: () {
+              Navigator.of(context).pop(true); // Confirm
+            },
+            child: Text(
+              "Set",
+              style: theme.textTheme.bodyMedium!.copyWith(
+                color: AppColors.white,
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+  );
 }

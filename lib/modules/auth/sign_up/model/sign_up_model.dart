@@ -30,10 +30,10 @@ class UserModel {
       name: map['name'] ?? '',
       role: map['role'] ?? '',
       phone: map['phone'] ?? '',
-      workshopName: map['workshop_name'],
-      experienceYears: map['experience_years'],
-      carType: map['car_type'],
-      carModel: map['car_model'],
+      workshopName: map['workshop name'],
+      experienceYears: map['experince years'],
+      carType: map['car type'],
+      carModel: map['car model'],
     );
   }
 
@@ -43,6 +43,8 @@ class UserModel {
     String? phone,
     String? carType,
     String? carModel,
+    String? workshopName,
+    int? experienceYears,
     String? role,
   }) {
     return UserModel(
@@ -52,19 +54,25 @@ class UserModel {
       phone: phone ?? this.phone,
       carType: carType ?? this.carType,
       carModel: carModel ?? this.carModel,
+      workshopName: workshopName ?? this.workshopName,
+      experienceYears: experienceYears ?? this.experienceYears,
       role: role ?? this.role,
     );
   }
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    final data = json['user'] ?? json;
+
     return UserModel(
-      id: json['id']?.toString() ?? '',
-      email: json['email'] ?? '',
-      name: json['name'] ?? '',
-      phone: json['phone'] ?? '',
-      carType: json['car_type'] ?? '',
-      carModel: json['car_model'] ?? '',
-      role: json['role'] ?? 'client',
+      id: data['id']?.toString() ?? '',
+      email: data['email'] ?? '',
+      name: data['name'] ?? '',
+      phone: data['phone'] ?? '',
+      role: data['role'] ?? 'client',
+      workshopName: data['workshop name'],
+      experienceYears: data['experince years'],
+      carType: data['car type'],
+      carModel: data['car model'],
     );
   }
 }

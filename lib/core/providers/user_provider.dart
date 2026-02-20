@@ -24,6 +24,25 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+  void updateMechanicInfo({
+    String? name,
+    String? phone,
+    String? email,
+    String? workshopName,
+    int? experienceYears
+  }) {
+    if (_currentUser != null) {
+      _currentUser = _currentUser!.copyWith(
+        name: name,
+        phone: phone,
+        email: email,
+        workshopName: workshopName,
+        experienceYears: experienceYears,
+      );
+      notifyListeners();
+    }
+  }
+
   void clearUser() {
     _currentUser = null;
     notifyListeners();
