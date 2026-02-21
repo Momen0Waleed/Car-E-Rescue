@@ -39,110 +39,107 @@ class _MechanicSkillsViewState extends State<MechanicSkillsView> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    return ChangeNotifierProvider(
-      create: (_) => MechanicSkillsViewModel(),
-      child: Scaffold(
-        floatingActionButton: const NavigateBackButton(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
-        body: Consumer<MechanicSkillsViewModel>(
-          builder: (context, vm, child) {
-            if (vm.isLoading && vm.currentSkills.isEmpty) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            return Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16, top: 100, bottom: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Your Current Skills:",
-                    style: theme.textTheme.bodyLarge,
-                  ),
-                  const SizedBox(height: 10),
-                  Wrap(
-                    spacing: 8,
-                    children: vm.currentSkills
-                        .map(
-                          (skill) => Chip(
-                        backgroundColor: AppColors.pink,
-                        label: Text(skill),
-                        onDeleted: () => vm.removeSkill(skill),
-                      ),
-                    )
-                        .toList(),
-                  ),
-                  const SizedBox(height: 20),
+    return Scaffold(
+      floatingActionButton: const NavigateBackButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+      body: Consumer<MechanicSkillsViewModel>(
+        builder: (context, vm, child) {
+          if (vm.isLoading && vm.currentSkills.isEmpty) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16, top: 100, bottom: 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Your Current Skills:",
+                  style: theme.textTheme.bodyLarge,
+                ),
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 8,
+                  children: vm.currentSkills
+                      .map(
+                        (skill) => Chip(
+                      backgroundColor: AppColors.pink,
+                      label: Text(skill),
+                      onDeleted: () => vm.removeSkill(skill),
+                    ),
+                  )
+                      .toList(),
+                ),
+                const SizedBox(height: 20),
 
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: AppColors.white,
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(color: Colors.grey.shade300),
-                    ),
-                    child: DropdownButton<String>(
-                      hint: Text("Select a skill to add", style: theme.textTheme.bodyMedium),
-                      isExpanded: true,
-                      underline: const SizedBox(),
-                      dropdownColor: AppColors.white,
-                      borderRadius: BorderRadius.circular(15),
-                      items: requestTypes.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (newValue) {
-                        if (newValue != null) {
-                          vm.addSkill(newValue);
-                        }
-                      },
-                    ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.grey.shade300),
                   ),
-
-                  const Spacer(),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.amber.shade50,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.warning_amber_rounded,
-                          color: Colors.orange,
+                  child: DropdownButton<String>(
+                    hint: Text("Select a skill to add", style: theme.textTheme.bodyMedium),
+                    isExpanded: true,
+                    underline: const SizedBox(),
+                    dropdownColor: AppColors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    items: requestTypes.map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: theme.textTheme.bodyMedium,
                         ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            "Note: Skills cannot be changed easily once set. Please ensure accuracy.",
-                            style: TextStyle(
-                              color: Colors.orange.shade900,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  CustomButton(
-                    text: "Update Skills",
-                    color: AppColors.red,
-                    action: () async {
-                      bool success = await vm.saveSkills();
-                      if (success && mounted) Navigator.pop(context);
+                      );
+                    }).toList(),
+                    onChanged: (newValue) {
+                      if (newValue != null) {
+                        vm.addSkill(newValue);
+                      }
                     },
                   ),
-                ],
-              ),
-            );
-          },
-        ),
+                ),
+
+                const Spacer(),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.shade50,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.warning_amber_rounded,
+                        color: Colors.orange,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          "Note: Skills cannot be changed easily once set. Please ensure accuracy.",
+                          style: TextStyle(
+                            color: Colors.orange.shade900,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                CustomButton(
+                  text: "Update Skills",
+                  color: AppColors.red,
+                  action: () async {
+                    bool success = await vm.saveSkills();
+                    if (success && mounted) Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

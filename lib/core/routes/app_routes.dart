@@ -17,10 +17,12 @@ import 'package:car_e_rescue/modules/client/home/view/client_home_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/available_requests/view/mechanic_available_requests_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_profile/view/mechanic_profile_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_skills/view/mechanic_skills_view.dart';
+import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_skills/view_model/mechanic_skills_view_model.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/workshop_location/view/workshop_location_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/view/mechanic_home_view.dart';
 import 'package:car_e_rescue/modules/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 abstract class AppRoutes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -38,7 +40,12 @@ abstract class AppRoutes {
       case PageRoutesName.clientHome:
         return _slideRoute(ClientHomeView());
       case PageRoutesName.mechanicHome:
-        return _slideRoute(MechanicHomeView());
+        return _slideRoute(
+          ChangeNotifierProvider(
+            create: (_) => MechanicSkillsViewModel(),
+            child: const MechanicHomeView(),
+          ),
+        );
       case PageRoutesName.forgetPassword:
         return _slideRoute(const ForgetPasswordView());
       case PageRoutesName.userRequest:
@@ -61,13 +68,17 @@ abstract class AppRoutes {
 
       case PageRoutesName.mechanicProfile:
         return _slideRoute(MechanicProfileView());
-        case PageRoutesName.mechanicAvailableRequests:
+      case PageRoutesName.mechanicAvailableRequests:
         return _slideRoute(const MechanicAvailableRequestsView());
       case PageRoutesName.workshopLocation:
         return _slideRoute(const WorkshopLocationView());
-        case PageRoutesName.mechanicSkills:
-        return _slideRoute(const MechanicSkillsView());
-
+      case PageRoutesName.mechanicSkills:
+        return _slideRoute(
+          ChangeNotifierProvider(
+            create: (_) => MechanicSkillsViewModel(),
+            child: const MechanicSkillsView(),
+          ),
+        );
 
       default:
         return _slideRoute(const SplashScreen());

@@ -26,6 +26,8 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
     _initializeMechanicHome();
   }
 
+  // Inside mechanic_home_view.dart -> _initializeMechanicHome()
+
   Future<void> _initializeMechanicHome() async {
     await _checkWorkshopStatus();
     if (!mounted) return;
@@ -42,9 +44,9 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
     bool skillsExist = await viewModel.hasSkills();
 
     if (!skillsExist && mounted) {
-      final goToProfile = await setSkillsDialog(context);
-      if (goToProfile == true && mounted) {
-        Navigator.of(context).pushNamed(PageRoutesName.mechanicProfile);
+      final goToSkills = await setSkillsDialog(context);
+      if (goToSkills == true && mounted) {
+        Navigator.of(context).pushNamed(PageRoutesName.mechanicSkills);
       }
     }
   }

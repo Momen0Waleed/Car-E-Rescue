@@ -12,7 +12,7 @@ class MechanicSkillsRepo {
 
       final response = await _dio.get(
         'mechanics/skills/me',
-        options: Options(headers: {'Authorization': 'Bearer $token'}),
+        options: Options(headers: {'Authorization': 'Bearer $token'},listFormat: ListFormat.multiCompatible,),
       );
 
       if (response.statusCode == 200) {
@@ -31,8 +31,11 @@ class MechanicSkillsRepo {
 
       await _dio.post(
         'mechanics/skills/me',
-        data: {'skills': skills},
-        options: Options(headers: {'Authorization': 'Bearer $token'}),
+        queryParameters: {'skills_in': skills},
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'},
+          listFormat: ListFormat.multiCompatible,
+        ),
       );
     } on DioException catch (e) {
       throw e.response?.data['detail'] ?? "Failed to update skills";
