@@ -2,6 +2,8 @@ import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/core/providers/user_provider.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
+import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_skills/view/mechanic_skills_view.dart';
+import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_skills/view_model/mechanic_skills_view_model.dart';
 import 'package:car_e_rescue/modules/mechanic/home/view_model/mechanic_home_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
@@ -27,19 +29,23 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
 
   Future<void> _initializeMechanicHome() async {
     await _checkWorkshopStatus();
-
     if (!mounted) return;
 
     if (!workShopLocationWasSet) {
       final confirm = await setLocationDialog(context);
-
       if (confirm == true && mounted) {
-        final result = await Navigator.of(context).pushNamed(PageRoutesName.workshopLocation);
-        if (result == true) {
-          setState(() => workShopLocationWasSet = true);
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setBool('workShopLocationWasSet', true);
-        }
+        await Navigator.of(context).pushNamed(PageRoutesName.workshopLocation);
+        _checkWorkshopStatus();
+      }
+    }
+
+    final viewModel = Provider.of<MechanicSkillsViewModel>(context, listen: false);
+    bool skillsExist = await viewModel.hasSkills();
+
+    if (!skillsExist && mounted) {
+      final goToProfile = await setSkillsDialog(context);
+      if (goToProfile == true && mounted) {
+        Navigator.of(context).pushNamed(PageRoutesName.mechanicProfile);
       }
     }
   }
@@ -204,6 +210,27 @@ Future<bool?> setLocationDialog(BuildContext context) {
                 color: AppColors.white,
               ),
             ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Future<bool?> setSkillsDialog(BuildContext context) {
+  return showDialog<bool>(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      var theme = Theme.of(context);
+      return AlertDialog(
+        title: Text("Skills Missing", style: theme.textTheme.titleMedium),
+        content: Text("You need to set your skills before receiving requests."),
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.red),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text("Set Now", style: TextStyle(color: AppColors.white)),
           ),
         ],
       );

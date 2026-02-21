@@ -105,7 +105,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                             ),
                           ),
                           Icon(
-                            Icons.keyboard_arrow_down_rounded,
+                            !editUserNameFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
                             color: AppColors.red,
                             size: 30,
                           ),
@@ -135,7 +135,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                             ),
                           ),
                           Icon(
-                            Icons.keyboard_arrow_down_rounded,
+                            !editUserEmailFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
                             color: AppColors.red,
                             size: 30,
                           ),
@@ -165,7 +165,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                             ),
                           ),
                           Icon(
-                            Icons.keyboard_arrow_down_rounded,
+                            !editUserPhoneFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
                             color: AppColors.red,
                             size: 30,
                           ),
@@ -199,7 +199,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                             ),
                           ),
                           Icon(
-                            Icons.keyboard_arrow_down_rounded,
+                            !editUserCarDataFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
                             color: AppColors.red,
                             size: 30,
                           ),

@@ -19,5 +19,6 @@ abstract class PageRoutesName{
   static const String mechanicProfile = "/Mechanic-Profile";
   static const String mechanicAvailableRequests = "/Mechanic-Available-Requests";
   static const String workshopLocation = "/Mechanic-WorkShop-Location";
+  static const String mechanicSkills = "/Mechanic-Skills";
 
 }
