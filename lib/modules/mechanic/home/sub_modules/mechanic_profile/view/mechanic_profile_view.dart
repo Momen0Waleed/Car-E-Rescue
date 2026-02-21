@@ -64,7 +64,7 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
 
             return Center(
               child: Padding(
-                padding: const EdgeInsets.only(left: 16.0,right: 16,top:20),
+                padding: const EdgeInsets.only(left: 16,right: 16,top:20),
                 child: SingleChildScrollView(
                   child: Column(
                     spacing: 10,
@@ -88,166 +88,199 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Bounceable(
-                        onTap: () {
-                          editUserNameFlag = !editUserNameFlag;
-                          setState(() {});
-                        },
-                        child: Row(
+                      // SizedBox(height: 5),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 5,vertical: 16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: AppColors.pink
+                        ),
+                        child: Column(
                           spacing: 10,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.person_rounded,
-                              color: AppColors.red,
-                              size: 30,
-                            ),
-                            Expanded(
-                              child: Text(
-                                "Edit Your Name",
-                                style: theme.textTheme.bodyMedium,
+                            Bounceable(
+                              onTap: () {
+                                editUserNameFlag = !editUserNameFlag;
+                                setState(() {});
+                              },
+                              child: Row(
+                                spacing: 10,
+                                children: [
+                                  Icon(
+                                    Icons.person_rounded,
+                                    color: AppColors.red,
+                                    size: 30,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      "Edit Your Name",
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                  ),
+                                  Icon(
+                                    !editUserNameFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
+                                    color: AppColors.red,
+                                    size: 30,
+                                  ),
+                                ],
                               ),
                             ),
-                            Icon(
-                              !editUserNameFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
-                              color: AppColors.red,
-                              size: 30,
+                            if (editUserNameFlag)
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                child: CustomTextField(
+                                  title: user.name,
+                                  controller: nameController,
+                                  validator: AppValidators.validateEmptyField,
+                                ),
+                              ),
+                            Divider(color: AppColors.grey,thickness: 0.5,indent: 30,endIndent: 30,),
+                            Bounceable(
+                              onTap: () {
+                                editUserEmailFlag = !editUserEmailFlag;
+                                setState(() {});
+                              },
+                              child: Row(
+                                spacing: 10,
+                                children: [
+                                  Icon(Icons.mail, color: AppColors.red, size: 30),
+                                  Expanded(
+                                    child: Text(
+                                      "Edit Your Email",
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                  ),
+                                  Icon(
+                                    !editUserEmailFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
+                                    color: AppColors.red,
+                                    size: 30,
+                                  ),
+                                ],
+                              ),
                             ),
+                            if (editUserEmailFlag)
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                child: CustomTextField(
+                                  title: user.email,
+                                  controller: emailController,
+                                  validator: AppValidators.validateEmail,
+                                ),
+                              ),
+                            Divider(color: AppColors.grey,thickness: 0.5,indent: 30,endIndent: 30,),
+                            Bounceable(
+                              onTap: () {
+                                editUserPhoneFlag = !editUserPhoneFlag;
+                                setState(() {});
+                              },
+                              child: Row(
+                                spacing: 10,
+                                children: [
+                                  Icon(Icons.phone, color: AppColors.red, size: 30),
+                                  Expanded(
+                                    child: Text(
+                                      "Edit Your Phone",
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                  ),
+                                  Icon(
+                                    !editUserPhoneFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
+                                    color: AppColors.red,
+                                    size: 30,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (editUserPhoneFlag)
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                child: CustomTextField(
+                                  title: user.phone,
+                                  controller: phoneController,
+                                  validator: AppValidators.validateEgyptianPhone,
+                                ),
+                              ),
+                            Divider(color: AppColors.grey,thickness: 0.5,indent: 30,endIndent: 30,),
+                            Bounceable(
+                              onTap: () {
+                                editWorkshopLocationFlag = !editWorkshopLocationFlag;
+                                setState(() {});
+                              },
+                              child: Row(
+                                spacing: 10,
+                                children: [
+                                  Icon(
+                                    Icons.home_rounded,
+                                    color: AppColors.red,
+                                    size: 30,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      "Edit Your Workshop Name",
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                  ),
+                                  Icon(
+                                    !editWorkshopLocationFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
+                                    color: AppColors.red,
+                                    size: 30,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (editWorkshopLocationFlag)
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                child: CustomTextField(
+                                  title: user.workshopName ?? "Workshop Name",
+                                  controller: workshopNameController,
+                                  validator: AppValidators.validateEmptyField,
+                                ),
+                              ),
+                            Divider(color: AppColors.grey,thickness: 0.5,indent: 30,endIndent: 30,),
+                            Bounceable(
+                              onTap: () {
+                                editExperienceYearsFlag = !editExperienceYearsFlag;
+                                setState(() {});
+                              },
+                              child: Row(
+                                spacing: 10,
+                                children: [
+                                  Icon(
+                                    Icons.stars,
+                                    color: AppColors.red,
+                                    size: 30,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      "Edit Your Experience Years",
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                  ),
+                                  Icon(
+                                    !editExperienceYearsFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
+                                    color: AppColors.red,
+                                    size: 30,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (editExperienceYearsFlag)
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                child: CustomTextField(
+                                  title: user.experienceYears?.toString() ?? "0",
+                                  controller: experienceYearsController,
+                                  keyboardType: TextInputType.number,
+                                  validator: AppValidators.validateEmptyField,
+                                ),
+                              ),
                           ],
                         ),
                       ),
-                      if (editUserNameFlag)
-                        CustomTextField(
-                          title: user.name,
-                          controller: nameController,
-                          validator: AppValidators.validateEmptyField,
-                        ),
-                      Bounceable(
-                        onTap: () {
-                          editUserEmailFlag = !editUserEmailFlag;
-                          setState(() {});
-                        },
-                        child: Row(
-                          spacing: 10,
-                          children: [
-                            Icon(Icons.mail, color: AppColors.red, size: 30),
-                            Expanded(
-                              child: Text(
-                                "Edit Your Email",
-                                style: theme.textTheme.bodyMedium,
-                              ),
-                            ),
-                            Icon(
-                              !editUserEmailFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
-                              color: AppColors.red,
-                              size: 30,
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (editUserEmailFlag)
-                        CustomTextField(
-                          title: user.email,
-                          controller: emailController,
-                          validator: AppValidators.validateEmail,
-                        ),
-                      Bounceable(
-                        onTap: () {
-                          editUserPhoneFlag = !editUserPhoneFlag;
-                          setState(() {});
-                        },
-                        child: Row(
-                          spacing: 10,
-                          children: [
-                            Icon(Icons.phone, color: AppColors.red, size: 30),
-                            Expanded(
-                              child: Text(
-                                "Edit Your Phone",
-                                style: theme.textTheme.bodyMedium,
-                              ),
-                            ),
-                            Icon(
-                              !editUserPhoneFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
-                              color: AppColors.red,
-                              size: 30,
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (editUserPhoneFlag)
-                        CustomTextField(
-                          title: user.phone,
-                          controller: phoneController,
-                          validator: AppValidators.validateEgyptianPhone,
-                        ),
-                      Bounceable(
-                        onTap: () {
-                          editWorkshopLocationFlag = !editWorkshopLocationFlag;
-                          setState(() {});
-                        },
-                        child: Row(
-                          spacing: 10,
-                          children: [
-                            Icon(
-                              Icons.home_rounded,
-                              color: AppColors.red,
-                              size: 30,
-                            ),
-                            Expanded(
-                              child: Text(
-                                "Edit Your Workshop Name",
-                                style: theme.textTheme.bodyMedium,
-                              ),
-                            ),
-                            Icon(
-                              !editWorkshopLocationFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
-                              color: AppColors.red,
-                              size: 30,
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (editWorkshopLocationFlag)
-                        CustomTextField(
-                          title: user.workshopName ?? "Workshop Name",
-                          controller: workshopNameController,
-                          validator: AppValidators.validateEmptyField,
-                        ),
-                      Bounceable(
-                        onTap: () {
-                          editExperienceYearsFlag = !editExperienceYearsFlag;
-                          setState(() {});
-                        },
-                        child: Row(
-                          spacing: 10,
-                          children: [
-                            Icon(
-                              Icons.stars,
-                              color: AppColors.red,
-                              size: 30,
-                            ),
-                            Expanded(
-                              child: Text(
-                                "Edit Your Experience Years",
-                                style: theme.textTheme.bodyMedium,
-                              ),
-                            ),
-                            Icon(
-                              !editExperienceYearsFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
-                              color: AppColors.red,
-                              size: 30,
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (editExperienceYearsFlag)
-                        CustomTextField(
-                          title: user.experienceYears?.toString() ?? "0",
-                          controller: experienceYearsController,
-                          keyboardType: TextInputType.number,
-                          validator: AppValidators.validateEmptyField,
-                        ),
-                      SizedBox(height: 20),
+
                       CustomButton(
                         color: AppColors.red,
                         action: () async {
@@ -372,6 +405,7 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
                         },
                         text: "Logout",
                       ),
+                      SizedBox(height: 20,)
                     ],
                   ),
                 ),

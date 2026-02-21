@@ -2,7 +2,6 @@ import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/core/providers/user_provider.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
-import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_skills/view/mechanic_skills_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_skills/view_model/mechanic_skills_view_model.dart';
 import 'package:car_e_rescue/modules/mechanic/home/view_model/mechanic_home_view_model.dart';
 import 'package:flutter/material.dart';
