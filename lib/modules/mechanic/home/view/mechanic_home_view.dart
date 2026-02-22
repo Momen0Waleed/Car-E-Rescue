@@ -6,7 +6,7 @@ import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_skills/v
 import 'package:car_e_rescue/modules/mechanic/home/view_model/mechanic_home_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
-import 'package:provider/provider.dart' show Provider, Consumer, ChangeNotifierProvider;
+import 'package:provider/provider.dart' show Provider, Consumer, ReadContext, ChangeNotifierProvider;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MechanicHomeView extends StatefulWidget {
@@ -17,16 +17,19 @@ class MechanicHomeView extends StatefulWidget {
 }
 
 class _MechanicHomeViewState extends State<MechanicHomeView> {
-  bool available = false;
   bool workShopLocationWasSet = false;
 
   @override
   void initState() {
     super.initState();
-    _initializeMechanicHome();
+    // Fetch profile data on load
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<MechanicHomeViewModel>().getMechanicProfile().then((_) {
+        _initializeMechanicHome();
+      });
+    });
   }
 
-  // Inside mechanic_home_view.dart -> _initializeMechanicHome()
 
   Future<void> _initializeMechanicHome() async {
     await _checkWorkshopStatus();
@@ -63,117 +66,125 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
     final user = Provider.of<UserProvider>(context).currentUser;
     var theme = Theme.of(context);
     return ChangeNotifierProvider(
-      create: (_) => MechanicHomeViewModel() ,
-      child: Consumer<MechanicHomeViewModel>(
-        builder: ( context,  viewModel,  child) {
-          return Scaffold(
-            appBar: AppBar(
-              centerTitle: false,
-              automaticallyImplyLeading: false,
-              backgroundColor: AppColors.red,
-              title: FittedBox(
-                child: Text(
-                  "Welcome, ${user?.name ?? 'Mechanic'}",
-                  style: TextStyle(color: AppColors.white),
-                ),
-              ),
-              actionsPadding: EdgeInsetsGeometry.all(0),
-              actions: [
-                Bounceable(
-                  scaleFactor: 0.7,
-                  onTap: () {
-                    Navigator.of(context).pushNamed(PageRoutesName.mechanicProfile);
-                  },
-                  child: Icon(Icons.person_sharp, size: 35, color: AppColors.white),
-                ),
-                SizedBox(width: 20),
-              ],
-            ),
-            body: Container(
-              color: AppColors.red,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
+      create: (_) => MechanicHomeViewModel(),
+      builder: (context,child) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final vm = Provider.of<MechanicHomeViewModel>(context, listen: false);
+          if (vm.mechanicProfile == null && !vm.isLoading) {
+            vm.getMechanicProfile().then((_) => _initializeMechanicHome());
+          }
+        });
+        return Consumer<MechanicHomeViewModel>(
+          builder: ( context,  viewModel,  child) {
+            bool isAvailable = viewModel.mechanicProfile?.available ?? false;
+            return Scaffold(
+              appBar: AppBar(
+                centerTitle: false,
+                automaticallyImplyLeading: false,
+                backgroundColor: AppColors.red,
+                title: FittedBox(
+                  child: Text(
+                    "Welcome, ${user?.name ?? 'Mechanic'}",
+                    style: TextStyle(color: AppColors.white),
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: SingleChildScrollView(
-                    physics: BouncingScrollPhysics(),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ///Switch
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text("Available: ", style: theme.textTheme.bodyLarge),
-                            Switch(
-                              value: available,
-                              activeThumbColor: AppColors.green,
-                              onChanged: (bool value) async{
-                                bool success = await viewModel.toggleAvailability(value);
-                                if (success) {
-                                  setState(() {
-                                    available = value;
-                                  });
-                                } else {
-                                  SnackbarService.showErrorNotification("Failed to update status");
-                                }
-                              },
-                            ),
-                          ],
-                        ),
+                actionsPadding: EdgeInsetsGeometry.all(0),
+                actions: [
+                  Bounceable(
+                    scaleFactor: 0.7,
+                    onTap: () {
+                      Navigator.of(context).pushNamed(PageRoutesName.mechanicProfile);
+                    },
+                    child: Icon(Icons.person_sharp, size: 35, color: AppColors.white),
+                  ),
+                  SizedBox(width: 20),
+                ],
+              ),
+              body: Container(
+                color: AppColors.red,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: SingleChildScrollView(
+                      physics: BouncingScrollPhysics(),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ///Switch
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("Available: ", style: theme.textTheme.bodyLarge),
+                              Switch(
+                                value: isAvailable,
+                                activeThumbColor: AppColors.green,
+                                onChanged: (bool value) async {
+                                  bool success = await viewModel.toggleAvailability(value);
+                                  if (success) {
+                                    viewModel.getMechanicProfile();
+                                  } else {
+                                    SnackbarService.showErrorNotification("Failed to update status");
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
 
-                        SizedBox(height: 20),
-                        Bounceable(
-                          duration: Duration(milliseconds: 400),
-                          scaleFactor: 0.8,
-                          onTap: () async {
-                            if (available == false) {
-                              SnackbarService.showErrorNotification("Be Available to View Requests");
-                              return;
-                            }
+                          SizedBox(height: 20),
+                          Bounceable(
+                            duration: Duration(milliseconds: 400),
+                            scaleFactor: 0.8,
+                            onTap: () async {
+                              if (isAvailable == false) {
+                                SnackbarService.showErrorNotification("Be Available to View Requests");
+                                return;
+                              }
 
-                            if (workShopLocationWasSet) {
-                              Navigator.of(context).pushNamed(PageRoutesName.mechanicAvailableRequests);
-                            } else {
-                              SnackbarService.showErrorNotification("Set your Workshop Location to View Requests");
-                              Duration(seconds: 2);
-                              Navigator.of(context).pushNamed(PageRoutesName.mechanicProfile);
-                            }
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            height: 150,
-                            decoration: BoxDecoration(
-                              color: AppColors.red,
-                              borderRadius: BorderRadius.circular(18),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Available Requests",
-                                style: theme.textTheme.titleLarge!.copyWith(
-                                  color: AppColors.white,
+                              if (workShopLocationWasSet) {
+                                Navigator.of(context).pushNamed(PageRoutesName.mechanicAvailableRequests);
+                              } else {
+                                SnackbarService.showErrorNotification("Set your Workshop Location to View Requests");
+                                Duration(seconds: 2);
+                                Navigator.of(context).pushNamed(PageRoutesName.mechanicProfile);
+                              }
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              height: 150,
+                              decoration: BoxDecoration(
+                                color: AppColors.red,
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Available Requests",
+                                  style: theme.textTheme.titleLarge!.copyWith(
+                                    color: AppColors.white,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
-      ),
+            );
+          },
+        );
+      },
+
     );
   }
 }

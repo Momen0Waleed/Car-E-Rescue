@@ -4,6 +4,9 @@ class UserModel {
   final String name;
   final String role;
   final String phone;
+  final bool available;
+  final double rating;
+  final int totalJobs;
 
   // Optional fields based on role
   final String? workshopName;
@@ -17,6 +20,9 @@ class UserModel {
     required this.name,
     required this.role,
     required this.phone,
+    this.available = false,
+    this.rating = 0.0,
+    this.totalJobs = 0,
     this.workshopName,
     this.experienceYears,
     this.carType,
@@ -30,6 +36,9 @@ class UserModel {
       name: map['name'] ?? '',
       role: map['role'] ?? '',
       phone: map['phone'] ?? '',
+      available: map['available'] ?? false,
+      rating: (map['rating'] ?? 0.0).toDouble(),
+      totalJobs: map['total jops'] ?? 0,
       workshopName: map['workshop name'],
       experienceYears: map['experince years'] is String
           ? int.tryParse(map['experince years'])
@@ -43,6 +52,9 @@ class UserModel {
     String? name,
     String? email,
     String? phone,
+    bool? available,
+    double? rating,
+    int? totalJobs,
     String? carType,
     String? carModel,
     String? workshopName,
@@ -54,6 +66,9 @@ class UserModel {
       email: email ?? this.email,
       name: name ?? this.name,
       phone: phone ?? this.phone,
+      available: available ?? this.available,
+      rating: rating ?? this.rating,
+      totalJobs: totalJobs ?? this.totalJobs,
       carType: carType ?? this.carType,
       carModel: carModel ?? this.carModel,
       workshopName: workshopName ?? this.workshopName,

@@ -24,4 +24,24 @@ class MechanicHomeRepo {
       throw e.response?.data['detail'] ?? "Failed to update availability";
     }
   }
+
+
+  Future<Map<String, dynamic>> fetchMechanicData() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+
+      final response = await _dio.get(
+        'mechanics/me',
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data['mechanic'];
+      }
+      throw "Failed to load mechanic data";
+    } on DioException catch (e) {
+      throw e.response?.data['detail'] ?? "Error fetching mechanic info";
+    }
+  }
 }
