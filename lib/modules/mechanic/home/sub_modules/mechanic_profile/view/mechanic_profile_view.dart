@@ -88,7 +88,6 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
                           ),
                         ),
                       ),
-                      // SizedBox(height: 5),
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 5,vertical: 16),
                         decoration: BoxDecoration(

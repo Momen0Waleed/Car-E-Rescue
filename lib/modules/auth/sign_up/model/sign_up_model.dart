@@ -31,7 +31,9 @@ class UserModel {
       role: map['role'] ?? '',
       phone: map['phone'] ?? '',
       workshopName: map['workshop name'],
-      experienceYears: map['experince years'],
+      experienceYears: map['experince years'] is String
+          ? int.tryParse(map['experince years'])
+          : map['experince years'] as int?,
       carType: map['car type'],
       carModel: map['car model'],
     );
@@ -70,7 +72,9 @@ class UserModel {
       phone: data['phone'] ?? '',
       role: data['role'] ?? 'client',
       workshopName: data['workshop name'],
-      experienceYears: data['experince years'],
+      experienceYears: data['experince years'] is String
+          ? int.tryParse(data['experince years'])
+          : data['experince years'] as int?,
       carType: data['car type'],
       carModel: data['car model'],
     );

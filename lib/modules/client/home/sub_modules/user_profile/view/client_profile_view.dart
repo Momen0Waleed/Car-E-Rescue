@@ -61,7 +61,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
 
             return Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.only(left: 16,right: 16,top:20),
                 child: Column(
                   spacing: 10,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -84,146 +84,171 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                         ),
                       ),
                     ),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 5,vertical: 16),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: AppColors.pink
+                      ),
+                      child: Column(
+                        children: [
+                          Bounceable(
+                            onTap: () {
+                              editUserNameFlag = !editUserNameFlag;
+                              setState(() {});
+                            },
+                            child: Row(
+                              spacing: 10,
+                              children: [
+                                Icon(
+                                  Icons.person_rounded,
+                                  color: AppColors.red,
+                                  size: 30,
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    "Edit Your Name",
+                                    style: theme.textTheme.bodyMedium,
+                                  ),
+                                ),
+                                Icon(
+                                  !editUserNameFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
+                                  color: AppColors.red,
+                                  size: 30,
+                                ),
+                              ],
+                            ),
+                          ),
+                          ?editUserNameFlag
+                              ? Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                child: CustomTextField(
+                                                            title: user.name,
+                                                            controller: nameController,
+                                                            validator: AppValidators.validateEmptyField,
+                                                          ),
+                              )
+                              : null,
+                          Divider(color: AppColors.grey,thickness: 0.5,indent: 30,endIndent: 30,),
+                          Bounceable(
+                            onTap: () {
+                              editUserEmailFlag = !editUserEmailFlag;
+                              setState(() {});
+                            },
+                            child: Row(
+                              spacing: 10,
+                              children: [
+                                Icon(Icons.mail, color: AppColors.red, size: 30),
+                                Expanded(
+                                  child: Text(
+                                    "Edit Your Email",
+                                    style: theme.textTheme.bodyMedium,
+                                  ),
+                                ),
+                                Icon(
+                                  !editUserEmailFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
+                                  color: AppColors.red,
+                                  size: 30,
+                                ),
+                              ],
+                            ),
+                          ),
+                          ?editUserEmailFlag
+                              ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                child: CustomTextField(
+                                                            title: user.email,
+                                                            controller: emailController,
+                                                            validator: AppValidators.validateEmail,
+                                                          ),
+                              )
+                              : null,
+                          Divider(color: AppColors.grey,thickness: 0.5,indent: 30,endIndent: 30,),
+                          Bounceable(
+                            onTap: () {
+                              editUserPhoneFlag = !editUserPhoneFlag;
+                              setState(() {});
+                            },
+                            child: Row(
+                              spacing: 10,
+                              children: [
+                                Icon(Icons.phone, color: AppColors.red, size: 30),
+                                Expanded(
+                                  child: Text(
+                                    "Edit Your Phone",
+                                    style: theme.textTheme.bodyMedium,
+                                  ),
+                                ),
+                                Icon(
+                                  !editUserPhoneFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
+                                  color: AppColors.red,
+                                  size: 30,
+                                ),
+                              ],
+                            ),
+                          ),
+                          ?editUserPhoneFlag
+                              ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                child: CustomTextField(
+                                                            title: user.phone,
+                                                            controller: phoneController,
+                                                            validator: AppValidators.validateEgyptianPhone,
+                                                          ),
+                              )
+                              : null,
+                          Divider(color: AppColors.grey,thickness: 0.5,indent: 30,endIndent: 30,),
+                          Bounceable(
+                            onTap: () {
+                              editUserCarDataFlag = !editUserCarDataFlag;
+                              setState(() {});
+                            },
+                            child: Row(
+                              spacing: 10,
+                              children: [
+                                Icon(
+                                  Icons.car_rental_rounded,
+                                  color: AppColors.red,
+                                  size: 30,
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    "Edit Your Car Data",
+                                    style: theme.textTheme.bodyMedium,
+                                  ),
+                                ),
+                                Icon(
+                                  !editUserCarDataFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
+                                  color: AppColors.red,
+                                  size: 30,
+                                ),
+                              ],
+                            ),
+                          ),
+                          ?editUserCarDataFlag
+                              ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                child: Column(
+                                                            spacing: 10,
+                                                            children: [
+                                CustomTextField(
+                                  title: user.carType ?? "Unknown Type",
+                                  controller: carTypeController,
+                                  validator: AppValidators.validateEmptyField,
+                                ),
+                                CustomTextField(
+                                  title: user.carModel ?? "Unknown Model",
+                                  controller: carModelController,
+                                  validator: AppValidators.validateEmptyField,
+                                ),
+                                                            ],
+                                                          ),
+                              )
+                              : null,
+                        ],
+                      ),
+                    ),
                     SizedBox(height: 10),
-                    Bounceable(
-                      onTap: () {
-                        editUserNameFlag = !editUserNameFlag;
-                        setState(() {});
-                      },
-                      child: Row(
-                        spacing: 10,
-                        children: [
-                          Icon(
-                            Icons.person_rounded,
-                            color: AppColors.red,
-                            size: 30,
-                          ),
-                          Expanded(
-                            child: Text(
-                              "Edit Your Name",
-                              style: theme.textTheme.bodyMedium,
-                            ),
-                          ),
-                          Icon(
-                            !editUserNameFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
-                            color: AppColors.red,
-                            size: 30,
-                          ),
-                        ],
-                      ),
-                    ),
-                    ?editUserNameFlag
-                        ? CustomTextField(
-                            title: user.name,
-                            controller: nameController,
-                            validator: AppValidators.validateEmptyField,
-                          )
-                        : null,
-                    Bounceable(
-                      onTap: () {
-                        editUserEmailFlag = !editUserEmailFlag;
-                        setState(() {});
-                      },
-                      child: Row(
-                        spacing: 10,
-                        children: [
-                          Icon(Icons.mail, color: AppColors.red, size: 30),
-                          Expanded(
-                            child: Text(
-                              "Edit Your Email",
-                              style: theme.textTheme.bodyMedium,
-                            ),
-                          ),
-                          Icon(
-                            !editUserEmailFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
-                            color: AppColors.red,
-                            size: 30,
-                          ),
-                        ],
-                      ),
-                    ),
-                    ?editUserEmailFlag
-                        ? CustomTextField(
-                            title: user.email,
-                            controller: emailController,
-                            validator: AppValidators.validateEmail,
-                          )
-                        : null,
-                    Bounceable(
-                      onTap: () {
-                        editUserPhoneFlag = !editUserPhoneFlag;
-                        setState(() {});
-                      },
-                      child: Row(
-                        spacing: 10,
-                        children: [
-                          Icon(Icons.phone, color: AppColors.red, size: 30),
-                          Expanded(
-                            child: Text(
-                              "Edit Your Phone",
-                              style: theme.textTheme.bodyMedium,
-                            ),
-                          ),
-                          Icon(
-                            !editUserPhoneFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
-                            color: AppColors.red,
-                            size: 30,
-                          ),
-                        ],
-                      ),
-                    ),
-                    ?editUserPhoneFlag
-                        ? CustomTextField(
-                            title: user.phone,
-                            controller: phoneController,
-                            validator: AppValidators.validateEgyptianPhone,
-                          )
-                        : null,
-                    Bounceable(
-                      onTap: () {
-                        editUserCarDataFlag = !editUserCarDataFlag;
-                        setState(() {});
-                      },
-                      child: Row(
-                        spacing: 10,
-                        children: [
-                          Icon(
-                            Icons.car_rental_rounded,
-                            color: AppColors.red,
-                            size: 30,
-                          ),
-                          Expanded(
-                            child: Text(
-                              "Edit Your Car Data",
-                              style: theme.textTheme.bodyMedium,
-                            ),
-                          ),
-                          Icon(
-                            !editUserCarDataFlag?Icons.keyboard_arrow_down_rounded:Icons.keyboard_arrow_up_rounded,
-                            color: AppColors.red,
-                            size: 30,
-                          ),
-                        ],
-                      ),
-                    ),
-                    ?editUserCarDataFlag
-                        ? Column(
-                            spacing: 10,
-                            children: [
-                              CustomTextField(
-                                title: user.carType ?? "Unknown Type",
-                                controller: carTypeController,
-                                validator: AppValidators.validateEmptyField,
-                              ),
-                              CustomTextField(
-                                title: user.carModel ?? "Unknown Model",
-                                controller: carModelController,
-                                validator: AppValidators.validateEmptyField,
-                              ),
-                            ],
-                          )
-                        : null,
-                    SizedBox(height: 20),
                     CustomButton(
                       color: AppColors.red,
                       action: () async {
@@ -253,7 +278,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                       text: "Edit",
                       width: MediaQuery.of(context).size.width / 1.5,
                     ),
-                    SizedBox(height: 30),
+                    Divider(thickness: 0.5,color: AppColors.black,indent: 20,endIndent: 20,),
                     CustomButton(
                       color: AppColors.red,
                       action: () async {
