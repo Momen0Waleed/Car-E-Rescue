@@ -36,9 +36,15 @@ class UserModel {
       name: map['name'] ?? '',
       role: map['role'] ?? '',
       phone: map['phone'] ?? '',
-      available: map['available'] ?? false,
-      rating: (map['rating'] ?? 0.0).toDouble(),
-      totalJobs: map['total jops'] ?? 0,
+      available: map['available'] is bool
+          ? map['available']
+          : (map['available']?.toString().toLowerCase() == 'true'),
+      rating: map['rating'] is num
+          ? (map['rating'] as num).toDouble()
+          : double.tryParse(map['rating']?.toString() ?? '0.0') ?? 0.0,
+      totalJobs: map['total jops'] is int
+          ? map['total jops']
+          : int.tryParse(map['total jops']?.toString() ?? '0') ?? 0,
       workshopName: map['workshop name'],
       experienceYears: map['experince years'] is String
           ? int.tryParse(map['experince years'])
@@ -86,6 +92,15 @@ class UserModel {
       name: data['name'] ?? '',
       phone: data['phone'] ?? '',
       role: data['role'] ?? 'client',
+      available: data['available'] is bool
+          ? data['available']
+          : (data['available']?.toString().toLowerCase() == 'true'),
+      rating: data['rating'] is num
+          ? (data['rating'] as num).toDouble()
+          : double.tryParse(data['rating']?.toString() ?? '0.0') ?? 0.0,
+      totalJobs: data['total jops'] is int
+          ? data['total jops']
+          : int.tryParse(data['total jops']?.toString() ?? '0') ?? 0,
       workshopName: data['workshop name'],
       experienceYears: data['experince years'] is String
           ? int.tryParse(data['experince years'])

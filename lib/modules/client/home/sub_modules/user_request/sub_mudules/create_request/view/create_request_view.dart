@@ -34,7 +34,7 @@ class _CreateRequestViewState extends State<CreateRequestView> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => CreateRequestViewModel()..requestLocation(),
+      create: (_) => CreateRequestViewModel(),
       child: Consumer<CreateRequestViewModel>(
         builder: (context, viewModel, child) {
           return Scaffold(

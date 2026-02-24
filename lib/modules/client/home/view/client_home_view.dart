@@ -36,12 +36,6 @@ class ClientHomeView extends StatelessWidget {
           SizedBox(width: 20),
         ],
       ),
-      // you can also use this structure instead of using "user" parameter
-      //   Consumer<UserProvider>(
-      //     builder: (context, userProvider, child) {
-      //       return Text("Welcome, ${userProvider.currentUser?.name ?? 'Guest'}");
-      //     },
-      //   )
       body: Container(
         color: AppColors.red,
         child: Container(

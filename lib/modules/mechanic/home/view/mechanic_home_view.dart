@@ -6,7 +6,8 @@ import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_skills/v
 import 'package:car_e_rescue/modules/mechanic/home/view_model/mechanic_home_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
-import 'package:provider/provider.dart' show Provider, Consumer, ReadContext, ChangeNotifierProvider;
+import 'package:provider/provider.dart'
+    show Provider, Consumer, ChangeNotifierProvider;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MechanicHomeView extends StatefulWidget {
@@ -18,18 +19,6 @@ class MechanicHomeView extends StatefulWidget {
 
 class _MechanicHomeViewState extends State<MechanicHomeView> {
   bool workShopLocationWasSet = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // Fetch profile data on load
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<MechanicHomeViewModel>().getMechanicProfile().then((_) {
-        _initializeMechanicHome();
-      });
-    });
-  }
-
 
   Future<void> _initializeMechanicHome() async {
     await _checkWorkshopStatus();
@@ -43,7 +32,10 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
       }
     }
 
-    final viewModel = Provider.of<MechanicSkillsViewModel>(context, listen: false);
+    final viewModel = Provider.of<MechanicSkillsViewModel>(
+      context,
+      listen: false,
+    );
     bool skillsExist = await viewModel.hasSkills();
 
     if (!skillsExist && mounted) {
@@ -67,7 +59,7 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
     var theme = Theme.of(context);
     return ChangeNotifierProvider(
       create: (_) => MechanicHomeViewModel(),
-      builder: (context,child) {
+      builder: (context, child) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           final vm = Provider.of<MechanicHomeViewModel>(context, listen: false);
           if (vm.mechanicProfile == null && !vm.isLoading) {
@@ -75,7 +67,14 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
           }
         });
         return Consumer<MechanicHomeViewModel>(
-          builder: ( context,  viewModel,  child) {
+          builder: (context, viewModel, child) {
+            if (viewModel.isLoading && viewModel.mechanicProfile == null) {
+              return Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(color: AppColors.red),
+                ),
+              );
+            }
             bool isAvailable = viewModel.mechanicProfile?.available ?? false;
             return Scaffold(
               appBar: AppBar(
@@ -93,9 +92,15 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
                   Bounceable(
                     scaleFactor: 0.7,
                     onTap: () {
-                      Navigator.of(context).pushNamed(PageRoutesName.mechanicProfile);
+                      Navigator.of(
+                        context,
+                      ).pushNamed(PageRoutesName.mechanicProfile);
                     },
-                    child: Icon(Icons.person_sharp, size: 35, color: AppColors.white),
+                    child: Icon(
+                      Icons.person_sharp,
+                      size: 35,
+                      color: AppColors.white,
+                    ),
                   ),
                   SizedBox(width: 20),
                 ],
@@ -123,16 +128,22 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text("Available: ", style: theme.textTheme.bodyLarge),
+                              Text(
+                                "Available: ",
+                                style: theme.textTheme.bodyLarge,
+                              ),
                               Switch(
                                 value: isAvailable,
                                 activeThumbColor: AppColors.green,
                                 onChanged: (bool value) async {
-                                  bool success = await viewModel.toggleAvailability(value);
+                                  bool success = await viewModel
+                                      .toggleAvailability(value);
                                   if (success) {
                                     viewModel.getMechanicProfile();
                                   } else {
-                                    SnackbarService.showErrorNotification("Failed to update status");
+                                    SnackbarService.showErrorNotification(
+                                      "Failed to update status",
+                                    );
                                   }
                                 },
                               ),
@@ -145,16 +156,24 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
                             scaleFactor: 0.8,
                             onTap: () async {
                               if (isAvailable == false) {
-                                SnackbarService.showErrorNotification("Be Available to View Requests");
+                                SnackbarService.showErrorNotification(
+                                  "Be Available to View Requests",
+                                );
                                 return;
                               }
 
                               if (workShopLocationWasSet) {
-                                Navigator.of(context).pushNamed(PageRoutesName.mechanicAvailableRequests);
+                                Navigator.of(context).pushNamed(
+                                  PageRoutesName.mechanicAvailableRequests,
+                                );
                               } else {
-                                SnackbarService.showErrorNotification("Set your Workshop Location to View Requests");
+                                SnackbarService.showErrorNotification(
+                                  "Set your Workshop Location to View Requests",
+                                );
                                 Duration(seconds: 2);
-                                Navigator.of(context).pushNamed(PageRoutesName.mechanicProfile);
+                                Navigator.of(
+                                  context,
+                                ).pushNamed(PageRoutesName.mechanicProfile);
                               }
                             },
                             child: Container(
@@ -174,6 +193,33 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
                               ),
                             ),
                           ),
+                          SizedBox(height: 30),
+                          Row(
+                            children: [
+                              Spacer(),
+                              Bounceable(
+                                onTap:(){
+
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadiusGeometry.circular(60),
+                                  child: Container(
+                                    width: 100,
+                                    height: 100,
+                                    decoration: BoxDecoration(color: AppColors.pink),
+                                    child: Center(
+                                      child: Text(
+                                        "Current\nRequest",
+                                        textAlign: TextAlign.center,
+                                        style: theme.textTheme.bodyMedium!.copyWith(
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -184,11 +230,9 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
           },
         );
       },
-
     );
   }
 }
-
 
 Future<bool?> setLocationDialog(BuildContext context) {
   return showDialog<bool>(
