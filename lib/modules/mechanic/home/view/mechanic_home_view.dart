@@ -2,6 +2,8 @@ import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/core/providers/user_provider.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
+import 'package:car_e_rescue/modules/mechanic/home/sub_modules/available_requests/view/request_details_view.dart';
+import 'package:car_e_rescue/modules/mechanic/home/sub_modules/current_request/view/current_request_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_skills/view_model/mechanic_skills_view_model.dart';
 import 'package:car_e_rescue/modules/mechanic/home/view_model/mechanic_home_view_model.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,8 @@ import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:provider/provider.dart'
     show Provider, Consumer, ChangeNotifierProvider;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../client/home/sub_modules/user_request/sub_mudules/current_requests/view_model/current_request_view_model.dart';
 
 class MechanicHomeView extends StatefulWidget {
   const MechanicHomeView({super.key});
@@ -198,11 +202,16 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
                             children: [
                               Spacer(),
                               Bounceable(
-                                onTap:(){
-
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const CurrentRequestView(),
+                                    ),
+                                  );
                                 },
                                 child: ClipRRect(
-                                  borderRadius: BorderRadiusGeometry.circular(60),
+                                  borderRadius: BorderRadius.circular(60),
                                   child: Container(
                                     width: 100,
                                     height: 100,
@@ -211,8 +220,7 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
                                       child: Text(
                                         "Current\nRequest",
                                         textAlign: TextAlign.center,
-                                        style: theme.textTheme.bodyMedium!.copyWith(
-                                        ),
+                                        style: theme.textTheme.bodyMedium,
                                       ),
                                     ),
                                   ),
