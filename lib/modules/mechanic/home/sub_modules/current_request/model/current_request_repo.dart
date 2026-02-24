@@ -26,4 +26,23 @@ class CurrentRequestRepo {
       throw e.response?.data['detail'] ?? "Failed to fetch current request";
     }
   }
+
+  Future<String> cancelRequest() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+
+      final response = await _dio.patch(
+        'requests/mechanic/cancel',
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data['message'] ?? "Request canceled successfully";
+      }
+      throw "Unexpected error during cancellation";
+    } on DioException catch (e) {
+      throw e.response?.data['detail'] ?? "Failed to cancel request";
+    }
+  }
 }
