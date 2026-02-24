@@ -16,6 +16,7 @@ import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/view/u
 import 'package:car_e_rescue/modules/client/home/view/client_home_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/available_requests/view/mechanic_available_requests_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/available_requests/view_model/mechanic_available_requests_view_model.dart';
+import 'package:car_e_rescue/modules/mechanic/home/sub_modules/current_request/view/current_request_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_profile/view/mechanic_profile_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_skills/view/mechanic_skills_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_skills/view_model/mechanic_skills_view_model.dart';
@@ -85,6 +86,8 @@ abstract class AppRoutes {
             child: const MechanicSkillsView(),
           ),
         );
+      case PageRoutesName.mechanicCurrentRequest:
+        return _slideRoute(const CurrentRequestView());
 
       default:
         return _slideRoute(const SplashScreen());
