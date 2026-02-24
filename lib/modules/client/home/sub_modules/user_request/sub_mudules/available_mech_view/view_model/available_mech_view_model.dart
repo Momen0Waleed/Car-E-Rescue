@@ -65,7 +65,7 @@ class AvailableMechViewModel extends ChangeNotifier{
   //   // MOCK DATA: Injecting 10 fake mechanics for UI testing
   //   mechanics = List.generate(10, (index) => MechanicDataModel(
   //     mechanicId: "id_$index",
-  //     workshopName: index == 0 ? "Very Long Workshop Name Garage Center $index" : "Workshop $index",
+  //     workshopName: index == 0 ? "Nearest Workshop" : "Workshop $index",
   //     workshopLat: 30.0 + (index * 0.01),
   //     workshopLng: 31.0 + (index * 0.01),
   //     distanceInKm: 1.5 + index,
