@@ -110,11 +110,20 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
                 tooltip: "Current Request",
                 backgroundColor: AppColors.red,
                 onPressed: () {
-                  Navigator.pushNamed(context, PageRoutesName.mechanicCurrentRequest);
+                  Navigator.pushNamed(
+                    context,
+                    PageRoutesName.mechanicCurrentRequest,
+                  );
                 },
-                child: Image.asset(ImagesDir.activeFilled,width: 30,height: 30,color: AppColors.white,),
+                child: Image.asset(
+                  ImagesDir.activeFilled,
+                  width: 30,
+                  height: 30,
+                  color: AppColors.white,
+                ),
               ),
-              floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.endFloat,
               body: Container(
                 color: AppColors.red,
                 child: Container(
@@ -200,6 +209,31 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
                                     color: AppColors.white,
                                   ),
                                 ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 30,),
+                          Bounceable(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(PageRoutesName.mechanicHistory);
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              height: 135,
+                              decoration: BoxDecoration(
+                                  color: AppColors.pink,
+                                  borderRadius: BorderRadius.circular(18)
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.history,color: AppColors.red,size: 40,),
+                                  SizedBox(height: 8,),
+                                  Text("History",style: theme.textTheme.bodyLarge!.copyWith(
+                                    color: AppColors.red,
+                                  ),),
+                                ],
                               ),
                             ),
                           ),

@@ -19,7 +19,9 @@ class CurrentRequestView extends StatelessWidget {
       child: Consumer<CurrentRequestViewModel>(
         builder: (context, vm, child) {
           // Trigger the fetch if data is not yet loaded and no error occurred
-          if (!vm.isLoading && vm.currentRequest == null && vm.errorMessage == null) {
+          if (!vm.isLoading &&
+              vm.currentRequest == null &&
+              vm.errorMessage == null) {
             Future.microtask(() => vm.getCurrentRequest());
           }
 
@@ -38,7 +40,10 @@ class CurrentRequestView extends StatelessWidget {
 
     if (vm.errorMessage != null) {
       return Center(
-        child: Text(vm.errorMessage!, style: const TextStyle(color: Colors.red)),
+        child: Text(
+          vm.errorMessage!,
+          style: const TextStyle(color: Colors.red),
+        ),
       );
     }
 
@@ -62,30 +67,47 @@ class CurrentRequestView extends StatelessWidget {
               markers: [
                 Marker(
                   point: location,
-                  width: 80, height: 80,
-                  child: Icon(Icons.person_pin_circle, color: AppColors.red, size: 45),
+                  width: 80,
+                  height: 80,
+                  child: Icon(
+                    Icons.person_pin_circle,
+                    color: AppColors.red,
+                    size: 45,
+                  ),
                 ),
               ],
             ),
           ],
         ),
         Positioned(
-          bottom: 20, left: 15, right: 15,
+          bottom: 20,
+          left: 15,
+          right: 15,
           child: Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("Active Request", style: TextStyle(color: AppColors.red, fontWeight: FontWeight.bold)),
+                  Text(
+                    "Active Request",
+                    style: TextStyle(
+                      color: AppColors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   const Divider(),
                   ListTile(
                     title: Text(request.userName),
                     subtitle: Text("Service: ${request.type}"),
                     trailing: IconButton(
                       icon: const Icon(Icons.phone, color: Colors.green),
-                      onPressed: () { /* Implement call logic */ },
+                      onPressed: () {
+                        /* Implement call logic */
+                      },
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -97,9 +119,14 @@ class CurrentRequestView extends StatelessWidget {
                   //   onPressed: () { /* Implement complete logic */ },
                   //   child: const Text("Complete Request", style: TextStyle(color: Colors.white)),
                   // )
-                  CustomButton(color: AppColors.red, action:(){
-                    ///TODO: Complete Request
-                  }, text: "Complete Request")
+                  CustomButton(
+                    color: AppColors.red,
+                    action: () {
+                      ///TODO: Cancel Request
+
+                    },
+                    text: "Cancel Request",
+                  ),
                 ],
               ),
             ),
