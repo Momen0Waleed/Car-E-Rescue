@@ -121,11 +121,18 @@ class CurrentRequestView extends StatelessWidget {
                   // )
                   CustomButton(
                     color: AppColors.red,
-                    action: () {
-                      ///TODO: Cancel Request
-
+                    action: vm.isActionLoading
+                        ? () {}
+                        : () async {
+                      final confirm = await showCancelConfirmationDialog(context);
+                      if (confirm == true) {
+                        bool success = await vm.cancelCurrentRequest();
+                        if (success && context.mounted) {
+                          Navigator.of(context).pop();
+                        }
+                      }
                     },
-                    text: "Cancel Request",
+                    text: vm.isActionLoading ? "Canceling..." : "Cancel Request",
                   ),
                 ],
               ),
@@ -133,6 +140,53 @@ class CurrentRequestView extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Future<bool?> showCancelConfirmationDialog(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        var theme = Theme.of(context);
+        return AlertDialog(
+          backgroundColor: AppColors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text("Confirm Cancellation", style: theme.textTheme.titleMedium),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Are you sure you want to cancel this request?",
+                style: theme.textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "Note: Canceling the current request will affect your total rating.",
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: AppColors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text("Stay", style: theme.textTheme.bodyMedium),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: AppColors.red),
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(
+                "Cancel Request",
+                style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.white),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
