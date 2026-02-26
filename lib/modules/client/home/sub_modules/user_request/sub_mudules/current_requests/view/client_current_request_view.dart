@@ -1,7 +1,8 @@
 import 'package:car_e_rescue/core/constants/images/images_dir.dart';
+import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
-import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/view_model/current_request_view_model.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/view_model/client_current_request_view_model.dart';
 import 'package:car_e_rescue/modules/widgets/custom_button.dart';
 import 'package:car_e_rescue/modules/widgets/navigate_back_button.dart';
 import 'package:flutter/material.dart';
@@ -9,19 +10,19 @@ import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
-class CurrentRequestsView extends StatefulWidget {
-  const CurrentRequestsView({super.key});
+class ClientCurrentRequestView extends StatefulWidget {
+  const ClientCurrentRequestView({super.key});
 
   @override
-  State<CurrentRequestsView> createState() => _CurrentRequestsViewState();
+  State<ClientCurrentRequestView> createState() => _CurrentRequestViewState();
 }
 
-class _CurrentRequestsViewState extends State<CurrentRequestsView> {
+class _CurrentRequestViewState extends State<ClientCurrentRequestView> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => CurrentRequestViewModel(),
-      child: Consumer<CurrentRequestViewModel>(
+      create: (_) => ClientCurrentRequestViewModel(),
+      child: Consumer<ClientCurrentRequestViewModel>(
         builder: (context, viewModel, child) {
           return Scaffold(
             floatingActionButton: NavigateBackButton(),
@@ -73,7 +74,7 @@ Widget _buildEmptyState(BuildContext context) {
   );
 }
 
-Widget _buildRequestDetails(BuildContext context,CurrentRequestViewModel viewModel) {
+Widget _buildRequestDetails(BuildContext context,ClientCurrentRequestViewModel viewModel) {
   return Center(
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -81,12 +82,31 @@ Widget _buildRequestDetails(BuildContext context,CurrentRequestViewModel viewMod
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // Text("Status: ${viewModel.currentRequest!.status}"),
+          // Text("Mechanic: ${viewModel.currentRequest!.mechanicName ?? 'Finding Mechanic...'}"),
+          // Text("Request ID: ${viewModel.currentRequest!.requestId ?? 'No Request ID'}"),
           Stack(
             clipBehavior: Clip.none,
             children: [
               Bounceable(
                 onTap: (){
                   ///TODO: view the mechanic current location
+                    final request = viewModel.currentRequest!;
+
+                    if (request.requestId != null && request.status == "Accepted") {
+                      Navigator.pushNamed(
+                        context,
+                        PageRoutesName.mechanicLiveLocation,
+                        arguments: request.requestId,
+                      );
+                    } else if (request.status != "Accepted") {
+                      SnackbarService.showErrorNotification(
+                          "Mechanic has not accepted the request yet. Current Status: ${request.status}"
+                      );
+                    } else {
+                      SnackbarService.showErrorNotification("Error: Missing Request ID.");
+                    }
+
                 },
                 child: Container(
                   width: double.infinity,

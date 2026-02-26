@@ -4,19 +4,21 @@ import 'package:car_e_rescue/modules/auth/login/view/login_view.dart';
 import 'package:car_e_rescue/modules/auth/sign_up/view/client_sign_up_view.dart';
 import 'package:car_e_rescue/modules/auth/sign_up/view/provider_sign_up_view.dart';
 import 'package:car_e_rescue/modules/auth/user_type/view/user_type_screen.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/mechanic_live_location/view/mechanic_live_location_view.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/mechanic_live_location/view_model/mechanic_live_location_view_model.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_diagnose/view/user_diagnose_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_profile/view/client_profile_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/available_mech_view/model/mechanic_data_model.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/available_mech_view/view/available_mech_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/available_mech_view/view/mechanic_location_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/create_request/view/create_request_view.dart';
-import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/view/current_requests_view.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/view/client_current_request_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/request_history/view/request_history_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/view/user_request_view.dart';
 import 'package:car_e_rescue/modules/client/home/view/client_home_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/available_requests/view/mechanic_available_requests_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/available_requests/view_model/mechanic_available_requests_view_model.dart';
-import 'package:car_e_rescue/modules/mechanic/home/sub_modules/current_request/view/current_request_view.dart';
+import 'package:car_e_rescue/modules/mechanic/home/sub_modules/current_request/view/mechanic_current_request_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_history/view/mechainc_history_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_profile/view/mechanic_profile_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_skills/view/mechanic_skills_view.dart';
@@ -64,7 +66,7 @@ abstract class AppRoutes {
       case PageRoutesName.clientProfile:
         return _slideRoute(ClientProfileView());
       case PageRoutesName.clientCurrentRequest:
-        return _slideRoute(const CurrentRequestsView());
+        return _slideRoute(const ClientCurrentRequestView());
       case PageRoutesName.mechanicLocation:
         final mechanic = settings.arguments as MechanicDataModel;
         return _slideRoute(MechanicLocationView(mechanic: mechanic));
@@ -88,9 +90,17 @@ abstract class AppRoutes {
           ),
         );
       case PageRoutesName.mechanicCurrentRequest:
-        return _slideRoute(const CurrentRequestView());
-        case PageRoutesName.mechanicHistory:
+        return _slideRoute(const MechanicCurrentRequestView());
+      case PageRoutesName.mechanicHistory:
         return _slideRoute(const MechaincHistoryView());
+      case PageRoutesName.mechanicLiveLocation:
+        final requestId = settings.arguments as int;
+        return _slideRoute(
+          ChangeNotifierProvider(
+            create: (_) => MechanicLiveLocationViewModel(),
+            child: MechanicLiveLocationView(requestId: requestId),
+          ),
+        );
 
       default:
         return _slideRoute(const SplashScreen());

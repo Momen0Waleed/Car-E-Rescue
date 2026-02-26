@@ -19,15 +19,16 @@ class UserRequestModel {
     this.completedAt,
   });
 
+
   factory UserRequestModel.fromJson(Map<String, dynamic> json) {
     return UserRequestModel(
-      requestId: json['request id'], //
+      requestId: json['request id'],
       mechanicId: json['mechanic id'],
       mechanicName: json['mechanic name'],
-      status: json['status'],
-      type: json['type'],
-      createdAt: json['created at'],
-      completedAt: json['completed at'], //
+      status: json['status'] ?? 'Unknown',
+      type: json['type'] ?? 'General',
+      createdAt: json['created at'] ?? '',
+      completedAt: json['completed at'],
     );
   }
 }

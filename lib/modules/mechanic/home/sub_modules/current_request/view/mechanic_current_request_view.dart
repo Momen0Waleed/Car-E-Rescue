@@ -5,20 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
-import '../view_model/current_request_view_model.dart';
+import '../view_model/mechanic_current_request_view_model.dart';
 
-class CurrentRequestView extends StatelessWidget {
-  const CurrentRequestView({super.key});
+class MechanicCurrentRequestView extends StatelessWidget {
+  const MechanicCurrentRequestView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => CurrentRequestViewModel(),
-      // We use a Builder or Consumer here to get a context
-      // that is a child of the ChangeNotifierProvider
-      child: Consumer<CurrentRequestViewModel>(
+      create: (_) => MechanicCurrentRequestViewModel(),
+      child: Consumer<MechanicCurrentRequestViewModel>(
         builder: (context, vm, child) {
-          // Trigger the fetch if data is not yet loaded and no error occurred
           if (!vm.isLoading &&
               vm.currentRequest == null &&
               vm.errorMessage == null) {
@@ -35,7 +32,7 @@ class CurrentRequestView extends StatelessWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context, CurrentRequestViewModel vm) {
+  Widget _buildBody(BuildContext context, MechanicCurrentRequestViewModel vm) {
     if (vm.isLoading) return const Center(child: CircularProgressIndicator());
 
     if (vm.errorMessage != null) {

@@ -1,8 +1,10 @@
+// ignore_for_file: avoid_print
+
 import 'package:car_e_rescue/core/constants/images/images_dir.dart';
 import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
-import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/view_model/current_request_view_model.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/view_model/client_current_request_view_model.dart';
 import 'package:car_e_rescue/modules/widgets/default_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
@@ -37,7 +39,7 @@ class _UserRequestViewState extends State<UserRequestView> {
                 try{
                   EasyLoading.show(status: 'Checking status...');
 
-                  final currentReqVM = Provider.of<CurrentRequestViewModel>(
+                  final currentReqVM = Provider.of<ClientCurrentRequestViewModel>(
                     context,
                     listen: false,
                   );

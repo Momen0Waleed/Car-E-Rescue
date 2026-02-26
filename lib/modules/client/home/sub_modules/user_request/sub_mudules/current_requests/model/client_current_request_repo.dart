@@ -3,7 +3,7 @@ import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mu
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CurrentRequestRepo {
+class ClientCurrentRequestRepo {
   final Dio _dio = DioClient.instance;
 
   Future<UserRequestModel?> fetchCurrentRequest() async {
@@ -16,9 +16,13 @@ class CurrentRequestRepo {
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 
-      if (response.statusCode == 200 && response.data['current request'] != null) {
-        return UserRequestModel.fromJson(response.data['current request']);
+      if (response.statusCode == 200) {
+        print("API SUCCESS: ${response.data}");
+        if (response.data['current request'] != null) {
+          return UserRequestModel.fromJson(response.data['current request']);
+        }
       }
+      print("API EMPTY: No current request found");
       return null;
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) return null;

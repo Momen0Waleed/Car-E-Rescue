@@ -48,6 +48,18 @@ class _FirstPageState extends State<FirstPage> {
           ],
         ),
 
+        // if (widget.vm.errorMessage != null)
+        //   Positioned(
+        //     top: 50,
+        //     left: 20,
+        //     right: 20,
+        //     child: Container(
+        //       padding: const EdgeInsets.all(10),
+        //       decoration: BoxDecoration(color: Colors.red.withOpacity(0.8), borderRadius: BorderRadius.circular(10)),
+        //       child: Text(widget.vm.errorMessage!, style: const TextStyle(color: Colors.white), textAlign: TextAlign.center),
+        //     ),
+        //   ),
+
         Positioned(
           bottom: 80,
           right: 20,

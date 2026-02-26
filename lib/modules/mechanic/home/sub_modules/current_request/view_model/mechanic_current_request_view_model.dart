@@ -4,11 +4,11 @@ import 'dart:io';
 import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import '../model/current_request_repo.dart';
+import '../model/mechanic_current_request_repo.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/available_requests/model/available_request_model.dart';
 
-class CurrentRequestViewModel extends ChangeNotifier {
-  final CurrentRequestRepo _repo = CurrentRequestRepo();
+class MechanicCurrentRequestViewModel extends ChangeNotifier {
+  final MechanicCurrentRequestRepo _repo = MechanicCurrentRequestRepo();
 
   AvailableRequestModel? currentRequest;
   bool isLoading = false;
@@ -42,7 +42,7 @@ class CurrentRequestViewModel extends ChangeNotifier {
     }
   }
 
-  // current_request_view_model.dart
+  // mechanic_current_request_view_model.dart
 
   Future<void> startLocationUpdates() async {
     bool serviceEnabled;

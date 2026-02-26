@@ -14,7 +14,6 @@ class MechanicSkillsRepo {
         'mechanics/skills/me',
         options: Options(headers: {'Authorization': 'Bearer $token'},listFormat: ListFormat.multiCompatible,),
       );
-
       if (response.statusCode == 200) {
         return List<String>.from(response.data['skills'] ?? []);
       }
