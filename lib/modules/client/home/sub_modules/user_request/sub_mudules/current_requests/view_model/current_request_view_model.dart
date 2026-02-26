@@ -39,4 +39,13 @@ class CurrentRequestViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> hasActiveRequest() async {
+    try {
+      final request = await _repo.fetchCurrentRequest();
+      return request != null;
+    } catch (e) {
+      return false;
+    }
+  }
 }

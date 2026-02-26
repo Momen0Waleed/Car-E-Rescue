@@ -60,6 +60,12 @@ class CurrentRequestRepo {
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 
+
+      if (response.statusCode == 200) {
+        print("DEBUG: Location Sent Successfully. Server says: ${response.data['message']}"); //
+        return response.data;
+      }
+
       return response.data;
     } on DioException catch (e) {
       throw e.response?.data['detail'] ?? "Failed to update location";

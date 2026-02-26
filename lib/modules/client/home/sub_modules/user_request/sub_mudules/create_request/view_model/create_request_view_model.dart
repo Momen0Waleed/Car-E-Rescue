@@ -1,5 +1,6 @@
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/create_request/model/create_request_repo.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/create_request/model/location_repository.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/model/current_request_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -45,6 +46,18 @@ class CreateRequestViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
+      final currentReqRepo = CurrentRequestRepo();
+      final existing = await currentReqRepo.fetchCurrentRequest();
+
+      if (existing != null) {
+        _errorMessage = "A request is already in progress.";
+        // Do NOT just return here without setting isLoading = false
+        _isLoading = false;
+        notifyListeners();
+        return;
+      }
+
+
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) throw 'Location services are disabled.';
 

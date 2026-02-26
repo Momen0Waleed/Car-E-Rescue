@@ -237,40 +237,6 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
                               ),
                             ),
                           ),
-                          // SizedBox(height: 30),
-                          // Row(
-                          //   children: [
-                          //     Spacer(),
-                          //     Bounceable(
-                          //       onTap: () {
-                          //         Navigator.push(
-                          //           context,
-                          //           MaterialPageRoute(
-                          //             builder: (context) =>
-                          //                 const CurrentRequestView(),
-                          //           ),
-                          //         );
-                          //       },
-                          //       child: ClipRRect(
-                          //         borderRadius: BorderRadius.circular(60),
-                          //         child: Container(
-                          //           width: 100,
-                          //           height: 100,
-                          //           decoration: BoxDecoration(
-                          //             color: AppColors.pink,
-                          //           ),
-                          //           child: Center(
-                          //             child: Text(
-                          //               "Current\nRequest",
-                          //               textAlign: TextAlign.center,
-                          //               style: theme.textTheme.bodyMedium,
-                          //             ),
-                          //           ),
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
                         ],
                       ),
                     ),

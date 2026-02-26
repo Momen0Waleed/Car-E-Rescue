@@ -30,39 +30,47 @@ class _CreateRequestViewState extends State<CreateRequestView> {
   //     ).requestLocation();
   //   });
   // }
+  @override
+  void initState() {
+    super.initState();
+    // Ensure this is active so the GPS starts as soon as the page opens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<CreateRequestViewModel>(
+        context,
+        listen: false,
+      ).requestLocation();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => CreateRequestViewModel(),
-      child: Consumer<CreateRequestViewModel>(
-        builder: (context, viewModel, child) {
-          return Scaffold(
-            floatingActionButton: NavigateBackButton(),
-            floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
-            body: SafeArea(
-              child: Column(
-                children: [
-                  Expanded(
-                    child: PageView(
-                      controller: _pageController,
-                      physics: const NeverScrollableScrollPhysics(),
-                      onPageChanged: (page) =>
-                          setState(() => _currentPage = page),
-                      children: [
-                        FirstPage(vm: viewModel),
-                        SecondPage(vm: viewModel),
-                        ThirdPage(vm: viewModel),
-                      ],
-                    ),
+    return Consumer<CreateRequestViewModel>(
+      builder: (context, viewModel, child) {
+        return Scaffold(
+          floatingActionButton: NavigateBackButton(),
+          floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+          body: SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: PageView(
+                    controller: _pageController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    onPageChanged: (page) =>
+                        setState(() => _currentPage = page),
+                    children: [
+                      FirstPage(vm: viewModel),
+                      SecondPage(vm: viewModel),
+                      ThirdPage(vm: viewModel),
+                    ],
                   ),
-                  _buildNavigation(viewModel),
-                ],
-              ),
+                ),
+                _buildNavigation(viewModel),
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 

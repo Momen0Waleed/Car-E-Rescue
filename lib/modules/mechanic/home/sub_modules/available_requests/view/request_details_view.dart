@@ -30,122 +30,117 @@ class _RequestDetailsViewState extends State<RequestDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    // Map the coordinates from the model
     final LatLng requestLocation = LatLng(widget.request.lat, widget.request.lng);
 
-    return ChangeNotifierProvider(
-      create: (_) => MechanicAvailableRequestsViewModel(),
-      child: Consumer<MechanicAvailableRequestsViewModel>(
-        builder: (context, vm, child) {
-          return Scaffold(
-            floatingActionButton: const NavigateBackButton(),
-            floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
-            body: Stack(
-              children: [
-                // Map displaying the user's location
-                FlutterMap(
-                  options: MapOptions(
-                    initialCenter: requestLocation,
-                    initialZoom: 15.0,
-                  ),
-                  children: [
-                    TileLayer(
-                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      userAgentPackageName: 'com.example.car_e_rescue',
-                    ),
-                    MarkerLayer(
-                      markers: [
-                        Marker(
-                          point: requestLocation,
-                          width: 80,
-                          height: 80,
-                          child: Icon(
-                              Icons.location_on,
-                              color: AppColors.red,
-                              size: 45
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+    return Consumer<MechanicAvailableRequestsViewModel>(
+      builder: (context, vm, child) {
+        return Scaffold(
+          floatingActionButton: const NavigateBackButton(),
+          floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+          body: Stack(
+            children: [
+              FlutterMap(
+                options: MapOptions(
+                  initialCenter: requestLocation,
+                  initialZoom: 15.0,
                 ),
+                children: [
+                  TileLayer(
+                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    userAgentPackageName: 'com.example.car_e_rescue',
+                  ),
+                  MarkerLayer(
+                    markers: [
+                      Marker(
+                        point: requestLocation,
+                        width: 80,
+                        height: 80,
+                        child: Icon(
+                            Icons.location_on,
+                            color: AppColors.red,
+                            size: 45
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
 
-                Positioned(
-                  bottom: 20,
-                  left: 15,
-                  right: 15,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)
-                    ),
-                    elevation: 8,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                              widget.request.userName,
-                              style: Theme.of(context).textTheme.headlineSmall
-                          ),
-                          const Divider(),
-                          const SizedBox(height: 5),
-                          Text("Service Type: ${widget.request.type}"),
-                          Text(
-                              "Distance: ${widget.request.distance.toStringAsFixed(2)} km"
-                          ),
-                          const SizedBox(height: 20),
+              Positioned(
+                bottom: 20,
+                left: 15,
+                right: 15,
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)
+                  ),
+                  elevation: 8,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            widget.request.userName,
+                            style: Theme.of(context).textTheme.headlineSmall
+                        ),
+                        const Divider(),
+                        const SizedBox(height: 5),
+                        Text("Service Type: ${widget.request.type}"),
+                        Text(
+                            "Distance: ${widget.request.distance.toStringAsFixed(2)} km"
+                        ),
+                        const SizedBox(height: 20),
 
-                          // Accept Button
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.red,
-                                padding: const EdgeInsets.symmetric(vertical: 15),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              onPressed: vm.isAccepting
-                                  ? null
-                                  : () async {
-                                bool success = await vm.acceptRequest(widget.request.requestId);
-                                if (success && context.mounted) {
-                                  Navigator.pop(context);
-                                  vm.getRequests();
-                                }
-                              },
-                              child: vm.isAccepting
-                                  ? SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  color: AppColors.red,
-                                  strokeWidth: 2,
-                                ),
-                              )
-                                  : const Text(
-                                "Accept Request",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold
-                                ),
+                        // Accept Button
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.red,
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                          )
-                        ],
-                      ),
+                            onPressed: vm.isAccepting
+                                ? null
+                                : () async {
+                              bool success = await vm.acceptRequest(widget.request.requestId);
+                              if (success && context.mounted) {
+                                Navigator.pop(context);
+                                vm.getRequests();
+                              }
+                            },
+                            child: vm.isAccepting
+                                ? SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                color: AppColors.red,
+                                strokeWidth: 2,
+                              ),
+                            )
+                                : const Text(
+                              "Accept Request",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
-          );
-        },
-      ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

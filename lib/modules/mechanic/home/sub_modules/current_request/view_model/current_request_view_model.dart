@@ -16,6 +16,7 @@ class CurrentRequestViewModel extends ChangeNotifier {
   bool isActionLoading = false;
 
   Timer? _locationTimer;
+  DateTime? lastSyncedAt;
 
   @override
   void dispose() {
@@ -41,7 +42,35 @@ class CurrentRequestViewModel extends ChangeNotifier {
     }
   }
 
-  void startLocationUpdates() {
+  // current_request_view_model.dart
+
+  Future<void> startLocationUpdates() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // 1. Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      SnackbarService.showErrorNotification("Location services are disabled.");
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        SnackbarService.showErrorNotification("Location permissions are denied.");
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      SnackbarService.showErrorNotification(
+          "Location permissions are permanently denied. Please enable them in settings."
+      );
+      return;
+    }
+
     _locationTimer?.cancel();
     _locationTimer = Timer.periodic(const Duration(seconds: 30), (timer) async {
       if (currentRequest == null) {
@@ -103,8 +132,10 @@ class CurrentRequestViewModel extends ChangeNotifier {
         stopLocationUpdates();
         SnackbarService.showSuccessNotification("You have arrived!");
       }
+      lastSyncedAt = DateTime.now(); // Update timestamp on success
+      notifyListeners(); //
     } catch (e) {
-      debugPrint("Location Update Error: $e");
+      debugPrint("Sync failed: $e"); //
     }
   }
 
