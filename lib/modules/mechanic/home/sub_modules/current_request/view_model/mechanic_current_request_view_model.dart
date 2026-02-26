@@ -135,7 +135,14 @@ class MechanicCurrentRequestViewModel extends ChangeNotifier {
       lastSyncedAt = DateTime.now(); // Update timestamp on success
       notifyListeners(); //
     } catch (e) {
-      debugPrint("Sync failed: $e"); //
+      if (e.toString() == "SERVER_ERROR_STOP_SYNC") {
+        stopLocationUpdates(); // Stop sending requests immediately
+        errorMessage = "Tracking suspended: Server error encountered.";
+        SnackbarService.showErrorNotification("Server error. Location tracking stopped.");
+        notifyListeners();
+      } else {
+        debugPrint("Sync failed: $e");
+      }
     }
   }
 

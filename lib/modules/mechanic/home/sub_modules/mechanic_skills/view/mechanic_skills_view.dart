@@ -46,7 +46,7 @@ class _MechanicSkillsViewState extends State<MechanicSkillsView> {
       body: Consumer<MechanicSkillsViewModel>(
         builder: (context, vm, child) {
           if (vm.isLoading && vm.currentSkills.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator(color: AppColors.red,));
           }
           return Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16, top: 120, bottom: 30),

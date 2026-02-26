@@ -56,7 +56,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
             final user = userProvider.currentUser;
 
             if (user == null) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(child: CircularProgressIndicator(color: AppColors.red,));
             }
 
             return Center(

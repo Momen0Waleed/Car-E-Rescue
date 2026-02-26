@@ -19,12 +19,17 @@ class MechanicCurrentRequestRepo {
       );
 
       if (response.statusCode == 200 && response.data['request'] != null) {
-        // Use AvailableRequestModel here
         return AvailableRequestModel.fromJson(response.data['request']);
       }
       return null;
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) return null;
+
+      if (e.response?.statusCode == 500) {
+        final detail = e.response?.data['detail']?.toString() ?? "";
+        // Pass the server detail so the ViewModel/View can read it
+        throw detail.isNotEmpty ? detail : "Internal Server Error";
+      }
       rethrow;
     }
   }
@@ -70,6 +75,9 @@ class MechanicCurrentRequestRepo {
 
       return response.data;
     } on DioException catch (e) {
+      if (e.response?.statusCode == 500) {
+        throw "SERVER_ERROR_STOP_SYNC"; // Custom key to identify the stop condition
+      }
       throw e.response?.data['detail'] ?? "Failed to update location";
     }
   }

@@ -33,7 +33,7 @@ class MechanicSkillsRepo {
         queryParameters: {'skills_in': skills},
         options: Options(
           headers: {'Authorization': 'Bearer $token'},
-          listFormat: ListFormat.multiCompatible,
+          listFormat: ListFormat.multi,
         ),
       );
     } on DioException catch (e) {
