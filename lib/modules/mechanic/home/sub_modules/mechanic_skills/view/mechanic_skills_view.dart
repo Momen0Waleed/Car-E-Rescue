@@ -1,3 +1,4 @@
+import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_skills/view_model/mechanic_skills_view_model.dart';
 import 'package:car_e_rescue/modules/widgets/custom_button.dart';
@@ -45,10 +46,10 @@ class _MechanicSkillsViewState extends State<MechanicSkillsView> {
       body: Consumer<MechanicSkillsViewModel>(
         builder: (context, vm, child) {
           if (vm.isLoading && vm.currentSkills.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator(color: AppColors.red,));
           }
           return Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16, top: 100, bottom: 30),
+            padding: const EdgeInsets.only(left: 16.0, right: 16, top: 120, bottom: 30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -129,9 +130,20 @@ class _MechanicSkillsViewState extends State<MechanicSkillsView> {
                 ),
                 const SizedBox(height: 20),
                 CustomButton(
-                  text: "Update Skills",
+                  text: "Set Skills",
                   color: AppColors.red,
                   action: () async {
+                    final viewModel = Provider.of<MechanicSkillsViewModel>(
+                      context,
+                      listen: false,
+                    );
+                    bool skillsExist = await viewModel.hasSkills();
+
+                    if (skillsExist && mounted) {
+                      SnackbarService.showErrorNotification("Skills already set.");
+                      return;
+                    }
+
                     bool success = await vm.saveSkills();
                     if (success && mounted) Navigator.pop(context);
                   },

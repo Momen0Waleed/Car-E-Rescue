@@ -6,26 +6,34 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../view_model/mechainc_history_view_model.dart';
 
-class MechaincHistoryView extends StatelessWidget {
+class MechaincHistoryView extends StatefulWidget {
   const MechaincHistoryView({super.key});
 
   @override
+  State<MechaincHistoryView> createState() => _MechaincHistoryViewState();
+}
+
+class _MechaincHistoryViewState extends State<MechaincHistoryView> {
+  late MechaincHistoryViewModel _viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _viewModel = MechaincHistoryViewModel();
+    // This triggers ONLY once when the screen opens
+    _viewModel.getHistory();
+  }
+  @override
   Widget build(BuildContext context) {
-    // Self-contained Provider to avoid ProviderNotFoundException
-    return ChangeNotifierProvider(
-      create: (_) => MechaincHistoryViewModel(),
+    return ChangeNotifierProvider.value(
+      value: _viewModel,
       child: Consumer<MechaincHistoryViewModel>(
         builder: (context, vm, child) {
-          // Trigger the API call if data isn't loaded yet
-          if (!vm.isLoading && vm.historyRequests.isEmpty && vm.errorMessage == null) {
-            Future.microtask(() => vm.getHistory());
-          }
-
           return Scaffold(
             floatingActionButton: const NavigateBackButton(),
             floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
             body: vm.isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ?  Center(child: CircularProgressIndicator(color: AppColors.red,))
                 : vm.errorMessage != null
                 ? Center(child: Text(vm.errorMessage!, style: const TextStyle(color: Colors.red)))
                 : vm.historyRequests.isEmpty

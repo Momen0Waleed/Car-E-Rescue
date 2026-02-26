@@ -38,7 +38,7 @@ class _MechanicAvailableRequestsViewState
       body: Consumer<MechanicAvailableRequestsViewModel>(
         builder: (context, vm, child) {
           if (vm.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator(color: AppColors.red,));
           }
 
           if (vm.errorMessage != null) {

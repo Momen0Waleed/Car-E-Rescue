@@ -4,11 +4,11 @@ import 'dart:io';
 import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import '../model/current_request_repo.dart';
+import '../model/mechanic_current_request_repo.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/available_requests/model/available_request_model.dart';
 
-class CurrentRequestViewModel extends ChangeNotifier {
-  final CurrentRequestRepo _repo = CurrentRequestRepo();
+class MechanicCurrentRequestViewModel extends ChangeNotifier {
+  final MechanicCurrentRequestRepo _repo = MechanicCurrentRequestRepo();
 
   AvailableRequestModel? currentRequest;
   bool isLoading = false;
@@ -16,6 +16,7 @@ class CurrentRequestViewModel extends ChangeNotifier {
   bool isActionLoading = false;
 
   Timer? _locationTimer;
+  DateTime? lastSyncedAt;
 
   @override
   void dispose() {
@@ -41,7 +42,35 @@ class CurrentRequestViewModel extends ChangeNotifier {
     }
   }
 
-  void startLocationUpdates() {
+  // mechanic_current_request_view_model.dart
+
+  Future<void> startLocationUpdates() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // 1. Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      SnackbarService.showErrorNotification("Location services are disabled.");
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        SnackbarService.showErrorNotification("Location permissions are denied.");
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      SnackbarService.showErrorNotification(
+          "Location permissions are permanently denied. Please enable them in settings."
+      );
+      return;
+    }
+
     _locationTimer?.cancel();
     _locationTimer = Timer.periodic(const Duration(seconds: 30), (timer) async {
       if (currentRequest == null) {
@@ -103,8 +132,17 @@ class CurrentRequestViewModel extends ChangeNotifier {
         stopLocationUpdates();
         SnackbarService.showSuccessNotification("You have arrived!");
       }
+      lastSyncedAt = DateTime.now(); // Update timestamp on success
+      notifyListeners(); //
     } catch (e) {
-      debugPrint("Location Update Error: $e");
+      if (e.toString() == "SERVER_ERROR_STOP_SYNC") {
+        stopLocationUpdates(); // Stop sending requests immediately
+        errorMessage = "Tracking suspended: Server error encountered.";
+        SnackbarService.showErrorNotification("Server error. Location tracking stopped.");
+        notifyListeners();
+      } else {
+        debugPrint("Sync failed: $e");
+      }
     }
   }
 

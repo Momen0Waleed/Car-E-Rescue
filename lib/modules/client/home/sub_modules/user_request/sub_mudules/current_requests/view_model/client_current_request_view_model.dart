@@ -1,13 +1,13 @@
-import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/model/current_request_repo.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/model/client_current_request_repo.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/model/user_request_model.dart';
 import 'package:flutter/material.dart';
 
-class CurrentRequestViewModel extends ChangeNotifier {
-  final CurrentRequestRepo _repo = CurrentRequestRepo();
+class ClientCurrentRequestViewModel extends ChangeNotifier {
+  final ClientCurrentRequestRepo _repo = ClientCurrentRequestRepo();
   UserRequestModel? currentRequest;
   bool isLoading = true;
 
-  CurrentRequestViewModel() {
+  ClientCurrentRequestViewModel() {
     loadCurrentRequest();
   }
 
@@ -16,8 +16,11 @@ class CurrentRequestViewModel extends ChangeNotifier {
     notifyListeners();
     try {
       currentRequest = await _repo.fetchCurrentRequest();
+      if (currentRequest != null) {
+      }
     } catch (e) {
-      debugPrint(e.toString());
+      // debugPrint(e.toString());
+      debugPrint("VIEWMODEL ERROR: $e");
     } finally {
       isLoading = false;
       notifyListeners();
@@ -37,6 +40,15 @@ class CurrentRequestViewModel extends ChangeNotifier {
     } finally {
       isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<bool> hasActiveRequest() async {
+    try {
+      final request = await _repo.fetchCurrentRequest();
+      return request != null;
+    } catch (e) {
+      return false;
     }
   }
 }

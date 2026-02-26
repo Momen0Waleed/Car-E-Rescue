@@ -1,9 +1,11 @@
+// ignore_for_file: avoid_print
+
 import 'package:car_e_rescue/core/constants/api/dio_client.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/available_requests/model/available_request_model.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CurrentRequestRepo {
+class MechanicCurrentRequestRepo {
   final Dio _dio = DioClient.instance;
 
   Future<AvailableRequestModel?> fetchCurrentRequest() async {
@@ -12,18 +14,23 @@ class CurrentRequestRepo {
       final token = prefs.getString('auth_token');
 
       final response = await _dio.get(
-        'requests/mechanic',
+        'requests/mechanic', // Ensure this matches the mechanic endpoint
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 
       if (response.statusCode == 200 && response.data['request'] != null) {
-        // Reuse your existing model since the fields match
         return AvailableRequestModel.fromJson(response.data['request']);
       }
-      return null; // No active request
+      return null;
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) return null;
-      throw e.response?.data['detail'] ?? "Failed to fetch current request";
+
+      if (e.response?.statusCode == 500) {
+        final detail = e.response?.data['detail']?.toString() ?? "";
+        // Pass the server detail so the ViewModel/View can read it
+        throw detail.isNotEmpty ? detail : "Internal Server Error";
+      }
+      rethrow;
     }
   }
 
@@ -60,8 +67,17 @@ class CurrentRequestRepo {
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        print("DEBUG: Location Sent Successfully. Server says: ${response.data['message']}"); //
+        return response.data;
+      }
+
       return response.data;
     } on DioException catch (e) {
+      if (e.response?.statusCode == 500) {
+        throw "SERVER_ERROR_STOP_SYNC"; // Custom key to identify the stop condition
+      }
       throw e.response?.data['detail'] ?? "Failed to update location";
     }
   }
