@@ -226,7 +226,7 @@ Widget _buildErrorState(BuildContext context, MechanicCurrentRequestViewModel vm
           Icon(
              Icons.hourglass_empty_rounded,
               size: 80,
-              color: Colors.grey.withOpacity(0.5)
+              color: AppColors.grey
           ),
           const SizedBox(height: 20),
 
