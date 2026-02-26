@@ -45,4 +45,25 @@ class CurrentRequestRepo {
       throw e.response?.data['detail'] ?? "Failed to cancel request";
     }
   }
+
+  Future<Map<String, dynamic>> updateLiveLocation(int requestId, double lat, double lng) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+
+      final response = await _dio.patch(
+        'mechanics/mechanic/live_location/$requestId',
+        queryParameters: {
+          'lat': lat,
+          'lng': lng,
+        },
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      return response.data;
+    } on DioException catch (e) {
+      throw e.response?.data['detail'] ?? "Failed to update location";
+    }
+  }
+
 }
