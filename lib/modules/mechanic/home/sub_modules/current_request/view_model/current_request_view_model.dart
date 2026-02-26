@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:flutter/material.dart';
@@ -56,10 +57,40 @@ class CurrentRequestViewModel extends ChangeNotifier {
     _locationTimer = null;
   }
 
+
   Future<void> _sendCurrentLocation() async {
     try {
+      late LocationSettings locationSettings;
+
+      if (Platform.isAndroid) {
+        locationSettings = AndroidSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 10,
+          forceLocationManager: true,
+          intervalDuration: const Duration(seconds: 30),
+          foregroundNotificationConfig: const ForegroundNotificationConfig(
+            notificationText: "Car-E-Rescue is tracking your location for an active request",
+            notificationTitle: "Service in Progress",
+            enableWakeLock: true,
+          ),
+        );
+      } else if (Platform.isIOS || Platform.isMacOS) {
+        locationSettings = AppleSettings(
+          accuracy: LocationAccuracy.high,
+          activityType: ActivityType.fitness,
+          distanceFilter: 10,
+          pauseLocationUpdatesAutomatically: false,
+          showBackgroundLocationIndicator: true,
+        );
+      } else {
+        locationSettings = const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 10,
+        );
+      }
+
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        locationSettings: locationSettings,
       );
 
       final result = await _repo.updateLiveLocation(
@@ -70,9 +101,7 @@ class CurrentRequestViewModel extends ChangeNotifier {
 
       if (result['arrived'] == true) {
         stopLocationUpdates();
-        SnackbarService.showSuccessNotification(
-          "You have arrived at the destination!",
-        );
+        SnackbarService.showSuccessNotification("You have arrived!");
       }
     } catch (e) {
       debugPrint("Location Update Error: $e");
