@@ -1,5 +1,6 @@
 // mechanic_live_location_view.dart
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
+import 'package:car_e_rescue/modules/widgets/navigate_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:provider/provider.dart';
@@ -41,6 +42,8 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> {
 
         return Scaffold(
           appBar: AppBar(title: Text(vm.hasArrived ? "Mechanic Arrived" : "Tracking Mechanic")),
+          floatingActionButton: NavigateBackButton(),
+          floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
           body: FlutterMap(
             options: MapOptions(
               initialCenter: vm.mechanicLocation!,

@@ -85,6 +85,7 @@ Widget _buildRequestDetails(BuildContext context,ClientCurrentRequestViewModel v
           // Text("Status: ${viewModel.currentRequest!.status}"),
           // Text("Mechanic: ${viewModel.currentRequest!.mechanicName ?? 'Finding Mechanic...'}"),
           // Text("Request ID: ${viewModel.currentRequest!.requestId ?? 'No Request ID'}"),
+          Spacer(),
           Stack(
             clipBehavior: Clip.none,
             children: [
@@ -227,10 +228,35 @@ Widget _buildRequestDetails(BuildContext context,ClientCurrentRequestViewModel v
               ),
             ],
           ),
-          SizedBox(height: 100,),
+          Spacer(),
           viewModel.currentRequest!.mechanicName == "----"
           ? const SizedBox()
-          : Text("Click on the Request to\nTrack the Mechanic's Location",textAlign: TextAlign.center,style:Theme.of(context).textTheme.bodyLarge,),
+          : Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.green.withValues(alpha: 0.75),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                 Icon(
+                  Icons.check_circle,
+                  color: AppColors.white,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    "Click on the Request to\nTrack the Mechanic's Location.",
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 30,)
 
         ],
       ),

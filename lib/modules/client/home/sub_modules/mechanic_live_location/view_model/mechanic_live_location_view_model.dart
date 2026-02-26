@@ -8,25 +8,58 @@ class MechanicLiveLocationViewModel extends ChangeNotifier {
   bool hasArrived = false;
   bool isError = false;
 
+  // void initTracking(int requestId) {
+  //   _repo.connectToTracking(requestId).listen(
+  //         (data) {
+  //       // Data format: {"lat": 30.12, "lng": 31.56, "arrived": false, ...}
+  //       mechanicLocation = LatLng(data['lat'], data['lng']);
+  //       hasArrived = data['arrived'] ?? false;
+  //       isError = false;
+  //
+  //       if (hasArrived) {
+  //         _repo.closeConnection();
+  //       }
+  //       notifyListeners();
+  //     },
+  //     onError: (error) {
+  //       debugPrint("WebSocket Error: $error");
+  //       isError = true;
+  //       notifyListeners();
+  //     },
+  //     onDone: () => debugPrint("WebSocket Connection Closed"),
+  //   );
+  // }
+
+  // mechanic_live_location_view_model.dart
   void initTracking(int requestId) {
+    debugPrint("DEBUG: ViewModel initTracking called for ID: $requestId");
+
     _repo.connectToTracking(requestId).listen(
           (data) {
-        // Data format: {"lat": 30.12, "lng": 31.56, "arrived": false, ...}
-        mechanicLocation = LatLng(data['lat'], data['lng']);
-        hasArrived = data['arrived'] ?? false;
-        isError = false;
+        debugPrint("DEBUG: Parsed Data: $data");
+        if (data.containsKey('lat')) {
+          mechanicLocation = LatLng(data['lat'], data['lng']);
+          hasArrived = data['arrived'] ?? false;
+          isError = false;
 
-        if (hasArrived) {
-          _repo.closeConnection();
+          if (hasArrived) {
+            debugPrint("DEBUG: Mechanic arrived. Closing...");
+            _repo.closeConnection();
+          }
+          notifyListeners();
+        } else {
+          debugPrint("DEBUG: Received message without 'lat' key: $data");
         }
-        notifyListeners();
       },
       onError: (error) {
-        debugPrint("WebSocket Error: $error");
+        debugPrint("DEBUG: ViewModel caught Error: $error");
         isError = true;
         notifyListeners();
       },
-      onDone: () => debugPrint("WebSocket Connection Closed"),
+      onDone: () {
+        debugPrint("DEBUG: WebSocket Stream Closed (onDone)");
+      },
+      cancelOnError: true,
     );
   }
 

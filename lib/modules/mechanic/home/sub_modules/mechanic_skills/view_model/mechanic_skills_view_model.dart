@@ -45,7 +45,6 @@ class MechanicSkillsViewModel extends ChangeNotifier {
       SnackbarService.showSuccessNotification("Skills updated successfully");
       return true;
     } catch (e) {
-      print(e);
       SnackbarService.showErrorNotification(e.toString());
       return false;
     } finally {

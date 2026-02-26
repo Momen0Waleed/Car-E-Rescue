@@ -17,7 +17,6 @@ class ClientCurrentRequestViewModel extends ChangeNotifier {
     try {
       currentRequest = await _repo.fetchCurrentRequest();
       if (currentRequest != null) {
-        print("VIEWMODEL: Loaded request ID ${currentRequest!.requestId}");
       }
     } catch (e) {
       // debugPrint(e.toString());

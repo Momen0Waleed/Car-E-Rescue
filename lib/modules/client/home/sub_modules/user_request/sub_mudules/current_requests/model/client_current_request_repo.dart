@@ -17,12 +17,10 @@ class ClientCurrentRequestRepo {
       );
 
       if (response.statusCode == 200) {
-        print("API SUCCESS: ${response.data}");
         if (response.data['current request'] != null) {
           return UserRequestModel.fromJson(response.data['current request']);
         }
       }
-      print("API EMPTY: No current request found");
       return null;
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) return null;
