@@ -45,6 +45,17 @@ class CreateRequestViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
+      // final currentReqRepo = ClientCurrentRequestRepo();
+      // final existing = await currentReqRepo.fetchCurrentRequest();
+      //
+      // if (existing != null) {
+      //   _errorMessage = "A request is already in progress.";
+      //   _isLoading = false;
+      //   notifyListeners();
+      //   return;
+      // }
+
+
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) throw 'Location services are disabled.';
 
@@ -61,8 +72,8 @@ class CreateRequestViewModel extends ChangeNotifier {
       Position position = await Geolocator.getCurrentPosition();
       _latitude = position.latitude;
       _longitude = position.longitude;
+      _mapController.move(LatLng(_latitude!, _longitude!), 15.0);
 
-      // Move camera using move() instead of animateCamera
       _mapController.move(LatLng(_latitude!, _longitude!), 15.0);
     } catch (e) {
       _errorMessage = e.toString();
@@ -113,29 +124,25 @@ class CreateRequestViewModel extends ChangeNotifier {
 
 
   Future<bool> finalizeRequest() async {
-
     token ??= await _repository.getSavedToken();
-
-    if (token == null) {
-      return false;
-    }
+    if (token == null) return false;
 
     _isLoading = true;
     _errorMessage = null;
-    notifyListeners();
+    notifyListeners(); // Start spinner
 
     try {
-
       _requestStatus = await _requestRepo.createRescueRequest(
         requestType: _selectedRequestType,
         token: token!,
       );
-
       return true;
     } catch (e) {
+      // This captures the 500 error and stores the message
       _errorMessage = e.toString();
       return false;
     } finally {
+      // This MUST run to stop the CircularProgressIndicator
       _isLoading = false;
       notifyListeners();
     }

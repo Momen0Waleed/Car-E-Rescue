@@ -18,9 +18,11 @@ class ClientHomeView extends StatelessWidget {
         centerTitle: false,
         automaticallyImplyLeading: false,
         backgroundColor: AppColors.red,
-        title: Text(
-          "Welcome, ${user?.name ?? 'Client'}",
-          style: TextStyle(color: AppColors.white),
+        title: FittedBox(
+          child: Text(
+            "Welcome, ${user?.name ?? 'Client'}",
+            style: TextStyle(color: AppColors.white),
+          ),
         ),
         actionsPadding: EdgeInsetsGeometry.all(0),
         actions: [
@@ -34,12 +36,6 @@ class ClientHomeView extends StatelessWidget {
           SizedBox(width: 20),
         ],
       ),
-      // you can also use this structure instead of using "user" parameter
-      //   Consumer<UserProvider>(
-      //     builder: (context, userProvider, child) {
-      //       return Text("Welcome, ${userProvider.currentUser?.name ?? 'Guest'}");
-      //     },
-      //   )
       body: Container(
         color: AppColors.red,
         child: Container(

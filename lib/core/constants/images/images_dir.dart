@@ -7,6 +7,8 @@ abstract class ImagesDir{
   static const String currentRequestIcon = "assets/icons/current_request_icon.png";
 
   static const String noRequestsYet = "assets/icons/no_delevary.png";
+  static const String activeOutlined = "assets/icons/active_outlined.png";
+  static const String activeFilled = "assets/icons/active_black.png";
 
 
 }
