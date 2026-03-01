@@ -41,7 +41,6 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> {
         }
 
         return Scaffold(
-          appBar: AppBar(title: Text(vm.hasArrived ? "Mechanic Arrived" : "Tracking Mechanic")),
           floatingActionButton: NavigateBackButton(),
           floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
           body: FlutterMap(

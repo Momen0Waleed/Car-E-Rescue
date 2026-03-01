@@ -51,7 +51,7 @@ class ClientHomeView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TwoValueCircle(completed: 80, canceled: 20),
+                  TwoValueCircle(completed: 16, canceled: 3),
                   SizedBox(height: 30),
                   Bounceable(
                     duration: Duration(milliseconds: 400),
