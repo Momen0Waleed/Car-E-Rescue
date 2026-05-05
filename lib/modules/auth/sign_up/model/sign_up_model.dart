@@ -45,12 +45,12 @@ class UserModel {
       totalJobs: map['total jops'] is int
           ? map['total jops']
           : int.tryParse(map['total jops']?.toString() ?? '0') ?? 0,
-      workshopName: map['workshop name'],
-      experienceYears: map['experince years'] is String
-          ? int.tryParse(map['experince years'])
-          : map['experince years'] as int?,
-      carType: map['car type'],
-      carModel: map['car model'],
+      workshopName: map['workshop name'] ?? map['workshop_name'],
+      experienceYears: map['experince years'] != null
+          ? (map['experince years'] is String ? int.tryParse(map['experince years']) : map['experince years'] as int?)
+          : (map['experience_years'] is String ? int.tryParse(map['experience_years']) : map['experience_years'] as int?),
+      carType: map['car type'] ?? map['car_type'],
+      carModel: map['car model'] ?? map['car_model'],
     );
   }
 
@@ -101,12 +101,12 @@ class UserModel {
       totalJobs: data['total jops'] is int
           ? data['total jops']
           : int.tryParse(data['total jops']?.toString() ?? '0') ?? 0,
-      workshopName: data['workshop name'],
-      experienceYears: data['experince years'] is String
-          ? int.tryParse(data['experince years'])
-          : data['experince years'] as int?,
-      carType: data['car type'],
-      carModel: data['car model'],
+      workshopName: data['workshop name'] ?? data['workshop_name'],
+      experienceYears: data['experince years'] != null
+          ? (data['experince years'] is String ? int.tryParse(data['experince years']) : data['experince years'] as int?)
+          : (data['experience_years'] is String ? int.tryParse(data['experience_years']) : data['experience_years'] as int?),
+      carType: data['car type'] ?? data['car_type'],
+      carModel: data['car model'] ?? data['car_model'],
     );
   }
 }

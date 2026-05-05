@@ -11,7 +11,7 @@
 
 
     <application
-        android:label="car_e_rescue"
+        android:label="Car E-Rescue"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
