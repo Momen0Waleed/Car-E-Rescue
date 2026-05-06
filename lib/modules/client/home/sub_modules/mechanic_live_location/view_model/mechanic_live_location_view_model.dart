@@ -1,54 +1,68 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
 import '../model/mechanic_live_location_repo.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/model/client_current_request_repo.dart';
 
 class MechanicLiveLocationViewModel extends ChangeNotifier {
   final MechanicLiveLocationRepo _repo = MechanicLiveLocationRepo();
+  final ClientCurrentRequestRepo _requestRepo = ClientCurrentRequestRepo();
   LatLng? mechanicLocation;
+  LatLng? userLocation;
   bool hasArrived = false;
   bool isError = false;
+  String mechanicStatus = "On his way";
+  Timer? _statusTimer;
 
-  // void initTracking(int requestId) {
-  //   _repo.connectToTracking(requestId).listen(
-  //         (data) {
-  //       // Data format: {"lat": 30.12, "lng": 31.56, "arrived": false, ...}
-  //       mechanicLocation = LatLng(data['lat'], data['lng']);
-  //       hasArrived = data['arrived'] ?? false;
-  //       isError = false;
-  //
-  //       if (hasArrived) {
-  //         _repo.closeConnection();
-  //       }
-  //       notifyListeners();
-  //     },
-  //     onError: (error) {
-  //       debugPrint("WebSocket Error: $error");
-  //       isError = true;
-  //       notifyListeners();
-  //     },
-  //     onDone: () => debugPrint("WebSocket Connection Closed"),
-  //   );
-  // }
+  Future<void> fetchUserLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition();
+      userLocation = LatLng(position.latitude, position.longitude);
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Error fetching user location: $e");
+    }
+  }
 
   // mechanic_live_location_view_model.dart
   void initTracking(int requestId) {
     debugPrint("DEBUG: ViewModel initTracking called for ID: $requestId");
+    fetchUserLocation();
+
+    _fetchStatus();
+    _statusTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      _fetchStatus();
+    });
 
     _repo.connectToTracking(requestId).listen(
           (data) {
         debugPrint("DEBUG: Parsed Data: $data");
-        if (data.containsKey('lat')) {
-          mechanicLocation = LatLng(data['lat'], data['lng']);
-          hasArrived = data['arrived'] ?? false;
-          isError = false;
+        final rawLat = data['lat'] ?? data['latitude'];
+        final rawLng = data['lng'] ?? data['longitude'];
 
-          if (hasArrived) {
-            debugPrint("DEBUG: Mechanic arrived. Closing...");
-            _repo.closeConnection();
+        if (rawLat != null && rawLng != null) {
+          final lat = double.tryParse(rawLat.toString());
+          final lng = double.tryParse(rawLng.toString());
+          
+          if (lat != null && lng != null) {
+            mechanicLocation = LatLng(lat, lng);
+            hasArrived = data['arrived'] ?? false;
+            isError = false;
+
+            if (hasArrived) {
+              mechanicStatus = "Arrived";
+              debugPrint("DEBUG: Mechanic arrived. Closing...");
+              _repo.closeConnection();
+            } else {
+              if (mechanicStatus != "Arrived") mechanicStatus = "On his way";
+            }
+            notifyListeners();
+          } else {
+            debugPrint("DEBUG: Failed to parse lat/lng: rawLat=$rawLat, rawLng=$rawLng");
           }
-          notifyListeners();
         } else {
-          debugPrint("DEBUG: Received message without 'lat' key: $data");
+          debugPrint("DEBUG: Received message without lat/lng keys: $data");
         }
       },
       onError: (error) {
@@ -63,8 +77,26 @@ class MechanicLiveLocationViewModel extends ChangeNotifier {
     );
   }
 
+  Future<void> _fetchStatus() async {
+    try {
+      final request = await _requestRepo.fetchCurrentRequest();
+      if (request != null) {
+        if (request.status.toLowerCase() == 'arrived') {
+          mechanicStatus = "Arrived";
+          hasArrived = true;
+        } else if (request.status.toLowerCase() == 'accepted' || request.status.toLowerCase() == 'on the way') {
+          if (!hasArrived) mechanicStatus = "On his way";
+        }
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint("Error fetching status: $e");
+    }
+  }
+
   @override
   void dispose() {
+    _statusTimer?.cancel();
     _repo.closeConnection();
     super.dispose();
   }

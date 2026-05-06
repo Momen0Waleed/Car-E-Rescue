@@ -19,13 +19,13 @@ class AvailableRequestModel {
 
   factory AvailableRequestModel.fromJson(Map<String, dynamic> json) {
     return AvailableRequestModel(
-      requestId: json['request id'] ?? 0,
-      userName: json['user name'] ?? 'Unknown',
+      requestId: json['request id'] ?? json['request_id'] ?? json['id'] ?? 0,
+      userName: json['user name'] ?? json['user_name'] ?? 'Unknown',
       type: json['type'] ?? 'General',
-      lat: (json['request lat'] ?? 0.0).toDouble(),
-      lng: (json['request lng'] ?? 0.0).toDouble(),
-      distance: (json['distance in km'] ?? 0.0).toDouble(),
-      createdAt: DateTime.parse(json['created at']),
+      lat: (json['request lat'] ?? json['request_lat'] ?? json['lat'] ?? 0.0).toDouble(),
+      lng: (json['request lng'] ?? json['request_lng'] ?? json['lng'] ?? 0.0).toDouble(),
+      distance: (json['distance in km'] ?? json['distance_in_km'] ?? json['distance'] ?? 0.0).toDouble(),
+      createdAt: DateTime.tryParse(json['created at'] ?? json['created_at'] ?? '') ?? DateTime.now(),
     );
   }
 }

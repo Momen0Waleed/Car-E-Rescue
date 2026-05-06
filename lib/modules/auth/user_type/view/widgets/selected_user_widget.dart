@@ -30,7 +30,7 @@ class _SelectedUserWidgetState extends State<SelectedUserWidget> {
               decoration: BoxDecoration(
                 color: provider.setSelectedContainerColor(),
                 borderRadius: BorderRadius.circular(16),
-                border: BoxBorder.all(width: 1, color: AppColors.red),
+                border: Border.all(width: 1, color: AppColors.red),
               ),
               child: Center(
                 child: Column(
@@ -69,7 +69,7 @@ class _SelectedUserWidgetState extends State<SelectedUserWidget> {
               decoration: BoxDecoration(
                 color: provider.setUnSelectedContainerColor(),
                 borderRadius: BorderRadius.circular(16),
-                border: BoxBorder.all(width: 1, color: AppColors.red),
+                border: Border.all(width: 1, color: AppColors.red),
               ),
               child: Center(
                 child: Column(

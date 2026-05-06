@@ -22,18 +22,13 @@ class MechanicLiveLocationRepo {
       host: '10.0.2.2',
       port: 8000,
       path: path,
+      queryParameters: {'token': token},
     );
 
-    debugPrint("DEBUG: Connecting with Header Auth to: ${uri.toString()}");
+    debugPrint("DEBUG: Connecting with Query Auth to: ${uri.toString()}");
 
     try {
-      _channel = IOWebSocketChannel.connect(
-        uri,
-        headers: {
-          'Authorization': 'Bearer $token', // This satisfies require_user_ws
-          'Origin': 'http://10.0.2.2:8000',
-        },
-      );
+      _channel = IOWebSocketChannel.connect(uri);
 
       yield* _channel!.stream.map((data) {
         debugPrint("DEBUG: Data received: $data");

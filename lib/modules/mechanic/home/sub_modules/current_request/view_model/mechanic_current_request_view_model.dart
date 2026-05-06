@@ -15,7 +15,7 @@ class MechanicCurrentRequestViewModel extends ChangeNotifier {
   String? errorMessage;
   bool isActionLoading = false;
 
-  Timer? _locationTimer;
+  StreamSubscription<Position>? _positionStream;
   DateTime? lastSyncedAt;
 
   @override
@@ -71,57 +71,54 @@ class MechanicCurrentRequestViewModel extends ChangeNotifier {
       return;
     }
 
-    _locationTimer?.cancel();
-    _locationTimer = Timer.periodic(const Duration(seconds: 30), (timer) async {
-      if (currentRequest == null) {
-        timer.cancel();
-        return;
+    stopLocationUpdates();
+
+    late LocationSettings locationSettings;
+
+    if (Platform.isAndroid) {
+      locationSettings = AndroidSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+        forceLocationManager: true,
+        intervalDuration: const Duration(seconds: 5), // Changed from 30s to 5s for smoother stream
+        foregroundNotificationConfig: const ForegroundNotificationConfig(
+          notificationText: "Car-E-Rescue is tracking your location for an active request",
+          notificationTitle: "Service in Progress",
+          enableWakeLock: true,
+        ),
+      );
+    } else if (Platform.isIOS || Platform.isMacOS) {
+      locationSettings = AppleSettings(
+        accuracy: LocationAccuracy.high,
+        activityType: ActivityType.fitness,
+        distanceFilter: 10,
+        pauseLocationUpdatesAutomatically: false,
+        showBackgroundLocationIndicator: true,
+      );
+    } else {
+      locationSettings = const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+      );
+    }
+
+    _positionStream = Geolocator.getPositionStream(locationSettings: locationSettings)
+        .listen((Position? position) async {
+      if (position != null && currentRequest != null) {
+        await _sendLocationUpdate(position);
+      } else if (currentRequest == null) {
+        stopLocationUpdates();
       }
-      await _sendCurrentLocation();
     });
   }
 
   void stopLocationUpdates() {
-    _locationTimer?.cancel();
-    _locationTimer = null;
+    _positionStream?.cancel();
+    _positionStream = null;
   }
 
-
-  Future<void> _sendCurrentLocation() async {
+  Future<void> _sendLocationUpdate(Position position) async {
     try {
-      late LocationSettings locationSettings;
-
-      if (Platform.isAndroid) {
-        locationSettings = AndroidSettings(
-          accuracy: LocationAccuracy.high,
-          distanceFilter: 10,
-          forceLocationManager: true,
-          intervalDuration: const Duration(seconds: 30),
-          foregroundNotificationConfig: const ForegroundNotificationConfig(
-            notificationText: "Car-E-Rescue is tracking your location for an active request",
-            notificationTitle: "Service in Progress",
-            enableWakeLock: true,
-          ),
-        );
-      } else if (Platform.isIOS || Platform.isMacOS) {
-        locationSettings = AppleSettings(
-          accuracy: LocationAccuracy.high,
-          activityType: ActivityType.fitness,
-          distanceFilter: 10,
-          pauseLocationUpdatesAutomatically: false,
-          showBackgroundLocationIndicator: true,
-        );
-      } else {
-        locationSettings = const LocationSettings(
-          accuracy: LocationAccuracy.high,
-          distanceFilter: 10,
-        );
-      }
-
-      Position position = await Geolocator.getCurrentPosition(
-        locationSettings: locationSettings,
-      );
-
       final result = await _repo.updateLiveLocation(
         currentRequest!.requestId,
         position.latitude,

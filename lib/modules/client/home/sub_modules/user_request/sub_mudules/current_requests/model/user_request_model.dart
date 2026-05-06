@@ -22,13 +22,13 @@ class UserRequestModel {
 
   factory UserRequestModel.fromJson(Map<String, dynamic> json) {
     return UserRequestModel(
-      requestId: json['request id'],
-      mechanicId: json['mechanic id'],
-      mechanicName: json['mechanic name'],
+      requestId: json['request id'] ?? json['request_id'] ?? json['id'],
+      mechanicId: json['mechanic id'] ?? json['mechanic_id'],
+      mechanicName: json['mechanic name'] ?? json['mechanic_name'],
       status: json['status'] ?? 'Unknown',
       type: json['type'] ?? 'General',
-      createdAt: json['created at'] ?? '',
-      completedAt: json['completed at'],
+      createdAt: json['created at'] ?? json['created_at'] ?? '',
+      completedAt: json['completed at'] ?? json['completed_at'],
     );
   }
 }
