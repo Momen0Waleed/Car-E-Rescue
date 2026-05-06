@@ -53,6 +53,25 @@ class MechanicCurrentRequestRepo {
     }
   }
 
+  Future<String> completeRequest() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+
+      final response = await _dio.patch(
+        'requests/mechanic/complete',
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data['message'] ?? "Request completed successfully";
+      }
+      throw "Unexpected error during completion";
+    } on DioException catch (e) {
+      throw e.response?.data['detail'] ?? "Failed to complete request";
+    }
+  }
+
   Future<Map<String, dynamic>> updateLiveLocation(int requestId, double lat, double lng) async {
     try {
       final prefs = await SharedPreferences.getInstance();

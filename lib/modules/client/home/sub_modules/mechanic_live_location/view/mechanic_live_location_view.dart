@@ -1,5 +1,6 @@
 // mechanic_live_location_view.dart
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
+import 'package:car_e_rescue/core/routes/page_routes_name.dart';
 import 'package:car_e_rescue/modules/widgets/navigate_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -36,6 +37,8 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> wit
     });
   }
 
+  bool _hasNavigatedToRating = false;
+
   void _onLocationUpdate() {
     if (_vm.mechanicLocation != null) {
       try {
@@ -43,6 +46,18 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> wit
       } catch (_) {
         // Map not fully initialized yet, it's fine.
       }
+    }
+    
+    if (_vm.hasArrived && !_hasNavigatedToRating) {
+      _hasNavigatedToRating = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          Navigator.of(context).pushReplacementNamed(
+            PageRoutesName.clientRating,
+            arguments: widget.requestId,
+          );
+        }
+      });
     }
   }
 

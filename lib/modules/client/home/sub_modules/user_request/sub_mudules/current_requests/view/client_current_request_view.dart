@@ -28,10 +28,10 @@ class _CurrentRequestViewState extends State<ClientCurrentRequestView> {
             floatingActionButton: NavigateBackButton(),
             floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
             body: viewModel.isLoading
-                ? Center(child: CircularProgressIndicator(color: AppColors.red,))
+                ? Center(child: CircularProgressIndicator(color: AppColors.red))
                 : viewModel.currentRequest == null
                 ? _buildEmptyState(context)
-                : _buildRequestDetails(context,viewModel),
+                : _buildRequestDetails(context, viewModel),
           );
         },
       ),
@@ -57,14 +57,13 @@ Widget _buildEmptyState(BuildContext context) {
             ),
           ),
           const SizedBox(height: 10),
-          Image.asset(ImagesDir.noRequestsYet,width: 50,height: 50,),
+          Image.asset(ImagesDir.noRequestsYet, width: 50, height: 50),
 
           const SizedBox(height: 20),
           CustomButton(
             width: MediaQuery.of(context).size.width / 1.5,
-            action: () => Navigator.of(
-              context,
-            ).pushNamed(PageRoutesName.createRequest),
+            action: () =>
+                Navigator.of(context).pushNamed(PageRoutesName.createRequest),
             text: "Create a New Request",
             color: AppColors.red,
           ),
@@ -74,7 +73,10 @@ Widget _buildEmptyState(BuildContext context) {
   );
 }
 
-Widget _buildRequestDetails(BuildContext context,ClientCurrentRequestViewModel viewModel) {
+Widget _buildRequestDetails(
+  BuildContext context,
+  ClientCurrentRequestViewModel viewModel,
+) {
   return Center(
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -90,24 +92,35 @@ Widget _buildRequestDetails(BuildContext context,ClientCurrentRequestViewModel v
             clipBehavior: Clip.none,
             children: [
               Bounceable(
-                onTap: (){
+                onTap: () {
                   ///TODO: view the mechanic current location
-                    final request = viewModel.currentRequest!;
+                  final request = viewModel.currentRequest!;
 
-                    if (request.requestId != null && request.status == "Accepted") {
+                  if (request.requestId != null) {
+                    if (request.status == "Accepted" ||
+                        request.status == "On the way") {
                       Navigator.pushNamed(
                         context,
                         PageRoutesName.mechanicLiveLocation,
                         arguments: request.requestId,
                       );
-                    } else if (request.status != "Accepted") {
-                      SnackbarService.showErrorNotification(
-                          "Mechanic has not accepted the request yet. Current Status: ${request.status}"
+                    } else if (request.status == "Arrived" ||
+                        request.status == "Completed") {
+                      Navigator.pushNamed(
+                        context,
+                        PageRoutesName.clientRating,
+                        arguments: request.requestId,
                       );
                     } else {
-                      SnackbarService.showErrorNotification("Error: Missing Request ID.");
+                      SnackbarService.showErrorNotification(
+                        "Mechanic has not accepted the request yet. Current Status: ${request.status}",
+                      );
                     }
-
+                  } else {
+                    SnackbarService.showErrorNotification(
+                      "Error: Missing Request ID.",
+                    );
+                  }
                 },
                 child: Container(
                   width: double.infinity,
@@ -182,7 +195,7 @@ Widget _buildRequestDetails(BuildContext context,ClientCurrentRequestViewModel v
                                 spacing: 10,
                                 children: [
                                   Text(
-                                    "Mechanic: \n${viewModel.currentRequest!.mechanicName} has Accepted your request",
+                                    "Mechanic: \n${viewModel.currentRequest!.mechanicName}\nhas Accepted\nyour request",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize: 16,
@@ -191,7 +204,11 @@ Widget _buildRequestDetails(BuildContext context,ClientCurrentRequestViewModel v
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),
-                                  Icon(Icons.check_circle,color: AppColors.green,size: 45,)
+                                  Icon(
+                                    Icons.check_circle,
+                                    color: AppColors.green,
+                                    size: 45,
+                                  ),
                                 ],
                               ),
                             ),
@@ -209,7 +226,7 @@ Widget _buildRequestDetails(BuildContext context,ClientCurrentRequestViewModel v
                       await viewModel.deleteCurrentRequest();
                       // if (success && context.mounted) {
                       //   3. Navigate back to Home or show success
-                        // Navigator.of(context).pushReplacementNamed(PageRoutesName.clientHome);
+                      // Navigator.of(context).pushReplacementNamed(PageRoutesName.clientHome);
                       // }
                     }
                   },
@@ -219,8 +236,7 @@ Widget _buildRequestDetails(BuildContext context,ClientCurrentRequestViewModel v
                     decoration: BoxDecoration(
                       color: AppColors.red,
                       borderRadius: BorderRadius.circular(60),
-                      border: Border.all(color: AppColors.white,
-                      width: 3)
+                      border: Border.all(color: AppColors.white, width: 3),
                     ),
                     child: Icon(Icons.delete_rounded, color: AppColors.white),
                   ),
@@ -230,34 +246,30 @@ Widget _buildRequestDetails(BuildContext context,ClientCurrentRequestViewModel v
           ),
           Spacer(),
           viewModel.currentRequest!.mechanicName == "----"
-          ? const SizedBox()
-          : Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppColors.green.withValues(alpha: 0.75),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: [
-                 Icon(
-                  Icons.check_circle,
-                  color: AppColors.white,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    "Click on the Request to\nTrack the Mechanic's Location.",
-                    style: TextStyle(
-                      color: AppColors.white,
-                      fontSize: 13,
-                    ),
+              ? const SizedBox()
+              : Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.green.withValues(alpha: 0.75),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.check_circle, color: AppColors.white),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          "Click on the Request to\nTrack the Mechanic's Location.",
+                          style: TextStyle(
+                            color: AppColors.white,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ),
-          SizedBox(height: 30,)
-
+          SizedBox(height: 30),
         ],
       ),
     ),

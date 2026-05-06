@@ -24,6 +24,11 @@ class ClientCurrentRequestRepo {
       return null;
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) return null;
+      // Handle backend bug where 404 is wrapped in a 500 exception
+      if (e.response?.statusCode == 500 && 
+          e.response?.data?['detail']?.toString().contains('404: no request') == true) {
+        return null;
+      }
       rethrow;
     }
   }

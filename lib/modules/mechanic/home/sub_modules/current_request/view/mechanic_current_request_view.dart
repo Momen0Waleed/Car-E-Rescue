@@ -103,60 +103,84 @@ class MechanicCurrentRequestView extends StatelessWidget {
           bottom: 20,
           left: 15,
           right: 15,
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    "Active Request",
-                    style: TextStyle(
-                      color: AppColors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const Divider(),
-                  ListTile(
-                    title: Text(request.userName),
-                    subtitle: Text("Service: ${request.type}"),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.phone, color: Colors.green),
-                      onPressed: () {
-                        /* Implement call logic */
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  // ElevatedButton(
-                  //   style: ElevatedButton.styleFrom(
-                  //       backgroundColor: AppColors.red,
-                  //       minimumSize: const Size(double.infinity, 50)
-                  //   ),
-                  //   onPressed: () { /* Implement complete logic */ },
-                  //   child: const Text("Complete Request", style: TextStyle(color: Colors.white)),
-                  // )
-                  CustomButton(
-                    color: AppColors.red,
-                    action: vm.isActionLoading
-                        ? () {}
+                  FloatingActionButton.extended(
+                    onPressed: vm.isActionLoading
+                        ? null
                         : () async {
-                      final confirm = await showCancelConfirmationDialog(context);
-                      if (confirm == true) {
-                        bool success = await vm.cancelCurrentRequest();
-                        if (success && context.mounted) {
-                          Navigator.of(context).pop();
-                        }
-                      }
-                    },
-                    text: vm.isActionLoading ? "Canceling..." : "Cancel Request",
+                            bool success = await vm.completeCurrentRequest();
+                            if (success && context.mounted) {
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                PageRoutesName.mechanicHome,
+                                (route) => false,
+                              );
+                            }
+                          },
+                    backgroundColor: Colors.green,
+                    icon: vm.isActionLoading 
+                        ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                        : const Icon(Icons.check, color: Colors.white),
+                    label: Text(
+                      vm.isActionLoading ? "Completing..." : "COMPLETE",
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),
-            ),
+              const SizedBox(height: 10),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Active Request",
+                        style: TextStyle(
+                          color: AppColors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Divider(),
+                      ListTile(
+                        title: Text(request.userName),
+                        subtitle: Text("Service: ${request.type}"),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.phone, color: Colors.green),
+                          onPressed: () {
+                            /* Implement call logic */
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      CustomButton(
+                        color: AppColors.red,
+                        action: vm.isActionLoading
+                            ? () {}
+                            : () async {
+                          final confirm = await showCancelConfirmationDialog(context);
+                          if (confirm == true) {
+                            bool success = await vm.cancelCurrentRequest();
+                            if (success && context.mounted) {
+                              Navigator.of(context).pop();
+                            }
+                          }
+                        },
+                        text: vm.isActionLoading ? "Processing..." : "Cancel Request",
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],

@@ -14,6 +14,7 @@ class MechanicCurrentRequestViewModel extends ChangeNotifier {
   bool isLoading = false;
   String? errorMessage;
   bool isActionLoading = false;
+  bool hasArrived = false;
 
   StreamSubscription<Position>? _positionStream;
   DateTime? lastSyncedAt;
@@ -126,6 +127,7 @@ class MechanicCurrentRequestViewModel extends ChangeNotifier {
       );
 
       if (result['arrived'] == true) {
+        hasArrived = true;
         stopLocationUpdates();
         SnackbarService.showSuccessNotification("You have arrived!");
       }
@@ -150,6 +152,26 @@ class MechanicCurrentRequestViewModel extends ChangeNotifier {
       await _repo.cancelRequest();
       stopLocationUpdates();
       currentRequest = null;
+      hasArrived = false;
+      return true;
+    } catch (e) {
+      SnackbarService.showErrorNotification(e.toString());
+      return false;
+    } finally {
+      isActionLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> completeCurrentRequest() async {
+    isActionLoading = true;
+    notifyListeners();
+    try {
+      await _repo.completeRequest();
+      stopLocationUpdates();
+      currentRequest = null;
+      hasArrived = false;
+      SnackbarService.showSuccessNotification("Request completed successfully!");
       return true;
     } catch (e) {
       SnackbarService.showErrorNotification(e.toString());

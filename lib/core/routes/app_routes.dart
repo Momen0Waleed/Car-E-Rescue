@@ -25,6 +25,7 @@ import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_skills/v
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_skills/view_model/mechanic_skills_view_model.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/workshop_location/view/workshop_location_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/view/mechanic_home_view.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/rating/view/rating_view.dart';
 import 'package:car_e_rescue/modules/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -101,6 +102,9 @@ abstract class AppRoutes {
             child: MechanicLiveLocationView(requestId: requestId),
           ),
         );
+      case PageRoutesName.clientRating:
+        final requestId = settings.arguments as int;
+        return _slideRoute(RatingView(requestId: requestId));
 
       default:
         return _slideRoute(const SplashScreen());
