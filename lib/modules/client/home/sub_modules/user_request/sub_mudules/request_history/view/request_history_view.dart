@@ -1,12 +1,12 @@
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/request_history/view_model/request_history_view_model.dart';
-import 'package:car_e_rescue/modules/widgets/custom_button.dart';
-import 'package:car_e_rescue/modules/widgets/navigate_back_button.dart';
+import 'package:car_e_rescue/modules/client/home/view/widgets/client_custom_button.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/rating/model/rating_repo.dart';
-import 'package:car_e_rescue/modules/client/home/sub_modules/rating/model/rating_model.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/model/user_request_model.dart';
+import 'package:car_e_rescue/modules/widgets/default_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:provider/provider.dart';
 
 class RequestHistoryView extends StatefulWidget {
@@ -24,13 +24,10 @@ class _RequestHistoryViewState extends State<RequestHistoryView> {
       child: Consumer<RequestHistoryViewModel>(
         builder: (context, viewModel, child) {
           return Scaffold(
-            floatingActionButton: NavigateBackButton(),
-            floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+            appBar: defaultAppBar(title: "Request History", context: context),
             body: viewModel.isLoading
                 ? Center(child: CircularProgressIndicator(color: AppColors.red))
-                : viewModel
-                      .historyRequests
-                      .isEmpty // Check for empty list
+                : viewModel.historyRequests.isEmpty
                 ? _buildEmptyState(context)
                 : _buildHistoryList(context, viewModel),
           );
@@ -43,27 +40,48 @@ class _RequestHistoryViewState extends State<RequestHistoryView> {
 Widget _buildEmptyState(BuildContext context) {
   return Center(
     child: Padding(
-      padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: AppColors.red.withOpacity(0.08),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.history_rounded, size: 72, color: AppColors.red),
+          ),
+          const SizedBox(height: 24),
           Text(
-            "You have no completed/canceled requests yet",
+            "No rescue history",
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 22,
               fontFamily: "Poppins",
-              fontWeight: FontWeight.w400,
-              color: AppColors.red,
+              fontWeight: FontWeight.w800,
+              color: AppColors.black,
             ),
           ),
-          const SizedBox(height: 20),
-          CustomButton(
+          const SizedBox(height: 8),
+          Text(
+            "Your completed and canceled rescue requests will show up here.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 14,
+              fontFamily: "Poppins",
+              fontWeight: FontWeight.w600,
+              color: AppColors.grey,
+            ),
+          ),
+          const SizedBox(height: 32),
+          ClientCustomButton(
             width: MediaQuery.of(context).size.width / 1.5,
             action: () =>
                 Navigator.of(context).pushNamed(PageRoutesName.createRequest),
-            text: "Create a New Request",
+            text: "Create New Request",
             color: AppColors.red,
+            useGradient: true,
           ),
         ],
       ),
@@ -76,85 +94,178 @@ Widget _buildHistoryList(
   RequestHistoryViewModel viewModel,
 ) {
   return ListView.builder(
-    padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20),
-    itemCount: viewModel.historyRequests.length + 1,
+    physics: const BouncingScrollPhysics(),
+    padding: const EdgeInsets.only(left: 20, right: 20, top: 16, bottom: 20),
+    itemCount: viewModel.historyRequests.length,
     itemBuilder: (context, index) {
-      if (index == 0) {
-        return const SizedBox(height: 120);
-      }
+      final request = viewModel.historyRequests[index];
+      final isCompleted = request.status.toLowerCase() == "completed";
+      final Color statusColor = isCompleted ? AppColors.green : AppColors.red;
 
-      final request = viewModel.historyRequests[index - 1];
-
-      final Color cardColor = request.status.toLowerCase() == "completed"
-          ? Colors.green
-          : AppColors.red;
-
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 12.0),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: cardColor, // Dynamic color applied here
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: IntrinsicHeight(
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Type: ${request.type}", style: _cardTextStyle()),
-                      const SizedBox(height: 10),
-                      Text(
-                        "Status: ${request.status}",
-                        style: _cardTextStyle(),
-                      ),
-                    ],
-                  ),
-                ),
-                const VerticalDivider(color: Colors.white24, thickness: 1),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        "Mechanic",
-                        style: TextStyle(color: Colors.white70, fontSize: 12),
-                      ),
-                      Text(
-                        request.mechanicName ?? "N/A",
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: cardColor,
-                          minimumSize: const Size(80, 30),
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                        ),
-                        onPressed: () =>
-                            _showRatingSheet(context, viewModel, request),
-                        child: Text(
-                          viewModel.userRatings.containsKey(request.requestId)
-                              ? "Edit Rating"
-                              : "Rate",
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+      return TweenAnimationBuilder<double>(
+        tween: Tween<double>(begin: 0.0, end: 1.0),
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeOutCubic,
+        builder: (context, val, childWidget) {
+          return Opacity(
+            opacity: val,
+            child: Transform.translate(
+              offset: Offset(0, 30 * (1 - val)),
+              child: childWidget,
+            ),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 16.0),
+          child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.black.withOpacity(0.04),
+                  blurRadius: 14,
+                  offset: const Offset(0, 6),
                 ),
               ],
+              border: Border.all(
+                color: AppColors.grey.withOpacity(0.12),
+                width: 1.5,
+              ),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: IntrinsicHeight(
+                child: Row(
+                  children: [
+                    // Status vertical line indicator
+                    Container(width: 6, color: statusColor),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 11,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    request.type ?? "Emergency Rescue",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w800,
+                                      color: AppColors.black,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 8,
+                                        height: 8,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: statusColor,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Expanded(
+                                        child: Text(
+                                          request.status.replaceFirst(
+                                            RegExp(
+                                              r'Cancel(l)?ed by',
+                                              caseSensitive: false,
+                                            ),
+                                            'Canceled\nby',
+                                          ),
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w700,
+                                            color: statusColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const VerticalDivider(
+                              color: Colors.black12,
+                              thickness: 1.2,
+                              indent: 4,
+                              endIndent: 4,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              flex: 10,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Mechanic",
+                                    style: TextStyle(
+                                      color: AppColors.grey,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    request.mechanicName ?? "N/A",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: AppColors.black,
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Bounceable(
+                                    scaleFactor: 0.9,
+                                    onTap: () => _showRatingSheet(
+                                      context,
+                                      viewModel,
+                                      request,
+                                    ),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 14,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: isCompleted
+                                            ? AppColors.green.withOpacity(0.1)
+                                            : AppColors.red.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Text(
+                                        viewModel.userRatings.containsKey(
+                                              request.requestId,
+                                            )
+                                            ? "Edit Rating"
+                                            : "Rate",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w800,
+                                          color: statusColor,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -163,13 +274,6 @@ Widget _buildHistoryList(
   );
 }
 
-TextStyle _cardTextStyle() => const TextStyle(
-  fontSize: 14,
-  fontFamily: "Poppins",
-  fontWeight: FontWeight.w500,
-  color: Colors.white,
-);
-
 void _showRatingSheet(
   BuildContext context,
   RequestHistoryViewModel viewModel,
@@ -177,7 +281,7 @@ void _showRatingSheet(
 ) {
   final existingRating = viewModel.userRatings[request.requestId];
   int selectedRate = existingRating?.rate ?? 0;
-  TextEditingController feedbackController = TextEditingController(
+  final feedbackController = TextEditingController(
     text: existingRating?.feedback ?? "",
   );
   bool isSubmitting = false;
@@ -185,8 +289,9 @@ void _showRatingSheet(
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
+    backgroundColor: AppColors.white,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
     ),
     builder: (context) {
       return StatefulBuilder(
@@ -194,86 +299,134 @@ void _showRatingSheet(
           return Padding(
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewInsets.bottom,
-              left: 20,
-              right: 20,
-              top: 20,
+              left: 24,
+              right: 24,
+              top: 16,
             ),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    existingRating == null ? "Rate Mechanic" : "Edit Rating",
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                  // Bottom sheet handle indicator
+                  Container(
+                    width: 38,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: AppColors.grey.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(3),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 24),
+                  Text(
+                    existingRating == null ? "Rate Mechanic" : "Edit Rating",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Interactive Star Bar
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(5, (index) {
                       int starValue = index + 1;
-                      return IconButton(
-                        icon: Icon(
-                          starValue <= selectedRate
-                              ? Icons.star
-                              : Icons.star_border,
-                          size: 40,
-                          color: starValue <= selectedRate
-                              ? Colors.amber
-                              : Colors.grey,
+                      final isStarred = starValue <= selectedRate;
+
+                      return TweenAnimationBuilder<double>(
+                        tween: Tween<double>(
+                          begin: 1.0,
+                          end: isStarred ? 1.2 : 1.0,
                         ),
-                        onPressed: () {
-                          setState(() {
-                            selectedRate = starValue;
-                          });
+                        duration: const Duration(milliseconds: 200),
+                        builder: (context, val, child) {
+                          return Transform.scale(scale: val, child: child);
                         },
+                        child: IconButton(
+                          icon: Icon(
+                            isStarred
+                                ? Icons.star_rounded
+                                : Icons.star_outline_rounded,
+                            size: 40,
+                            color: isStarred
+                                ? Colors.amber
+                                : AppColors.grey.withOpacity(0.5),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              selectedRate = starValue;
+                            });
+                          },
+                        ),
                       );
                     }),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 24),
+
                   TextField(
                     controller: feedbackController,
                     maxLines: 3,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
                     decoration: InputDecoration(
-                      hintText: "Feedback...",
+                      hintText: "Write your feedback here...",
+                      hintStyle: TextStyle(
+                        color: AppColors.grey.withOpacity(0.7),
+                        fontWeight: FontWeight.w500,
+                      ),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide(
+                          color: AppColors.grey.withOpacity(0.3),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide(color: AppColors.red, width: 2),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  isSubmitting
-                      ? CircularProgressIndicator(color: AppColors.red)
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            if (existingRating != null)
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
-                                ),
-                                onPressed: () async {
+                  const SizedBox(height: 28),
+
+                  if (isSubmitting)
+                    Center(
+                      child: CircularProgressIndicator(color: AppColors.red),
+                    )
+                  else
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        if (existingRating != null)
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: ClientCustomButton(
+                                color: AppColors.red,
+                                action: () async {
                                   setState(() => isSubmitting = true);
                                   bool ok = await viewModel.deleteRating(
                                     existingRating.ratingId,
                                     request.requestId!,
                                   );
-                                  if (ok && context.mounted)
+                                  if (ok && context.mounted) {
                                     Navigator.pop(context);
+                                  }
                                   setState(() => isSubmitting = false);
                                 },
-                                child: const Text(
-                                  "Delete",
-                                  style: TextStyle(color: Colors.white),
-                                ),
+                                text: "Delete",
+                                textColor: AppColors.white,
                               ),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.green,
-                              ),
-                              onPressed: () async {
+                            ),
+                          ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: ClientCustomButton(
+                              color: AppColors.green,
+                              action: () async {
                                 if (selectedRate == 0) return;
                                 setState(() => isSubmitting = true);
                                 try {
@@ -295,18 +448,19 @@ void _showRatingSheet(
                                   viewModel.notifyListeners();
                                   if (context.mounted) Navigator.pop(context);
                                 } catch (e) {
-                                  // Snackbar handles it in repo mostly or we can show here
+                                  // Logged or handled inside rating library
                                 } finally {
                                   setState(() => isSubmitting = false);
                                 }
                               },
-                              child: const Text(
-                                "Submit",
-                                style: TextStyle(color: Colors.white),
-                              ),
+                              text: "Submit",
+                              textColor: AppColors.white,
+                              useGradient: true,
                             ),
-                          ],
+                          ),
                         ),
+                      ],
+                    ),
                   const SizedBox(height: 30),
                 ],
               ),

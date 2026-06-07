@@ -1,6 +1,6 @@
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/available_mech_view/model/mechanic_data_model.dart';
-import 'package:car_e_rescue/modules/widgets/navigate_back_button.dart';
+import 'package:car_e_rescue/modules/client/home/view/widgets/client_navigate_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -24,7 +24,6 @@ class _MechanicLocationViewState extends State<MechanicLocationView> {
     _loadUserLocation();
   }
 
-  // Fetch user location from local storage (set during the FirstPage step)
   Future<void> _loadUserLocation() async {
     final prefs = await SharedPreferences.getInstance();
     final lat = prefs.getDouble('user_lat');
@@ -81,23 +80,47 @@ class _MechanicLocationViewState extends State<MechanicLocationView> {
                   Marker(
                     point: mechanicLocation,
                     width: 150,
-                    height: 80,
+                    height: 90,
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: [const BoxShadow(color: Colors.black26, blurRadius: 4)],
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.black.withOpacity(0.15),
+                                blurRadius: 8,
+                                offset: const Offset(0, 3),
+                              )
+                            ],
+                            border: Border.all(color: AppColors.red.withOpacity(0.1), width: 1),
                           ),
                           child: Text(
                             widget.mechanic.workshopName,
-                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 11, 
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.black,
+                            ),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        const Icon(Icons.build, color: Colors.red, size: 40),
+                        const SizedBox(height: 2),
+                        Icon(
+                          Icons.build_circle_rounded, 
+                          color: AppColors.red, 
+                          size: 38,
+                          shadows: [
+                            BoxShadow(
+                              color: AppColors.black.withOpacity(0.2),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -107,42 +130,56 @@ class _MechanicLocationViewState extends State<MechanicLocationView> {
                       point: userLocation!,
                       width: 80,
                       height: 80,
-                      child: const Icon(
-                        Icons.person_pin_circle,
+                      child: Icon(
+                        Icons.person_pin_circle_rounded,
                         color: Colors.blue,
                         size: 45,
+                        shadows: [
+                          BoxShadow(
+                            color: AppColors.black.withOpacity(0.3),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                     ),
                 ],
               ),
             ],
           ),
+          
           Positioned(
             top: 50,
             left: 10,
-            child: const NavigateBackButton(),
+            child: const ClientNavigateBackButton(),
           ),
 
+          // Custom control overlays at bottom-right
           Positioned(
-            bottom: 20,
+            bottom: 30,
             right: 20,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // User Location
+                // User Location center button
                 FloatingActionButton(
                   heroTag: "user_loc",
                   onPressed: _moveToUser,
+                  mini: true,
                   backgroundColor: Colors.blue,
-                  child: const Icon(Icons.person, color: Colors.white),
+                  elevation: 6,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: const Icon(Icons.person_rounded, color: Colors.white, size: 20),
                 ),
                 const SizedBox(height: 12),
-                // Mechanic Location
+                // Mechanic Location center button
                 FloatingActionButton(
                   heroTag: "mech_loc",
                   onPressed: _moveToMechanic,
                   backgroundColor: AppColors.red,
-                  child: const Icon(Icons.build, color: Colors.white),
+                  elevation: 6,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  child: const Icon(Icons.build_rounded, color: Colors.white, size: 22),
                 ),
               ],
             ),
@@ -151,4 +188,4 @@ class _MechanicLocationViewState extends State<MechanicLocationView> {
       ),
     );
   }
-}
+}

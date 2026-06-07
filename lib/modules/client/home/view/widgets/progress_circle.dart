@@ -19,16 +19,11 @@ class _TwoValueCircleState extends State<TwoValueCircle> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
-    // 1. Initialize the controller (duration of the animation)
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-
-    // 2. Define the curve (EaseOut makes it start fast and slow down)
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic);
-
-    // 3. Start the animation
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutBack);
     _controller.forward();
   }
 
@@ -40,59 +35,107 @@ class _TwoValueCircleState extends State<TwoValueCircle> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
+    final total = (widget.completed + widget.canceled).toInt();
+    
     return Column(
-      mainAxisSize: MainAxisSize.min, // Keeps the column tight around the content
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Text("Total Requests:"),
-        AnimatedBuilder(
-          animation: _animation,
-          builder: (context, child) {
-            return CustomPaint(
-              size: const Size(200, 200),
-              painter: ProgressPainter(
-                completed: widget.completed,
-                canceled: widget.canceled,
-                progress: _animation.value,
-              ),
-            );
-          },
+        // Premium dashboard circle with centered stats
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            AnimatedBuilder(
+              animation: _animation,
+              builder: (context, child) {
+                return CustomPaint(
+                  size: const Size(180, 180),
+                  painter: ProgressPainter(
+                    completed: widget.completed,
+                    canceled: widget.canceled,
+                    progress: _animation.value,
+                  ),
+                );
+              },
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "$total",
+                  style: TextStyle(
+                    fontSize: 34,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.black,
+                    letterSpacing: -1,
+                  ),
+                ),
+                Text(
+                  "Total Requests",
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.grey,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
-        const SizedBox(height: 30), // Space between the circle and labels
+        const SizedBox(height: 28),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Completed Label
-            _buildLegend(color: AppColors.red, label: "Completed",number: widget.completed),
-
-            const SizedBox(width: 40),
-
-            // Canceled Label
-            _buildLegend(color: AppColors.grey, label: "Canceled",number: widget.canceled),
+            _buildModernLegend(
+              color: AppColors.red,
+              label: "Completed",
+              number: widget.completed,
+              icon: Icons.check_circle_outline_rounded,
+            ),
+            const SizedBox(width: 24),
+            _buildModernLegend(
+              color: AppColors.grey,
+              label: "Canceled",
+              number: widget.canceled,
+              icon: Icons.cancel_outlined,
+            ),
           ],
         )
       ],
     );
   }
-}
-Widget _buildLegend({required Color color, required String label,required double number}) {
-  return Row(
-    children: [
-      Container(
-        width: 12,
-        height: 12,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-        ),
+
+  Widget _buildModernLegend({
+    required Color color,
+    required String label,
+    required double number,
+    required IconData icon,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withOpacity(0.12), width: 1),
       ),
-      const SizedBox(width: 8), // Gap between circle and text
-      Text(
-        "$label(${number.toInt()})",
-        style: const TextStyle(fontWeight: FontWeight.w500),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: color),
+          const SizedBox(width: 6),
+          Text(
+            "$label: ${number.toInt()}",
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 12,
+              color: color == AppColors.grey ? AppColors.black.withOpacity(0.8) : color,
+            ),
+          ),
+        ],
       ),
-    ],
-  );
+    );
+  }
 }
+
 class ProgressPainter extends CustomPainter {
   final double completed;
   final double canceled;
@@ -102,39 +145,57 @@ class ProgressPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    double strokeWidth = 25.0;
+    double strokeWidth = 14.0;
     double total = completed + canceled;
-
-    // If total is 0, avoid division by zero
-    if (total == 0) return;
 
     double center = size.width / 2;
     double radius = (size.width / 2) - strokeWidth;
+    final rect = Rect.fromCircle(center: Offset(center, center), radius: radius);
+
+    // --- Draw Gray Background Track ---
+    final paintTrack = Paint()
+      ..color = AppColors.grey.withOpacity(0.15)
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke;
+    canvas.drawCircle(Offset(center, center), radius, paintTrack);
+
+    if (total == 0) return;
 
     double startAngle = -pi / 2;
-    final rect = Rect.fromCircle(center: Offset(center, center), radius: radius);
 
     // --- Draw Completed Segment ---
     double completedSweep = (completed / total) * 2 * pi * progress;
-    final paintCompleted = Paint()
-      ..color = AppColors.red
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.butt; // Changed from .round to .butt
+    if (completedSweep > 0) {
+      final paintCompleted = Paint()
+        ..color = AppColors.red
+        ..strokeWidth = strokeWidth
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round;
 
-    canvas.drawArc(rect, startAngle, completedSweep, false, paintCompleted);
+      canvas.drawArc(rect, startAngle, completedSweep, false, paintCompleted);
+    }
 
     // --- Draw Canceled Segment ---
     double canceledSweep = (canceled / total) * 2 * pi * progress;
-    final paintCanceled = Paint()
-      ..color = AppColors.grey
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.butt; // Changed from .round to .butt
+    if (canceledSweep > 0) {
+      final paintCanceled = Paint()
+        ..color = AppColors.grey
+        ..strokeWidth = strokeWidth
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round;
 
-    canvas.drawArc(rect, startAngle + completedSweep, canceledSweep, false, paintCanceled);
+      // Add a slight offset/gap to prevent overlap if both segments exist
+      double startOffset = completedSweep > 0 ? 0.05 : 0.0;
+      canvas.drawArc(
+        rect, 
+        startAngle + completedSweep + startOffset, 
+        max(0.0, canceledSweep - startOffset), 
+        false, 
+        paintCanceled
+      );
+    }
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-}
+}

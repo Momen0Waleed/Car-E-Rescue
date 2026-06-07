@@ -70,10 +70,6 @@ class RatingViewModel extends ChangeNotifier {
       );
       return false;
     }
-    if (feedback.isEmpty) {
-      SnackbarService.showErrorNotification("Please enter your feedback.");
-      return false;
-    }
 
     isSubmitting = true;
     notifyListeners();

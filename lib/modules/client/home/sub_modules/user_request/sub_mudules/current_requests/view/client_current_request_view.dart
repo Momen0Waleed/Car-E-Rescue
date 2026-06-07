@@ -3,8 +3,8 @@ import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/view_model/client_current_request_view_model.dart';
-import 'package:car_e_rescue/modules/widgets/custom_button.dart';
-import 'package:car_e_rescue/modules/widgets/navigate_back_button.dart';
+import 'package:car_e_rescue/modules/client/home/view/widgets/client_custom_button.dart';
+import 'package:car_e_rescue/modules/widgets/default_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:lottie/lottie.dart';
@@ -25,8 +25,7 @@ class _CurrentRequestViewState extends State<ClientCurrentRequestView> {
       child: Consumer<ClientCurrentRequestViewModel>(
         builder: (context, viewModel, child) {
           return Scaffold(
-            floatingActionButton: NavigateBackButton(),
-            floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+            appBar: defaultAppBar(title: "Current Request", context: context),
             body: viewModel.isLoading
                 ? Center(child: CircularProgressIndicator(color: AppColors.red))
                 : viewModel.currentRequest == null
@@ -42,30 +41,48 @@ class _CurrentRequestViewState extends State<ClientCurrentRequestView> {
 Widget _buildEmptyState(BuildContext context) {
   return Center(
     child: Padding(
-      padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: AppColors.red.withOpacity(0.08),
+              shape: BoxShape.circle,
+            ),
+            child: Image.asset(ImagesDir.noRequestsYet, width: 72, height: 72),
+          ),
+          const SizedBox(height: 24),
           Text(
-            "You have no current requests yet",
+            "No active requests yet",
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 22,
               fontFamily: "Poppins",
-              fontWeight: FontWeight.w400,
-              color: AppColors.red,
+              fontWeight: FontWeight.w800,
+              color: AppColors.black,
             ),
           ),
-          const SizedBox(height: 10),
-          Image.asset(ImagesDir.noRequestsYet, width: 50, height: 50),
-
-          const SizedBox(height: 20),
-          CustomButton(
+          const SizedBox(height: 8),
+          Text(
+            "When you submit a roadside assistance request, you can track it live here.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 14,
+              fontFamily: "Poppins",
+              fontWeight: FontWeight.w600,
+              color: AppColors.grey,
+            ),
+          ),
+          const SizedBox(height: 32),
+          ClientCustomButton(
             width: MediaQuery.of(context).size.width / 1.5,
             action: () =>
                 Navigator.of(context).pushNamed(PageRoutesName.createRequest),
-            text: "Create a New Request",
+            text: "Create New Request",
             color: AppColors.red,
+            useGradient: true,
           ),
         ],
       ),
@@ -77,23 +94,22 @@ Widget _buildRequestDetails(
   BuildContext context,
   ClientCurrentRequestViewModel viewModel,
 ) {
+  final hasMech = viewModel.currentRequest!.mechanicName != "----";
+
   return Center(
     child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Text("Status: ${viewModel.currentRequest!.status}"),
-          // Text("Mechanic: ${viewModel.currentRequest!.mechanicName ?? 'Finding Mechanic...'}"),
-          // Text("Request ID: ${viewModel.currentRequest!.requestId ?? 'No Request ID'}"),
-          Spacer(),
+          const Spacer(),
           Stack(
             clipBehavior: Clip.none,
             children: [
               Bounceable(
+                scaleFactor: 0.96,
                 onTap: () {
-                  ///TODO: view the mechanic current location
                   final request = viewModel.currentRequest!;
 
                   if (request.requestId != null) {
@@ -113,7 +129,7 @@ Widget _buildRequestDetails(
                       );
                     } else {
                       SnackbarService.showErrorNotification(
-                        "Mechanic has not accepted the request yet. Current Status: ${request.status}",
+                        "Mechanic has not accepted yet. Status: ${request.status}",
                       );
                     }
                   } else {
@@ -124,152 +140,244 @@ Widget _buildRequestDetails(
                 },
                 child: Container(
                   width: double.infinity,
-                  height: 200,
-                  padding: EdgeInsets.only(top: 30),
+                  padding: const EdgeInsets.fromLTRB(24, 32, 24, 48),
                   decoration: BoxDecoration(
-                    color: AppColors.red,
+                    gradient: LinearGradient(
+                      colors: [AppColors.red, const Color(0xFF911716)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                     borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.red.withOpacity(0.3),
+                        blurRadius: 18,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Type: \n${viewModel.currentRequest!.type}",
-                              textAlign: TextAlign.center,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "SERVICE TYPE",
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.white.withOpacity(0.6),
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                viewModel.currentRequest!.type ??
+                                    "Emergency Rescue",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppColors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              viewModel.currentRequest!.status ?? "Pending",
                               style: TextStyle(
-                                fontSize: 16,
-                                fontFamily: "Poppins",
-                                fontWeight: FontWeight.w400,
                                 color: AppColors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(height: 20),
+                          ),
+                        ],
+                      ),
+                      const Divider(
+                        color: Colors.white24,
+                        height: 40,
+                        thickness: 1.5,
+                      ),
+                      if (!hasMech) ...[
+                        Column(
+                          children: [
                             Text(
-                              "Status: \n${viewModel.currentRequest!.status}",
+                              "Finding a professional mechanic...",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontSize: 16,
-                                fontFamily: "Poppins",
-                                fontWeight: FontWeight.w400,
+                                fontSize: 15,
                                 color: AppColors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Lottie.asset(
+                              'assets/animations/circle-loader.json',
+                              height: 60,
+                              fit: BoxFit.contain,
+                            ),
+                          ],
+                        ),
+                      ] else ...[
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: AppColors.green.withOpacity(0.2),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.check_circle_rounded,
+                                color: AppColors.green,
+                                size: 28,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Mechanic Assigned",
+                                    style: TextStyle(
+                                      color: AppColors.white.withOpacity(0.8),
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    viewModel.currentRequest!.mechanicName ??
+                                        "N/A",
+                                    style: TextStyle(
+                                      color: AppColors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                      ),
-                      viewModel.currentRequest!.mechanicName == "----"
-                          ? Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Waiting for Mechanic",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontFamily: "Poppins",
-                                      fontWeight: FontWeight.w400,
-                                      color: AppColors.white,
-                                    ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Lottie.asset(
-                                    'assets/animations/circle-loader.json',
-                                    height: 50,
-                                    fit: BoxFit.contain,
-                                  ),
-                                ],
-                              ),
-                            )
-                          : Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                spacing: 10,
-                                children: [
-                                  Text(
-                                    "Mechanic: \n${viewModel.currentRequest!.mechanicName}\nhas Accepted\nyour request",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontFamily: "Poppins",
-                                      color: AppColors.white,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.check_circle,
-                                    color: AppColors.green,
-                                    size: 45,
-                                  ),
-                                ],
-                              ),
-                            ),
+                      ],
                     ],
                   ),
                 ),
               ),
+
+              // Pulsing cancel button overlay
               Positioned(
-                bottom: -40,
-                left: MediaQuery.of(context).size.width / 2 - 60,
-                child: Bounceable(
-                  onTap: () async {
-                    final confirm = await showEnsureDeletionDialog(context);
-                    if (confirm == true) {
-                      await viewModel.deleteCurrentRequest();
-                      // if (success && context.mounted) {
-                      //   3. Navigate back to Home or show success
-                      // Navigator.of(context).pushReplacementNamed(PageRoutesName.clientHome);
-                      // }
-                    }
-                  },
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: AppColors.red,
-                      borderRadius: BorderRadius.circular(60),
-                      border: Border.all(color: AppColors.white, width: 3),
+                bottom: -32,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: TweenAnimationBuilder<double>(
+                    tween: Tween<double>(begin: 0.95, end: 1.05),
+                    duration: const Duration(milliseconds: 1000),
+                    curve: Curves.easeInOutSine,
+                    builder: (context, scale, childWidget) {
+                      return Transform.scale(scale: scale, child: childWidget);
+                    },
+                    // Infinite pulse emulation by listening/re-triggering is avoided; static scale is fine
+                    child: Bounceable(
+                      scaleFactor: 0.9,
+                      onTap: () async {
+                        final confirm = await showEnsureDeletionDialog(context);
+                        if (confirm == true) {
+                          await viewModel.deleteCurrentRequest();
+                        }
+                      },
+                      child: Container(
+                        width: 64,
+                        height: 64,
+                        decoration: BoxDecoration(
+                          color: AppColors.red,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.white, width: 4),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.red.withOpacity(0.4),
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.close_rounded,
+                          color: AppColors.white,
+                          size: 30,
+                        ),
+                      ),
                     ),
-                    child: Icon(Icons.delete_rounded, color: AppColors.white),
                   ),
                 ),
               ),
             ],
           ),
-          Spacer(),
-          viewModel.currentRequest!.mechanicName == "----"
-              ? const SizedBox()
-              : Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AppColors.green.withValues(alpha: 0.75),
-                    borderRadius: BorderRadius.circular(8),
+          const Spacer(),
+          if (hasMech) ...[
+            TweenAnimationBuilder<double>(
+              tween: Tween<double>(begin: 0.0, end: 1.0),
+              duration: const Duration(milliseconds: 500),
+              builder: (context, val, child) {
+                return Opacity(
+                  opacity: val,
+                  child: Transform.translate(
+                    offset: Offset(0, 15 * (1 - val)),
+                    child: child,
                   ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.check_circle, color: AppColors.white),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          "Click on the Request to\nTrack the Mechanic's Location.",
-                          style: TextStyle(
-                            color: AppColors.white,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ),
-                    ],
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.green.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: AppColors.green.withOpacity(0.2),
+                    width: 1.5,
                   ),
                 ),
-          SizedBox(height: 30),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.location_on_rounded,
+                      color: AppColors.green,
+                      size: 24,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        "Click the card above to track your mechanic's live location.",
+                        style: TextStyle(
+                          color: AppColors.green,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 30),
         ],
       ),
     ),
@@ -279,33 +387,56 @@ Widget _buildRequestDetails(
 Future<bool?> showEnsureDeletionDialog(BuildContext context) {
   return showDialog<bool>(
     context: context,
-    barrierDismissible: true, // Prevents closing by tapping outside
+    barrierDismissible: true,
     builder: (context) {
-      var theme = Theme.of(context);
+      final theme = Theme.of(context);
       return AlertDialog(
         backgroundColor: AppColors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text("Confirm Deletion", style: theme.textTheme.titleMedium),
-        content: Text(
-          "Are you Sure you want to delete this request?",
-          style: theme.textTheme.bodyMedium,
+        elevation: 24,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Text(
+          "Cancel Request?",
+          style: theme.textTheme.titleMedium!.copyWith(
+            color: AppColors.black,
+            fontWeight: FontWeight.w800,
+          ),
         ),
+        content: Text(
+          "Are you sure you want to cancel this road rescue request?",
+          style: theme.textTheme.bodyMedium!.copyWith(
+            color: AppColors.grey,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         actions: [
           TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.grey,
+              textStyle: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             onPressed: () {
-              Navigator.of(context).pop(false); // Cancel
+              Navigator.of(context).pop(false);
             },
-            child: Text("Cancel", style: theme.textTheme.bodyMedium),
+            child: const Text("Keep Active"),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.red),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.red,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            ),
             onPressed: () {
-              Navigator.of(context).pop(true); // Confirm
+              Navigator.of(context).pop(true);
             },
             child: Text(
-              "Delete",
+              "Yes, Cancel",
               style: theme.textTheme.bodyMedium!.copyWith(
                 color: AppColors.white,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),

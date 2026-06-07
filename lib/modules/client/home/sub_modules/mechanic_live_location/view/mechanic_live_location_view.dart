@@ -1,7 +1,7 @@
 // mechanic_live_location_view.dart
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
-import 'package:car_e_rescue/modules/widgets/navigate_back_button.dart';
+import 'package:car_e_rescue/modules/client/home/view/widgets/client_navigate_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:provider/provider.dart';
@@ -25,11 +25,10 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> wit
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 1200),
     )..repeat(reverse: true);
 
     _vm = context.read<MechanicLiveLocationViewModel>();
-    
     _vm.addListener(_onLocationUpdate);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -43,9 +42,7 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> wit
     if (_vm.mechanicLocation != null) {
       try {
         _mapController.move(_vm.mechanicLocation!, _mapController.camera.zoom);
-      } catch (_) {
-        // Map not fully initialized yet, it's fine.
-      }
+      } catch (_) {}
     }
     
     if (_vm.hasArrived && !_hasNavigatedToRating) {
@@ -68,14 +65,12 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> wit
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Consumer<MechanicLiveLocationViewModel>(
       builder: (context, vm, child) {
-
         if (vm.isError) {
-          return Scaffold(
+          return const Scaffold(
             body: Center(
               child: Text("Failed to connect to tracker. Please try again."),
             ),
@@ -83,14 +78,17 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> wit
         }
 
         if (vm.mechanicLocation == null) {
-          return Scaffold(body: Center(child: CircularProgressIndicator(color: AppColors.red,)));
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(color: AppColors.red),
+            ),
+          );
         }
 
+        final isArrived = vm.mechanicStatus == "Arrived";
+
         return Scaffold(
-          floatingActionButton: const Padding(
-            padding: EdgeInsets.only(top: 10.0),
-            child: NavigateBackButton(),
-          ),
+          floatingActionButton: const ClientNavigateBackButton(),
           floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
           body: Stack(
             children: [
@@ -110,62 +108,146 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> wit
                       if (vm.userLocation != null)
                         Marker(
                           point: vm.userLocation!,
-                          child: const Icon(Icons.person_pin_circle, color: Colors.red, size: 40),
+                          width: 60,
+                          height: 60,
+                          child: Icon(
+                            Icons.person_pin_circle_rounded,
+                            color: AppColors.red,
+                            size: 44,
+                            shadows: [
+                              BoxShadow(
+                                color: AppColors.black.withOpacity(0.35),
+                                blurRadius: 8,
+                                offset: const Offset(0, 3),
+                              )
+                            ],
+                          ),
                         ),
                       if (vm.mechanicLocation != null)
                         Marker(
                           point: vm.mechanicLocation!,
-                          child: FadeTransition(
-                            opacity: _animationController,
-                            child: const Icon(Icons.build, color: Colors.blue, size: 40),
+                          width: 60,
+                          height: 60,
+                          child: AnimatedBuilder(
+                            animation: _animationController,
+                            builder: (context, child) {
+                              return Center(
+                                child: Container(
+                                  width: 44 + (10 * _animationController.value),
+                                  height: 44 + (10 * _animationController.value),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.blue.withOpacity(0.2),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    width: 38,
+                                    height: 38,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.blue,
+                                    ),
+                                    child: const Icon(
+                                      Icons.build_rounded,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
                     ],
                   ),
                 ],
               ),
+              
+              // Premium Status card at the bottom
               Positioned(
                 bottom: 30,
                 left: 20,
                 right: 20,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 10,
-                        spreadRadius: 2,
-                        offset: Offset(0, 5),
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween<double>(begin: 0.0, end: 1.0),
+                  duration: const Duration(milliseconds: 600),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, val, childWidget) {
+                    return Opacity(
+                      opacity: val,
+                      child: Transform.translate(
+                        offset: Offset(0, 20 * (1 - val)),
+                        child: childWidget,
                       ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      vm.mechanicStatus == "Arrived"
-                          ? const Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                              size: 30,
-                            )
-                          : Icon(
-                              Icons.hourglass_empty,
-                              color: AppColors.red,
-                              size: 30,
-                            ),
-                      const SizedBox(width: 15),
-                      Text(
-                        vm.mechanicStatus,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: vm.mechanicStatus == "Arrived" ? Colors.green : AppColors.red,
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.black.withOpacity(0.08),
+                          blurRadius: 20,
+                          offset: const Offset(0, 8),
                         ),
-                      ),
-                    ],
+                      ],
+                      border: Border.all(color: AppColors.grey.withOpacity(0.1), width: 1),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: (isArrived ? AppColors.green : AppColors.red).withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            isArrived ? Icons.check_circle_rounded : Icons.directions_car_rounded,
+                            color: isArrived ? AppColors.green : AppColors.red,
+                            size: 26,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "RESCUE STATUS",
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppColors.grey,
+                                  letterSpacing: 1.1,
+                                ),
+                              ),
+                              const SizedBox(height: 3),
+                              Text(
+                                vm.mechanicStatus,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  color: isArrived ? AppColors.green : AppColors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (!isArrived) ...[
+                          const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -175,4 +257,4 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> wit
       },
     );
   }
-}
+}
