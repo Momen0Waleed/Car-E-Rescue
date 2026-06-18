@@ -20,21 +20,26 @@ class RequestHistoryView extends StatefulWidget {
 
 class _RequestHistoryViewState extends State<RequestHistoryView> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<RequestHistoryViewModel>().loadRequestHistory();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => RequestHistoryViewModel(),
-      child: Consumer<RequestHistoryViewModel>(
-        builder: (context, viewModel, child) {
-          return Scaffold(
-            appBar: defaultAppBar(title: "Request History", context: context),
-            body: viewModel.isLoading
-                ? Center(child: CircularProgressIndicator(color: AppColors.red))
-                : viewModel.historyRequests.isEmpty
-                ? _buildEmptyState(context)
-                : _buildHistoryList(context, viewModel),
-          );
-        },
-      ),
+    return Consumer<RequestHistoryViewModel>(
+      builder: (context, viewModel, child) {
+        return Scaffold(
+          appBar: defaultAppBar(title: "Request History", context: context),
+          body: viewModel.isLoading
+              ? Center(child: CircularProgressIndicator(color: AppColors.red))
+              : viewModel.historyRequests.isEmpty
+              ? _buildEmptyState(context)
+              : _buildHistoryList(context, viewModel),
+        );
+      },
     );
   }
 }

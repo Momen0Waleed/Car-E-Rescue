@@ -2,12 +2,27 @@ import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/core/providers/user_provider.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
 import 'package:car_e_rescue/modules/client/home/view/widgets/progress_circle.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/request_history/view_model/request_history_view_model.dart';
+import 'package:car_e_rescue/modules/widgets/three_dots_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
-import 'package:provider/provider.dart' show Provider;
+import 'package:provider/provider.dart';
 
-class ClientHomeView extends StatelessWidget {
+class ClientHomeView extends StatefulWidget {
   const ClientHomeView({super.key});
+
+  @override
+  State<ClientHomeView> createState() => _ClientHomeViewState();
+}
+
+class _ClientHomeViewState extends State<ClientHomeView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<RequestHistoryViewModel>().loadRequestHistory();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +147,33 @@ class ClientHomeView extends StatelessWidget {
                           width: 1,
                         ),
                       ),
-                      child: const TwoValueCircle(completed: 16, canceled: 3),
+                      child: Consumer<RequestHistoryViewModel>(
+                        builder: (context, viewModel, child) {
+                          if (viewModel.isLoading) {
+                            return SizedBox(
+                              height: 180,
+                              child: Center(
+                                child: ThreeDotsLoading(
+                                  color: AppColors.red,
+                                  size: 8.0,
+                                ),
+                              ),
+                            );
+                          }
+                          final completed = viewModel.historyRequests
+                              .where((r) => r.status.toLowerCase() == 'completed')
+                              .length
+                              .toDouble();
+                          final canceled = viewModel.historyRequests
+                              .where((r) => r.status.toLowerCase() != 'completed')
+                              .length
+                              .toDouble();
+                          return TwoValueCircle(
+                            completed: completed,
+                            canceled: canceled,
+                          );
+                        },
+                      ),
                     ),
                   ),
                   const SizedBox(height: 28),

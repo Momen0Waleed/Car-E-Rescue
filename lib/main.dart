@@ -12,6 +12,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
 import 'modules/client/home/sub_modules/user_request/sub_mudules/current_requests/view_model/client_current_request_view_model.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/request_history/view_model/request_history_view_model.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
           create: (context) => ClientCurrentRequestViewModel(),
         ),
         ChangeNotifierProvider(create: (context) => CreateRequestViewModel()),
+        ChangeNotifierProvider(create: (context) => RequestHistoryViewModel()),
       ],
       child: MaterialApp(
         theme: ThemeManager.themeManager,
