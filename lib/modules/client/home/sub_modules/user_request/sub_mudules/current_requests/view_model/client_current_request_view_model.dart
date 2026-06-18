@@ -11,18 +11,19 @@ class ClientCurrentRequestViewModel extends ChangeNotifier {
     loadCurrentRequest();
   }
 
-  Future<void> loadCurrentRequest() async {
-    isLoading = true;
-    notifyListeners();
+  Future<void> loadCurrentRequest({bool showLoading = true}) async {
+    if (showLoading) {
+      isLoading = true;
+      notifyListeners();
+    }
     try {
       currentRequest = await _repo.fetchCurrentRequest();
-      if (currentRequest != null) {
-      }
     } catch (e) {
-      // debugPrint(e.toString());
       debugPrint("VIEWMODEL ERROR: $e");
     } finally {
-      isLoading = false;
+      if (showLoading) {
+        isLoading = false;
+      }
       notifyListeners();
     }
   }

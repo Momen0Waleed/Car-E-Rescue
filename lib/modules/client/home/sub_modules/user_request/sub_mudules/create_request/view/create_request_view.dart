@@ -42,13 +42,15 @@ class _CreateRequestViewState extends State<CreateRequestView> {
   Widget build(BuildContext context) {
     return Consumer<CreateRequestViewModel>(
       builder: (context, viewModel, child) {
-        return Scaffold(
-          appBar: defaultAppBar(
-            title: "New Request",
-            context: context,
-            showBackButton: widget.showBackButton,
-          ),
-          body: SafeArea(
+        return PopScope(
+          canPop: _currentPage != 2,
+          child: Scaffold(
+            appBar: defaultAppBar(
+              title: "New Request",
+              context: context,
+              showBackButton: widget.showBackButton && _currentPage != 2,
+            ),
+            body: SafeArea(
             child: Column(
               children: [
                 const SizedBox(height: 16),
@@ -72,10 +74,11 @@ class _CreateRequestViewState extends State<CreateRequestView> {
               ],
             ),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
 
   Widget _buildStepIndicators() {
     return Row(
@@ -122,7 +125,7 @@ class _CreateRequestViewState extends State<CreateRequestView> {
         children: [
           TextButton(
             style: TextButton.styleFrom(
-              foregroundColor: _currentPage == 0
+              foregroundColor: (_currentPage == 0 || _currentPage == 2)
                   ? AppColors.grey.withOpacity(0.5)
                   : AppColors.red,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -131,7 +134,7 @@ class _CreateRequestViewState extends State<CreateRequestView> {
                 fontSize: 15,
               ),
             ),
-            onPressed: _currentPage == 0
+            onPressed: (_currentPage == 0 || _currentPage == 2)
                 ? null
                 : () => _pageController.previousPage(
                     duration: const Duration(milliseconds: 300),

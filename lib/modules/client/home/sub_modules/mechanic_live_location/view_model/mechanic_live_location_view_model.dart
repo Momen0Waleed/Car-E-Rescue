@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../model/mechanic_live_location_repo.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/model/client_current_request_repo.dart';
 
@@ -17,7 +18,27 @@ class MechanicLiveLocationViewModel extends ChangeNotifier {
 
   Future<void> fetchUserLocation() async {
     try {
-      Position position = await Geolocator.getCurrentPosition();
+      // 1. Try to load from SharedPreferences first (instant cache)
+      final prefs = await SharedPreferences.getInstance();
+      final double? savedLat = prefs.getDouble('user_lat');
+      final double? savedLng = prefs.getDouble('user_lng');
+      if (savedLat != null && savedLng != null) {
+        userLocation = LatLng(savedLat, savedLng);
+        notifyListeners();
+      }
+
+      // 2. Try to get last known position (very fast)
+      final Position? lastKnown = await Geolocator.getLastKnownPosition();
+      if (lastKnown != null) {
+        userLocation = LatLng(lastKnown.latitude, lastKnown.longitude);
+        notifyListeners();
+      }
+
+      // 3. Fallback to current position (slow but accurate)
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+        timeLimit: const Duration(seconds: 5),
+      );
       userLocation = LatLng(position.latitude, position.longitude);
       notifyListeners();
     } catch (e) {

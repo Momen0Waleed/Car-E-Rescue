@@ -10,6 +10,8 @@ class UserModel {
 
   // Optional fields based on role
   final String? workshopName;
+  final double? workshopLat;
+  final double? workshopLng;
   final int? experienceYears;
   final String? carType;
   final String? carModel;
@@ -24,6 +26,8 @@ class UserModel {
     this.rating = 0.0,
     this.totalJobs = 0,
     this.workshopName,
+    this.workshopLat,
+    this.workshopLng,
     this.experienceYears,
     this.carType,
     this.carModel,
@@ -46,6 +50,8 @@ class UserModel {
           ? map['total jops']
           : int.tryParse(map['total jops']?.toString() ?? '0') ?? 0,
       workshopName: map['workshop name'] ?? map['workshop_name'],
+      workshopLat: (map['workshop lat'] ?? map['workshop_lat'] ?? map['workshop_latitude'])?.toDouble(),
+      workshopLng: (map['workshop lng'] ?? map['workshop_lng'] ?? map['workshop_longitude'])?.toDouble(),
       experienceYears: map['experince years'] != null
           ? (map['experince years'] is String ? int.tryParse(map['experince years']) : map['experince years'] as int?)
           : (map['experience_years'] is String ? int.tryParse(map['experience_years']) : map['experience_years'] as int?),
@@ -64,6 +70,8 @@ class UserModel {
     String? carType,
     String? carModel,
     String? workshopName,
+    double? workshopLat,
+    double? workshopLng,
     int? experienceYears,
     String? role,
   }) {
@@ -78,6 +86,8 @@ class UserModel {
       carType: carType ?? this.carType,
       carModel: carModel ?? this.carModel,
       workshopName: workshopName ?? this.workshopName,
+      workshopLat: workshopLat ?? this.workshopLat,
+      workshopLng: workshopLng ?? this.workshopLng,
       experienceYears: experienceYears ?? this.experienceYears,
       role: role ?? this.role,
     );
@@ -102,6 +112,8 @@ class UserModel {
           ? data['total jops']
           : int.tryParse(data['total jops']?.toString() ?? '0') ?? 0,
       workshopName: data['workshop name'] ?? data['workshop_name'],
+      workshopLat: (data['workshop lat'] ?? data['workshop_lat'] ?? data['workshop_latitude'])?.toDouble(),
+      workshopLng: (data['workshop lng'] ?? data['workshop_lng'] ?? data['workshop_longitude'])?.toDouble(),
       experienceYears: data['experince years'] != null
           ? (data['experince years'] is String ? int.tryParse(data['experince years']) : data['experince years'] as int?)
           : (data['experience_years'] is String ? int.tryParse(data['experience_years']) : data['experience_years'] as int?),

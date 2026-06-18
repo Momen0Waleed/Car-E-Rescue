@@ -1,6 +1,6 @@
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/workshop_location/view_model/workshop_location_view_model.dart';
-import 'package:car_e_rescue/modules/widgets/navigate_back_button.dart';
+import 'package:car_e_rescue/modules/widgets/default_app_bar.dart';
 import 'package:car_e_rescue/modules/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -15,8 +15,7 @@ class WorkshopLocationView extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => WorkshopLocationViewModel(),
       child: Scaffold(
-        floatingActionButton: const NavigateBackButton(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+        appBar: defaultAppBar(title: "Workshop Location", context: context),
         body: Consumer<WorkshopLocationViewModel>(
           builder: (context, vm, child) {
             return Stack(

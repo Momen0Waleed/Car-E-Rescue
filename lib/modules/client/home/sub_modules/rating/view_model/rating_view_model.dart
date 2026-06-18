@@ -18,14 +18,14 @@ class RatingViewModel extends ChangeNotifier {
   Timer? _statusTimer;
 
   RatingViewModel({required this.requestId}) {
-    checkStatus();
+    checkStatus(showFeedback: false);
     _statusTimer = Timer.periodic(
-      const Duration(seconds: 30),
-      (_) => checkStatus(),
+      const Duration(seconds: 10),
+      (_) => checkStatus(showFeedback: false),
     );
   }
 
-  Future<void> checkStatus() async {
+  Future<void> checkStatus({bool showFeedback = false}) async {
     if (isCompleted) return;
 
     try {
@@ -43,13 +43,17 @@ class RatingViewModel extends ChangeNotifier {
         notifyListeners();
         SnackbarService.showSuccessNotification("Request marked as Completed");
       } else {
-        SnackbarService.showErrorNotification(
-          "Waiting to complete the request",
-        );
+        if (showFeedback) {
+          SnackbarService.showErrorNotification(
+            "Waiting to complete the request",
+          );
+        }
       }
     } catch (e) {
       debugPrint("Error checking status: $e");
-      SnackbarService.showErrorNotification("Error checking status: $e");
+      if (showFeedback) {
+        SnackbarService.showErrorNotification("Error checking status: $e");
+      }
     }
   }
 

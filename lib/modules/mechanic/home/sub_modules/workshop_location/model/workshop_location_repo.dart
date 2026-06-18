@@ -17,7 +17,6 @@ class WorkshopLocationRepo {
       );
 
       if (response.statusCode == 200) {
-        await prefs.setBool('workShopLocationWasSet', true);
         return response.data['message'] ?? "Location updated successfully";
       }
       throw "Unexpected error during update";

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:car_e_rescue/core/constants/images/images_dir.dart';
 import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
@@ -18,22 +19,45 @@ class ClientCurrentRequestView extends StatefulWidget {
 }
 
 class _CurrentRequestViewState extends State<ClientCurrentRequestView> {
+  Timer? _refreshTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ClientCurrentRequestViewModel>().loadCurrentRequest();
+      _startPeriodicRefresh();
+    });
+  }
+
+  void _startPeriodicRefresh() {
+    _refreshTimer?.cancel();
+    _refreshTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
+      if (mounted) {
+        context.read<ClientCurrentRequestViewModel>().loadCurrentRequest(showLoading: false);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ClientCurrentRequestViewModel(),
-      child: Consumer<ClientCurrentRequestViewModel>(
-        builder: (context, viewModel, child) {
-          return Scaffold(
-            appBar: defaultAppBar(title: "Current Request", context: context),
-            body: viewModel.isLoading
-                ? Center(child: CircularProgressIndicator(color: AppColors.red))
-                : viewModel.currentRequest == null
-                ? _buildEmptyState(context)
-                : _buildRequestDetails(context, viewModel),
-          );
-        },
-      ),
+    return Consumer<ClientCurrentRequestViewModel>(
+      builder: (context, viewModel, child) {
+        return Scaffold(
+          appBar: defaultAppBar(title: "Current Request", context: context),
+          body: viewModel.isLoading
+              ? Center(child: CircularProgressIndicator(color: AppColors.red))
+              : viewModel.currentRequest == null
+              ? _buildEmptyState(context)
+              : _buildRequestDetails(context, viewModel),
+        );
+      },
     );
   }
 }

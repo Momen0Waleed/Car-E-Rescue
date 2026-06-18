@@ -1,9 +1,13 @@
 // mechanic_live_location_view.dart
+// ignore_for_file: deprecated_member_use
+
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
 import 'package:car_e_rescue/modules/client/home/view/widgets/client_navigate_back_button.dart';
+import 'package:car_e_rescue/modules/widgets/three_dots_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import '../view_model/mechanic_live_location_view_model.dart';
 
@@ -12,10 +16,12 @@ class MechanicLiveLocationView extends StatefulWidget {
   const MechanicLiveLocationView({super.key, required this.requestId});
 
   @override
-  State<MechanicLiveLocationView> createState() => _MechanicLiveLocationViewState();
+  State<MechanicLiveLocationView> createState() =>
+      _MechanicLiveLocationViewState();
 }
 
-class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> with SingleTickerProviderStateMixin {
+class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView>
+    with SingleTickerProviderStateMixin {
   final MapController _mapController = MapController();
   late MechanicLiveLocationViewModel _vm;
   late AnimationController _animationController;
@@ -37,14 +43,16 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> wit
   }
 
   bool _hasNavigatedToRating = false;
+  LatLng? _lastCenteredLocation;
 
   void _onLocationUpdate() {
-    if (_vm.mechanicLocation != null) {
+    if (_vm.mechanicLocation != null && _vm.mechanicLocation != _lastCenteredLocation) {
+      _lastCenteredLocation = _vm.mechanicLocation;
       try {
         _mapController.move(_vm.mechanicLocation!, _mapController.camera.zoom);
       } catch (_) {}
     }
-    
+
     if (_vm.hasArrived && !_hasNavigatedToRating) {
       _hasNavigatedToRating = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -100,7 +108,8 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> wit
                 ),
                 children: [
                   TileLayer(
-                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                     userAgentPackageName: 'com.example.car_e_rescue',
                   ),
                   MarkerLayer(
@@ -119,7 +128,7 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> wit
                                 color: AppColors.black.withOpacity(0.35),
                                 blurRadius: 8,
                                 offset: const Offset(0, 3),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -134,7 +143,8 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> wit
                               return Center(
                                 child: Container(
                                   width: 44 + (10 * _animationController.value),
-                                  height: 44 + (10 * _animationController.value),
+                                  height:
+                                      44 + (10 * _animationController.value),
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: Colors.blue.withOpacity(0.2),
@@ -162,7 +172,7 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> wit
                   ),
                 ],
               ),
-              
+
               // Premium Status card at the bottom
               Positioned(
                 bottom: 30,
@@ -182,7 +192,10 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> wit
                     );
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 20,
+                      horizontal: 24,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.white,
                       borderRadius: BorderRadius.circular(24),
@@ -193,18 +206,24 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> wit
                           offset: const Offset(0, 8),
                         ),
                       ],
-                      border: Border.all(color: AppColors.grey.withOpacity(0.1), width: 1),
+                      border: Border.all(
+                        color: AppColors.grey.withOpacity(0.1),
+                        width: 1,
+                      ),
                     ),
                     child: Row(
                       children: [
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: (isArrived ? AppColors.green : AppColors.red).withOpacity(0.1),
+                            color: (isArrived ? AppColors.green : AppColors.red)
+                                .withOpacity(0.1),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
-                            isArrived ? Icons.check_circle_rounded : Icons.directions_car_rounded,
+                            isArrived
+                                ? Icons.check_circle_rounded
+                                : Icons.directions_car_rounded,
                             color: isArrived ? AppColors.green : AppColors.red,
                             size: 26,
                           ),
@@ -230,20 +249,18 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> wit
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w800,
-                                  color: isArrived ? AppColors.green : AppColors.red,
+                                  color: isArrived
+                                      ? AppColors.green
+                                      : AppColors.red,
                                 ),
                               ),
                             ],
                           ),
                         ),
                         if (!isArrived) ...[
-                          const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.5,
-                              color: Colors.blue,
-                            ),
+                          ThreeDotsLoading(
+                            color: AppColors.red,
+                            size: 6.0,
                           ),
                         ],
                       ],
@@ -257,4 +274,4 @@ class _MechanicLiveLocationViewState extends State<MechanicLiveLocationView> wit
       },
     );
   }
-}
+}

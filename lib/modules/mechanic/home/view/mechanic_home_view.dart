@@ -1,4 +1,3 @@
-import 'package:car_e_rescue/core/constants/images/images_dir.dart';
 import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/core/providers/user_provider.dart';
@@ -8,8 +7,7 @@ import 'package:car_e_rescue/modules/mechanic/home/view_model/mechanic_home_view
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:provider/provider.dart'
-    show Provider, Consumer, ChangeNotifierProvider;
-import 'package:shared_preferences/shared_preferences.dart';
+    show Provider, Consumer;
 
 class MechanicHomeView extends StatefulWidget {
   const MechanicHomeView({super.key});
@@ -19,19 +17,8 @@ class MechanicHomeView extends StatefulWidget {
 }
 
 class _MechanicHomeViewState extends State<MechanicHomeView> {
-  bool workShopLocationWasSet = false;
-
   Future<void> _initializeMechanicHome() async {
-    await _checkWorkshopStatus();
     if (!mounted) return;
-
-    if (!workShopLocationWasSet) {
-      final confirm = await setLocationDialog(context);
-      if (confirm == true && mounted) {
-        await Navigator.of(context).pushNamed(PageRoutesName.workshopLocation);
-        _checkWorkshopStatus();
-      }
-    }
 
     final viewModel = Provider.of<MechanicSkillsViewModel>(
       context,
@@ -47,28 +34,18 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
     }
   }
 
-  Future<void> _checkWorkshopStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      workShopLocationWasSet = prefs.getBool('workShopLocationWasSet') ?? false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).currentUser;
     var theme = Theme.of(context);
-    return ChangeNotifierProvider(
-      create: (_) => MechanicHomeViewModel(),
-      builder: (context, child) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          final vm = Provider.of<MechanicHomeViewModel>(context, listen: false);
-          if (vm.mechanicProfile == null && !vm.isLoading) {
-            vm.getMechanicProfile().then((_) => _initializeMechanicHome());
-          }
-        });
-        return Consumer<MechanicHomeViewModel>(
-          builder: (context, viewModel, child) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final vm = Provider.of<MechanicHomeViewModel>(context, listen: false);
+      if (vm.mechanicProfile == null && !vm.isLoading) {
+        vm.getMechanicProfile().then((_) => _initializeMechanicHome());
+      }
+    });
+    return Consumer<MechanicHomeViewModel>(
+      builder: (context, viewModel, child) {
             if (viewModel.isLoading && viewModel.mechanicProfile == null) {
               return Scaffold(
                 body: Center(
@@ -78,165 +55,390 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
             }
             bool isAvailable = viewModel.mechanicProfile?.available ?? false;
             return Scaffold(
+              backgroundColor: AppColors.red,
               appBar: AppBar(
                 centerTitle: false,
                 automaticallyImplyLeading: false,
-                backgroundColor: AppColors.red,
-                title: FittedBox(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                title: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
                   child: Text(
                     "Welcome, ${user?.name ?? 'Mechanic'}",
-                    style: TextStyle(color: AppColors.white),
-                  ),
-                ),
-                actionsPadding: EdgeInsetsGeometry.all(0),
-                actions: [
-                  Bounceable(
-                    scaleFactor: 0.7,
-                    onTap: () {
-                      Navigator.of(
-                        context,
-                      ).pushNamed(PageRoutesName.mechanicProfile);
-                    },
-                    child: Icon(
-                      Icons.person_sharp,
-                      size: 35,
-                      color: AppColors.white,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 22,
+                      letterSpacing: 0.5,
                     ),
                   ),
-                  SizedBox(width: 20),
+                ),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20.0),
+                    child: Bounceable(
+                      scaleFactor: 0.85,
+                      onTap: () {
+                        Navigator.of(
+                          context,
+                        ).pushNamed(PageRoutesName.mechanicProfile);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.white.withOpacity(0.2),
+                          border: Border.all(
+                            color: AppColors.white.withOpacity(0.3),
+                            width: 1.5,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.black.withOpacity(0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.all(8),
+                        child: Icon(
+                          Icons.person_rounded,
+                          size: 24,
+                          color: AppColors.white,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
-              floatingActionButton: FloatingActionButton(
-                tooltip: "Current Request",
-                backgroundColor: AppColors.red,
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    PageRoutesName.mechanicCurrentRequest,
-                  );
-                },
-                child: Image.asset(
-                  ImagesDir.activeFilled,
-                  width: 30,
-                  height: 30,
-                  color: AppColors.white,
-                ),
-              ),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.endFloat,
               body: Container(
-                color: AppColors.red,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
+                width: double.infinity,
+                height: double.infinity,
+                margin: const EdgeInsets.only(top: 15),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(36),
+                    topRight: Radius.circular(36),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.black.withOpacity(0.12),
+                      blurRadius: 20,
+                      offset: const Offset(0, -5),
                     ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(36),
+                    topRight: Radius.circular(36),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
                     child: SingleChildScrollView(
-                      physics: BouncingScrollPhysics(),
+                      physics: const BouncingScrollPhysics(),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           ///Switch
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Available: ",
-                                style: theme.textTheme.bodyLarge,
+                          _buildSlideUpCard(
+                            delayMs: 0,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
                               ),
-                              Switch(
-                                value: isAvailable,
-                                activeThumbColor: AppColors.green,
-                                onChanged: (bool value) async {
-                                  bool success = await viewModel
-                                      .toggleAvailability(value);
-                                  if (success) {
-                                    viewModel.getMechanicProfile();
-                                  } else {
-                                    SnackbarService.showErrorNotification(
-                                      "Failed to update status",
-                                    );
-                                  }
-                                },
+                              decoration: BoxDecoration(
+                                color: AppColors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: AppColors.grey.withOpacity(0.15),
+                                  width: 1,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.black.withOpacity(0.04),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
                               ),
-                            ],
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "Available : ",
+                                    style: theme.textTheme.bodyLarge?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: isAvailable
+                                          ? AppColors.green
+                                          : AppColors.red,
+                                    ),
+                                  ),
+                                  Switch(
+                                    value: isAvailable,
+                                    activeColor: AppColors.green,
+                                    activeTrackColor: AppColors.green
+                                        .withOpacity(0.3),
+                                    inactiveThumbColor: AppColors.red,
+                                    inactiveTrackColor: AppColors.red
+                                        .withOpacity(0.3),
+                                    onChanged: (bool value) async {
+                                      bool success = await viewModel
+                                          .toggleAvailability(value);
+                                      if (success) {
+                                        viewModel.getMechanicProfile();
+                                      } else {
+                                        SnackbarService.showErrorNotification(
+                                          "Failed to update status",
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
+                          const SizedBox(height: 24),
 
-                          SizedBox(height: 20),
-                          Bounceable(
-                            duration: Duration(milliseconds: 400),
-                            scaleFactor: 0.8,
-                            onTap: () async {
-                              if (isAvailable == false) {
-                                SnackbarService.showErrorNotification(
-                                  "Be Available to View Requests",
-                                );
-                                return;
-                              }
+                          _buildSlideUpCard(
+                            delayMs: 150,
+                            child: Bounceable(
+                              duration: const Duration(milliseconds: 300),
+                              scaleFactor: 0.95,
+                               onTap: () async {
+                                if (isAvailable == false) {
+                                  SnackbarService.showErrorNotification(
+                                    "Be Available to View Requests",
+                                  );
+                                  return;
+                                }
 
-                              if (workShopLocationWasSet) {
                                 Navigator.of(context).pushNamed(
                                   PageRoutesName.mechanicAvailableRequests,
                                 );
-                              } else {
-                                SnackbarService.showErrorNotification(
-                                  "Set your Workshop Location to View Requests",
-                                );
-                                Duration(seconds: 2);
-                                Navigator.of(
-                                  context,
-                                ).pushNamed(PageRoutesName.mechanicProfile);
-                              }
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              height: 150,
-                              decoration: BoxDecoration(
-                                color: AppColors.red,
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "Available Requests",
-                                  style: theme.textTheme.titleLarge!.copyWith(
-                                    color: AppColors.white,
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                height: 140,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      AppColors.red,
+                                      const Color(0xFF9E1F1E),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(24),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.red.withOpacity(0.35),
+                                      blurRadius: 14,
+                                      offset: const Offset(0, 6),
+                                    ),
+                                  ],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(24.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "Available Requests",
+                                              style: theme.textTheme.titleLarge!
+                                                  .copyWith(
+                                                    color: AppColors.white,
+                                                    fontSize: 22,
+                                                    fontWeight: FontWeight.w800,
+                                                  ),
+                                            ),
+                                            const SizedBox(height: 6),
+                                            Text(
+                                              "View and accept roadside rescue requests",
+                                              style: TextStyle(
+                                                color: AppColors.white
+                                                    .withOpacity(0.8),
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: AppColors.white.withOpacity(
+                                            0.2,
+                                          ),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        padding: const EdgeInsets.all(12),
+                                        child: Icon(
+                                          Icons.assignment_outlined,
+                                          color: AppColors.white,
+                                          size: 32,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(height: 30,),
-                          Bounceable(
-                            onTap: () {
-                              Navigator.of(context).pushNamed(PageRoutesName.mechanicHistory);
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              height: 135,
-                              decoration: BoxDecoration(
-                                  color: AppColors.pink,
-                                  borderRadius: BorderRadius.circular(18)
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.history,color: AppColors.red,size: 40,),
-                                  SizedBox(height: 8,),
-                                  Text("History",style: theme.textTheme.bodyLarge!.copyWith(
-                                    color: AppColors.red,
-                                  ),),
-                                ],
+                          const SizedBox(height: 20),
+
+                          _buildSlideUpCard(
+                            delayMs: 300,
+                            child: Bounceable(
+                              duration: const Duration(milliseconds: 300),
+                              scaleFactor: 0.95,
+                              onTap: () {
+                                Navigator.of(
+                                  context,
+                                ).pushNamed(PageRoutesName.mechanicHistory);
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                height: 125,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      AppColors.pink,
+                                      AppColors.pink.withOpacity(0.85),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(24),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.pink.withOpacity(0.4),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 5),
+                                    ),
+                                  ],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(22.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "History",
+                                              style: theme
+                                                  .textTheme
+                                                  .titleMedium!
+                                                  .copyWith(
+                                                    color: AppColors.red,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w800,
+                                                  ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              "Check your past completed/canceled rescues",
+                                              style: TextStyle(
+                                                color: AppColors.red
+                                                    .withOpacity(0.7),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: AppColors.red.withOpacity(0.1),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        padding: const EdgeInsets.all(12),
+                                        child: Icon(
+                                          Icons.history_rounded,
+                                          color: AppColors.red,
+                                          size: 28,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),
+                          const SizedBox(height: 20),
+
+                          _buildSlideUpCard(
+                            delayMs: 450,
+                            child: Bounceable(
+                              duration: const Duration(milliseconds: 300),
+                              scaleFactor: 0.95,
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                  PageRoutesName.mechanicCurrentRequest,
+                                );
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 14,
+                                ),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      AppColors.green,
+                                      const Color(0xFF008A00),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(30),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.green.withOpacity(0.3),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.explore_rounded,
+                                      color: AppColors.white,
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "Current Request",
+                                      style: theme.textTheme.titleMedium!
+                                          .copyWith(
+                                            color: AppColors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
                         ],
                       ),
                     ),
@@ -246,49 +448,27 @@ class _MechanicHomeViewState extends State<MechanicHomeView> {
             );
           },
         );
+  }
+
+  Widget _buildSlideUpCard({required int delayMs, required Widget child}) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 40.0, end: 0.0),
+      duration: const Duration(milliseconds: 600),
+      curve: Curves.easeOutCubic,
+      builder: (context, val, childWidget) {
+        return Transform.translate(
+          offset: Offset(0, val),
+          child: Opacity(
+            opacity: ((40.0 - val) / 40.0).clamp(0.0, 1.0),
+            child: childWidget,
+          ),
+        );
       },
+      child: child,
     );
   }
 }
 
-Future<bool?> setLocationDialog(BuildContext context) {
-  return showDialog<bool>(
-    context: context,
-    barrierDismissible: true,
-    builder: (context) {
-      var theme = Theme.of(context);
-      return AlertDialog(
-        backgroundColor: AppColors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text("Workshop Location", style: theme.textTheme.titleMedium),
-        content: Text(
-          "Do you want to set the workshop location now?",
-          style: theme.textTheme.bodyMedium,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(false); // Cancel
-            },
-            child: Text("Not Now", style: theme.textTheme.bodyMedium),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.red),
-            onPressed: () {
-              Navigator.of(context).pop(true); // Confirm
-            },
-            child: Text(
-              "Set",
-              style: theme.textTheme.bodyMedium!.copyWith(
-                color: AppColors.white,
-              ),
-            ),
-          ),
-        ],
-      );
-    },
-  );
-}
 
 Future<bool?> setSkillsDialog(BuildContext context) {
   return showDialog<bool>(

@@ -6,6 +6,9 @@ class AvailableRequestModel {
   final double lng;
   final double distance;
   final DateTime createdAt;
+  final String? workshopName;
+  final double? workshopLat;
+  final double? workshopLng;
 
   AvailableRequestModel({
     required this.requestId,
@@ -15,6 +18,9 @@ class AvailableRequestModel {
     required this.lng,
     required this.distance,
     required this.createdAt,
+    this.workshopName,
+    this.workshopLat,
+    this.workshopLng,
   });
 
   factory AvailableRequestModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +32,9 @@ class AvailableRequestModel {
       lng: (json['request lng'] ?? json['request_lng'] ?? json['lng'] ?? 0.0).toDouble(),
       distance: (json['distance in km'] ?? json['distance_in_km'] ?? json['distance'] ?? 0.0).toDouble(),
       createdAt: DateTime.tryParse(json['created at'] ?? json['created_at'] ?? '') ?? DateTime.now(),
+      workshopName: json['workshop name'] ?? json['workshop_name'],
+      workshopLat: (json['workshop lat'] ?? json['workshop_lat'])?.toDouble(),
+      workshopLng: (json['workshop lng'] ?? json['workshop_lng'])?.toDouble(),
     );
   }
 }

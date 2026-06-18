@@ -12,17 +12,24 @@ class MechanicAvailableRequestsViewModel extends ChangeNotifier {
 
   bool isAccepting = false;
 
-  Future<void> getRequests() async {
-    isLoading = true;
-    errorMessage = null;
-    notifyListeners();
+  Future<void> getRequests({bool showLoading = true}) async {
+    if (showLoading) {
+      isLoading = true;
+      errorMessage = null;
+      notifyListeners();
+    }
 
     try {
       requests = await _repo.fetchAvailableRequests();
+      errorMessage = null;
     } catch (e) {
-      errorMessage = e.toString();
+      if (showLoading || requests.isEmpty) {
+        errorMessage = e.toString();
+      }
     } finally {
-      isLoading = false;
+      if (showLoading) {
+        isLoading = false;
+      }
       notifyListeners();
     }
   }
@@ -33,6 +40,7 @@ class MechanicAvailableRequestsViewModel extends ChangeNotifier {
     try {
       String message = await _repo.acceptRequest(requestId);
       SnackbarService.showSuccessNotification(message);
+      requests.removeWhere((req) => req.requestId == requestId);
       return true;
     } catch (e) {
       SnackbarService.showErrorNotification(e.toString());

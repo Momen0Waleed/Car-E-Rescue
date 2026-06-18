@@ -76,12 +76,7 @@ abstract class AppRoutes {
       case PageRoutesName.mechanicProfile:
         return _slideRoute(MechanicProfileView());
       case PageRoutesName.mechanicAvailableRequests:
-        return _slideRoute(
-          ChangeNotifierProvider(
-            create: (_) => MechanicAvailableRequestsViewModel(),
-            child: const MechanicAvailableRequestsView(),
-          ),
-        );
+        return _slideRoute(const MechanicAvailableRequestsView());
       case PageRoutesName.workshopLocation:
         return _slideRoute(const WorkshopLocationView());
       case PageRoutesName.mechanicSkills:

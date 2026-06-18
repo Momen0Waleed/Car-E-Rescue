@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:car_e_rescue/core/constants/images/images_dir.dart';
 import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
@@ -95,10 +97,7 @@ class _SignUpViewState extends State<ClientSignUpView> {
                       duration: const Duration(milliseconds: 600),
                       curve: Curves.elasticOut,
                       builder: (context, scale, child) {
-                        return Transform.scale(
-                          scale: scale,
-                          child: child,
-                        );
+                        return Transform.scale(scale: scale, child: child);
                       },
                       child: Text(
                         "Car E-Rescue",
@@ -120,7 +119,7 @@ class _SignUpViewState extends State<ClientSignUpView> {
                   ),
                 ],
               ),
-              
+
               // Form Content with Slide & Fade entry animation
               TweenAnimationBuilder<double>(
                 tween: Tween<double>(begin: 60.0, end: 0.0),
@@ -136,7 +135,10 @@ class _SignUpViewState extends State<ClientSignUpView> {
                   );
                 },
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 30,
+                  ),
                   child: Column(
                     children: [
                       Form(
@@ -156,14 +158,20 @@ class _SignUpViewState extends State<ClientSignUpView> {
                             ClientCustomTextField(
                               title: "Full Name",
                               controller: nameController,
-                              prefixIcon: Icon(Icons.person_outline_rounded, color: AppColors.red.withOpacity(0.7)),
+                              prefixIcon: Icon(
+                                Icons.person_outline_rounded,
+                                color: AppColors.red.withOpacity(0.7),
+                              ),
                               validator: AppValidators.validateEmptyField,
                             ),
                             SizedBox(height: _formSpacing),
                             ClientCustomTextField(
                               title: "Phone Number",
                               controller: phoneController,
-                              prefixIcon: Icon(Icons.phone_android_outlined, color: AppColors.red.withOpacity(0.7)),
+                              prefixIcon: Icon(
+                                Icons.phone_android_outlined,
+                                color: AppColors.red.withOpacity(0.7),
+                              ),
                               keyboardType: TextInputType.phone,
                               validator: AppValidators.validateEgyptianPhone,
                             ),
@@ -171,7 +179,10 @@ class _SignUpViewState extends State<ClientSignUpView> {
                             ClientCustomTextField(
                               title: "Email",
                               controller: mailController,
-                              prefixIcon: Icon(Icons.email_outlined, color: AppColors.red.withOpacity(0.7)),
+                              prefixIcon: Icon(
+                                Icons.email_outlined,
+                                color: AppColors.red.withOpacity(0.7),
+                              ),
                               keyboardType: TextInputType.emailAddress,
                               validator: AppValidators.validateEmail,
                             ),
@@ -179,7 +190,10 @@ class _SignUpViewState extends State<ClientSignUpView> {
                             ClientCustomTextField(
                               title: "Password",
                               controller: passwordController,
-                              prefixIcon: Icon(Icons.lock_outline_rounded, color: AppColors.red.withOpacity(0.7)),
+                              prefixIcon: Icon(
+                                Icons.lock_outline_rounded,
+                                color: AppColors.red.withOpacity(0.7),
+                              ),
                               validator: AppValidators.validatePassword,
                               isPassword: true,
                             ),
@@ -192,18 +206,24 @@ class _SignUpViewState extends State<ClientSignUpView> {
                                   useGradient: true,
                                   action: () async {
                                     if (formKey.currentState!.validate()) {
-                                      bool value = await provider.clientSignUpActionButton(
-                                        mailController: mailController,
-                                        passwordController: passwordController,
-                                        nameController: nameController,
-                                        phoneController: phoneController,
-                                      );
+                                      bool value = await provider
+                                          .clientSignUpActionButton(
+                                            mailController: mailController,
+                                            passwordController:
+                                                passwordController,
+                                            nameController: nameController,
+                                            phoneController: phoneController,
+                                          );
                                       if (value) {
                                         SnackbarService.showSuccessNotification(
                                           "Client created successfully!",
                                         );
                                         if (context.mounted) {
-                                          Navigator.of(context).pushReplacementNamed(PageRoutesName.login);
+                                          Navigator.of(
+                                            context,
+                                          ).pushReplacementNamed(
+                                            PageRoutesName.login,
+                                          );
                                         }
                                       }
                                     } else {
@@ -259,7 +279,9 @@ class _SignUpViewState extends State<ClientSignUpView> {
                           ),
                           Bounceable(
                             onTap: () {
-                              Navigator.of(context).pushReplacementNamed(PageRoutesName.login);
+                              Navigator.of(
+                                context,
+                              ).pushReplacementNamed(PageRoutesName.login);
                             },
                             child: Text(
                               "Login Now",
@@ -285,4 +307,3 @@ class _SignUpViewState extends State<ClientSignUpView> {
     );
   }
 }
-

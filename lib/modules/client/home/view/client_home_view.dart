@@ -313,10 +313,7 @@ class ClientHomeView extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [
-                              AppColors.green,
-                              const Color(0xFF008A00),
-                            ],
+                            colors: [AppColors.green, const Color(0xFF008A00)],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),

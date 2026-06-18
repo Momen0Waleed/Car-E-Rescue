@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/available_mech_view/model/mechanic_data_model.dart';
 import 'package:car_e_rescue/modules/client/home/view/widgets/client_navigate_back_button.dart';
@@ -46,9 +48,9 @@ class _MechanicLocationViewState extends State<MechanicLocationView> {
     if (userLocation != null) {
       _mapController.move(userLocation!, 15.0);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("User location not found")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("User location not found")));
     }
   }
 
@@ -85,7 +87,10 @@ class _MechanicLocationViewState extends State<MechanicLocationView> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(12),
@@ -94,14 +99,17 @@ class _MechanicLocationViewState extends State<MechanicLocationView> {
                                 color: AppColors.black.withOpacity(0.15),
                                 blurRadius: 8,
                                 offset: const Offset(0, 3),
-                              )
+                              ),
                             ],
-                            border: Border.all(color: AppColors.red.withOpacity(0.1), width: 1),
+                            border: Border.all(
+                              color: AppColors.red.withOpacity(0.1),
+                              width: 1,
+                            ),
                           ),
                           child: Text(
                             widget.mechanic.workshopName,
                             style: TextStyle(
-                              fontSize: 11, 
+                              fontSize: 11,
                               fontWeight: FontWeight.w800,
                               color: AppColors.black,
                             ),
@@ -110,8 +118,8 @@ class _MechanicLocationViewState extends State<MechanicLocationView> {
                         ),
                         const SizedBox(height: 2),
                         Icon(
-                          Icons.build_circle_rounded, 
-                          color: AppColors.red, 
+                          Icons.build_circle_rounded,
+                          color: AppColors.red,
                           size: 38,
                           shadows: [
                             BoxShadow(
@@ -147,7 +155,7 @@ class _MechanicLocationViewState extends State<MechanicLocationView> {
               ),
             ],
           ),
-          
+
           Positioned(
             top: 50,
             left: 10,
@@ -168,8 +176,14 @@ class _MechanicLocationViewState extends State<MechanicLocationView> {
                   mini: true,
                   backgroundColor: Colors.blue,
                   elevation: 6,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  child: const Icon(Icons.person_rounded, color: Colors.white, size: 20),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.person_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 // Mechanic Location center button
@@ -178,8 +192,14 @@ class _MechanicLocationViewState extends State<MechanicLocationView> {
                   onPressed: _moveToMechanic,
                   backgroundColor: AppColors.red,
                   elevation: 6,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  child: const Icon(Icons.build_rounded, color: Colors.white, size: 22),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: const Icon(
+                    Icons.build_rounded,
+                    color: Colors.white,
+                    size: 22,
+                  ),
                 ),
               ],
             ),
@@ -188,4 +208,4 @@ class _MechanicLocationViewState extends State<MechanicLocationView> {
       ),
     );
   }
-}
+}

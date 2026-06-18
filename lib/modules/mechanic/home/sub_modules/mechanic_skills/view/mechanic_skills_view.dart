@@ -2,7 +2,7 @@ import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_skills/view_model/mechanic_skills_view_model.dart';
 import 'package:car_e_rescue/modules/widgets/custom_button.dart';
-import 'package:car_e_rescue/modules/widgets/navigate_back_button.dart';
+import 'package:car_e_rescue/modules/widgets/default_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -41,15 +41,14 @@ class _MechanicSkillsViewState extends State<MechanicSkillsView> {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
-      floatingActionButton: const NavigateBackButton(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+      appBar: defaultAppBar(title: "My Skills", context: context),
       body: Consumer<MechanicSkillsViewModel>(
         builder: (context, vm, child) {
           if (vm.isLoading && vm.currentSkills.isEmpty) {
             return Center(child: CircularProgressIndicator(color: AppColors.red,));
           }
           return Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16, top: 120, bottom: 30),
+            padding: const EdgeInsets.only(left: 16.0, right: 16, top: 20, bottom: 30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

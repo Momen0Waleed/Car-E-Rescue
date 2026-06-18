@@ -1,7 +1,7 @@
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
 import 'package:car_e_rescue/modules/widgets/custom_button.dart';
-import 'package:car_e_rescue/modules/widgets/navigate_back_button.dart';
+import 'package:car_e_rescue/modules/widgets/default_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -24,8 +24,7 @@ class MechanicCurrentRequestView extends StatelessWidget {
           }
 
           return Scaffold(
-            floatingActionButton: const NavigateBackButton(),
-            floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+            appBar: defaultAppBar(title: "Active Request", context: context),
             body: _buildBody(context, vm),
           );
         },
@@ -95,6 +94,34 @@ class MechanicCurrentRequestView extends StatelessWidget {
                     size: 45,
                   ),
                 ),
+                if (vm.mechanicLocation != null)
+                  Marker(
+                    point: vm.mechanicLocation!,
+                    width: 60,
+                    height: 60,
+                    child: Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.blue.withOpacity(0.25),
+                      ),
+                      alignment: Alignment.center,
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.blue,
+                        ),
+                        child: const Icon(
+                          Icons.directions_car_rounded,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ],

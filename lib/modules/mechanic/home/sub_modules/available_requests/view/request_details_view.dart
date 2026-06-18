@@ -1,7 +1,7 @@
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/available_requests/model/available_request_model.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/available_requests/view_model/mechanic_available_requests_view_model.dart';
-import 'package:car_e_rescue/modules/widgets/navigate_back_button.dart';
+import 'package:car_e_rescue/modules/widgets/default_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -14,8 +14,6 @@ class RequestDetailsView extends StatefulWidget {
 
   @override
   State<RequestDetailsView> createState() => _RequestDetailsViewState();
-
-
 }
 
 class _RequestDetailsViewState extends State<RequestDetailsView> {
@@ -35,8 +33,7 @@ class _RequestDetailsViewState extends State<RequestDetailsView> {
     return Consumer<MechanicAvailableRequestsViewModel>(
       builder: (context, vm, child) {
         return Scaffold(
-          floatingActionButton: const NavigateBackButton(),
-          floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+          appBar: defaultAppBar(title: "Request Details", context: context),
           body: Stack(
             children: [
               FlutterMap(
@@ -110,7 +107,7 @@ class _RequestDetailsViewState extends State<RequestDetailsView> {
                               bool success = await vm.acceptRequest(widget.request.requestId);
                               if (success && context.mounted) {
                                 Navigator.pop(context);
-                                vm.getRequests();
+                                vm.getRequests(showLoading: false);
                               }
                             },
                             child: vm.isAccepting

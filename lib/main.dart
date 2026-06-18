@@ -30,8 +30,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => MechanicAvailableRequestsViewModel(),
         ),
-        ChangeNotifierProvider(create: (context) => MechanicAvailableRequestsViewModel()),
-        ChangeNotifierProvider(create: (context) => ClientCurrentRequestViewModel()),
+        ChangeNotifierProvider(
+          create: (context) => ClientCurrentRequestViewModel(),
+        ),
         ChangeNotifierProvider(create: (context) => CreateRequestViewModel()),
       ],
       child: MaterialApp(
