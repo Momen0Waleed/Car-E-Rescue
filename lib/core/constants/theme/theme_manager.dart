@@ -8,6 +8,7 @@ abstract class ThemeManager {
     appBarTheme: AppBarTheme(
       elevation: 0,
       backgroundColor: AppColors.white,
+      surfaceTintColor: Colors.transparent,
       iconTheme: IconThemeData(color: AppColors.red),
       centerTitle: false,
       titleTextStyle: TextStyle(
@@ -35,7 +36,7 @@ abstract class ThemeManager {
         fontSize: 28,
         fontFamily: "Poppins",
         fontWeight: FontWeight.bold,
-        color: AppColors.red
+        color: AppColors.red,
       ),
       titleMedium: TextStyle(
         fontSize: 24,

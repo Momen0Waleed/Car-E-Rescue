@@ -7,9 +7,8 @@ import 'package:car_e_rescue/modules/auth/login/model/login_repo.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_profile/view_model/client_profile_view_model.dart';
 import 'package:car_e_rescue/modules/client/home/view/widgets/client_custom_button.dart';
 import 'package:car_e_rescue/modules/client/home/view/widgets/client_custom_text_field.dart';
-import 'package:car_e_rescue/modules/client/home/view/widgets/client_navigate_back_button.dart';
+import 'package:car_e_rescue/modules/widgets/default_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:provider/provider.dart';
 
 class ClientProfileView extends StatefulWidget {
@@ -189,8 +188,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
     return ChangeNotifierProvider(
       create: (_) => ClientProfileViewModel(),
       child: Scaffold(
-        floatingActionButton: widget.showBackButton ? const ClientNavigateBackButton() : null,
-        floatingActionButtonLocation: widget.showBackButton ? FloatingActionButtonLocation.startTop : null,
+        appBar: defaultAppBar(title: "Profile", context: context, showBackButton: widget.showBackButton),
         body: Consumer<UserProvider>(
           builder: (context, userProvider, child) {
             final user = userProvider.currentUser;
@@ -203,7 +201,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 40, bottom: 40),
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 40),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
