@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 
 abstract class ThemeManager {
   static ThemeData themeManager = ThemeData(
-      primaryColor: AppColors.red,
+    primaryColor: AppColors.red,
     scaffoldBackgroundColor: AppColors.white,
     appBarTheme: AppBarTheme(
       elevation: 0,
       backgroundColor: AppColors.white,
+      surfaceTintColor: Colors.transparent,
       iconTheme: IconThemeData(color: AppColors.red),
-      centerTitle: true,
+      centerTitle: false,
       titleTextStyle: TextStyle(
-        fontSize: 20,
+        fontSize: 24,
         fontFamily: "Poppins",
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w600,
         color: AppColors.black,
       ),
     ),
@@ -32,9 +33,10 @@ abstract class ThemeManager {
     ),
     textTheme: TextTheme(
       titleLarge: TextStyle(
-        fontSize: 32,
+        fontSize: 28,
         fontFamily: "Poppins",
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.bold,
+        color: AppColors.red,
       ),
       titleMedium: TextStyle(
         fontSize: 24,
@@ -44,11 +46,13 @@ abstract class ThemeManager {
       bodyLarge: TextStyle(
         fontSize: 20,
         fontFamily: "Poppins",
+        color: Colors.black,
         fontWeight: FontWeight.w700,
       ),
       bodyMedium: TextStyle(
         fontSize: 16,
         fontFamily: "Poppins",
+        color: AppColors.black,
         fontWeight: FontWeight.w700,
       ),
       bodySmall: TextStyle(

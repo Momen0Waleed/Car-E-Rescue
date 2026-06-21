@@ -1,5 +1,8 @@
 plugins {
     id("com.android.application")
+    // START: FlutterFire Configuration
+    id("com.google.gms.google-services")
+    // END: FlutterFire Configuration
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
@@ -15,6 +18,13 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
+
+    configurations.all {
+        resolutionStrategy {
+            force("androidx.core:core:1.13.1")
+            force("androidx.core:core-ktx:1.13.1")
+        }
+    }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
