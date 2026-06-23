@@ -42,7 +42,9 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
       emailController = TextEditingController(text: user.email);
       phoneController = TextEditingController(text: user.phone);
       workshopNameController = TextEditingController(text: user.workshopName);
-      experienceYearsController = TextEditingController(text: user.experienceYears?.toString() ?? "0");
+      experienceYearsController = TextEditingController(
+        text: user.experienceYears?.toString() ?? "0",
+      );
     }
   }
 
@@ -128,7 +130,10 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
           onTap: onTap,
           borderRadius: BorderRadius.circular(16),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 14.0,
+            ),
             child: Row(
               children: [
                 Icon(icon, color: AppColors.red, size: 22),
@@ -144,7 +149,9 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
                   ),
                 ),
                 Icon(
-                  isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                  isExpanded
+                      ? Icons.keyboard_arrow_up_rounded
+                      : Icons.keyboard_arrow_down_rounded,
                   color: AppColors.grey,
                 ),
               ],
@@ -157,7 +164,9 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
             child: child,
           ),
-          crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          crossFadeState: isExpanded
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
           duration: const Duration(milliseconds: 250),
           sizeCurve: Curves.easeInOut,
         ),
@@ -185,7 +194,7 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
               color: AppColors.black.withOpacity(0.04),
               blurRadius: 10,
               offset: const Offset(0, 4),
-            )
+            ),
           ],
           border: Border.all(
             color: AppColors.grey.withOpacity(0.12),
@@ -206,7 +215,9 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
             Expanded(
               child: Text(
                 title,
-                style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             Icon(
@@ -250,14 +261,21 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
             final user = userProvider.currentUser;
 
             if (user == null) {
-              return Center(child: CircularProgressIndicator(color: AppColors.red,));
+              return Center(
+                child: CircularProgressIndicator(color: AppColors.red),
+              );
             }
 
             return Center(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 40),
+                  padding: const EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    top: 20,
+                    bottom: 40,
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -277,7 +295,7 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
                                 color: AppColors.black.withOpacity(0.04),
                                 blurRadius: 18,
                                 offset: const Offset(0, 6),
-                              )
+                              ),
                             ],
                             border: Border.all(
                               color: AppColors.grey.withOpacity(0.12),
@@ -291,69 +309,122 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
                                 title: "Edit Full Name",
                                 icon: Icons.person_outline_rounded,
                                 isExpanded: editUserNameFlag,
-                                onTap: () => setState(() => editUserNameFlag = !editUserNameFlag),
+                                onTap: () => setState(
+                                  () => editUserNameFlag = !editUserNameFlag,
+                                ),
                                 child: ClientCustomTextField(
-                                  title: user.name ?? "Name",
+                                  title: user.name,
                                   controller: nameController,
-                                  prefixIcon: Icon(Icons.person_rounded, color: AppColors.red.withOpacity(0.6)),
+                                  prefixIcon: Icon(
+                                    Icons.person_rounded,
+                                    color: AppColors.red.withOpacity(0.6),
+                                  ),
                                   validator: AppValidators.validateEmptyField,
                                 ),
                               ),
-                              Divider(color: AppColors.grey.withOpacity(0.15), thickness: 1, indent: 20, endIndent: 20, height: 1),
+                              Divider(
+                                color: AppColors.grey.withOpacity(0.15),
+                                thickness: 1,
+                                indent: 20,
+                                endIndent: 20,
+                                height: 1,
+                              ),
                               _buildExpandableField(
                                 context: context,
                                 title: "Edit Email Address",
                                 icon: Icons.mail_outline_rounded,
                                 isExpanded: editUserEmailFlag,
-                                onTap: () => setState(() => editUserEmailFlag = !editUserEmailFlag),
+                                onTap: () => setState(
+                                  () => editUserEmailFlag = !editUserEmailFlag,
+                                ),
                                 child: ClientCustomTextField(
-                                  title: user.email ?? "Email",
+                                  title: user.email,
                                   controller: emailController,
-                                  prefixIcon: Icon(Icons.email_rounded, color: AppColors.red.withOpacity(0.6)),
+                                  prefixIcon: Icon(
+                                    Icons.email_rounded,
+                                    color: AppColors.red.withOpacity(0.6),
+                                  ),
                                   keyboardType: TextInputType.emailAddress,
                                   validator: AppValidators.validateEmail,
                                 ),
                               ),
-                              Divider(color: AppColors.grey.withOpacity(0.15), thickness: 1, indent: 20, endIndent: 20, height: 1),
+                              Divider(
+                                color: AppColors.grey.withOpacity(0.15),
+                                thickness: 1,
+                                indent: 20,
+                                endIndent: 20,
+                                height: 1,
+                              ),
                               _buildExpandableField(
                                 context: context,
                                 title: "Edit Phone Number",
                                 icon: Icons.phone_android_rounded,
                                 isExpanded: editUserPhoneFlag,
-                                onTap: () => setState(() => editUserPhoneFlag = !editUserPhoneFlag),
+                                onTap: () => setState(
+                                  () => editUserPhoneFlag = !editUserPhoneFlag,
+                                ),
                                 child: ClientCustomTextField(
-                                  title: user.phone ?? "Phone",
+                                  title: user.phone,
                                   controller: phoneController,
-                                  prefixIcon: Icon(Icons.phone_rounded, color: AppColors.red.withOpacity(0.6)),
+                                  prefixIcon: Icon(
+                                    Icons.phone_rounded,
+                                    color: AppColors.red.withOpacity(0.6),
+                                  ),
                                   keyboardType: TextInputType.phone,
-                                  validator: AppValidators.validateEgyptianPhone,
+                                  validator:
+                                      AppValidators.validateEgyptianPhone,
                                 ),
                               ),
-                              Divider(color: AppColors.grey.withOpacity(0.15), thickness: 1, indent: 20, endIndent: 20, height: 1),
+                              Divider(
+                                color: AppColors.grey.withOpacity(0.15),
+                                thickness: 1,
+                                indent: 20,
+                                endIndent: 20,
+                                height: 1,
+                              ),
                               _buildExpandableField(
                                 context: context,
                                 title: "Edit Workshop Name",
                                 icon: Icons.store_outlined,
                                 isExpanded: editWorkshopLocationFlag,
-                                onTap: () => setState(() => editWorkshopLocationFlag = !editWorkshopLocationFlag),
+                                onTap: () => setState(
+                                  () => editWorkshopLocationFlag =
+                                      !editWorkshopLocationFlag,
+                                ),
                                 child: ClientCustomTextField(
                                   title: user.workshopName ?? "Workshop Name",
                                   controller: workshopNameController,
-                                  prefixIcon: Icon(Icons.store_rounded, color: AppColors.red.withOpacity(0.6)),
+                                  prefixIcon: Icon(
+                                    Icons.store_rounded,
+                                    color: AppColors.red.withOpacity(0.6),
+                                  ),
                                   validator: AppValidators.validateEmptyField,
                                 ),
                               ),
-                              Divider(color: AppColors.grey.withOpacity(0.15), thickness: 1, indent: 20, endIndent: 20, height: 1),
+                              Divider(
+                                color: AppColors.grey.withOpacity(0.15),
+                                thickness: 1,
+                                indent: 20,
+                                endIndent: 20,
+                                height: 1,
+                              ),
                               _buildExpandableField(
                                 context: context,
                                 title: "Edit Experience Years",
                                 icon: Icons.star_outline_rounded,
                                 isExpanded: editExperienceYearsFlag,
-                                onTap: () => setState(() => editExperienceYearsFlag = !editExperienceYearsFlag),
+                                onTap: () => setState(
+                                  () => editExperienceYearsFlag =
+                                      !editExperienceYearsFlag,
+                                ),
                                 child: ClientCustomTextField(
-                                  title: user.experienceYears?.toString() ?? "0",
+                                  title:
+                                      user.experienceYears?.toString() ?? "0",
                                   controller: experienceYearsController,
-                                  prefixIcon: Icon(Icons.star_rounded, color: AppColors.red.withOpacity(0.6)),
+                                  prefixIcon: Icon(
+                                    Icons.star_rounded,
+                                    color: AppColors.red.withOpacity(0.6),
+                                  ),
                                   keyboardType: TextInputType.number,
                                   validator: AppValidators.validateEmptyField,
                                 ),
@@ -368,10 +439,16 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
                         child: ClientCustomButton(
                           color: AppColors.red,
                           action: () async {
-                            final viewModel = context.read<MechanicProfileViewModel>();
-                            final userProv = Provider.of<UserProvider>(context, listen: false);
+                            final viewModel = context
+                                .read<MechanicProfileViewModel>();
+                            final userProv = Provider.of<UserProvider>(
+                              context,
+                              listen: false,
+                            );
 
-                            int? expYears = int.tryParse(experienceYearsController?.text ?? '');
+                            int? expYears = int.tryParse(
+                              experienceYearsController?.text ?? '',
+                            );
 
                             bool success = await viewModel.updateUserData(
                               name: nameController?.text,
@@ -390,7 +467,9 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
                                 experienceYears: expYears,
                               );
 
-                              SnackbarService.showSuccessNotification("Profile updated successfully");
+                              SnackbarService.showSuccessNotification(
+                                "Profile updated successfully",
+                              );
                               if (context.mounted) {
                                 Navigator.of(context).pop();
                               }
@@ -410,7 +489,9 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
                                 context: context,
                                 title: "Location",
                                 icon: Icons.location_on,
-                                onTap: () => Navigator.of(context).pushNamed(PageRoutesName.workshopLocation),
+                                onTap: () => Navigator.of(
+                                  context,
+                                ).pushNamed(PageRoutesName.workshopLocation),
                               ),
                             ),
                             const SizedBox(width: 16),
@@ -419,7 +500,9 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
                                 context: context,
                                 title: "My Skills",
                                 icon: Icons.build,
-                                onTap: () => Navigator.of(context).pushNamed(PageRoutesName.mechanicSkills),
+                                onTap: () => Navigator.of(
+                                  context,
+                                ).pushNamed(PageRoutesName.mechanicSkills),
                               ),
                             ),
                           ],
@@ -431,7 +514,12 @@ class _MechanicProfileViewState extends State<MechanicProfileView> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Divider(thickness: 1.2, color: AppColors.grey.withOpacity(0.15), indent: 40, endIndent: 40),
+                            Divider(
+                              thickness: 1.2,
+                              color: AppColors.grey.withOpacity(0.15),
+                              indent: 40,
+                              endIndent: 40,
+                            ),
                             const SizedBox(height: 20),
                             ClientCustomButton(
                               color: AppColors.pink,

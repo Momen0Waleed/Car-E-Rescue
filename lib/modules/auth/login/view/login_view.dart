@@ -5,7 +5,7 @@ import 'package:car_e_rescue/core/constants/validators/app_validators.dart';
 import 'package:car_e_rescue/core/routes/page_routes_name.dart';
 import 'package:car_e_rescue/modules/auth/login/view_model/login_view_model.dart';
 import 'package:car_e_rescue/modules/widgets/custom_button.dart';
-import 'package:car_e_rescue/modules/widgets/custom_text_field.dart';
+import 'package:car_e_rescue/modules/client/home/view/widgets/client_custom_text_field.dart';
 import 'package:car_e_rescue/modules/widgets/navigate_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
@@ -105,16 +105,25 @@ class _LoginViewState extends State<LoginView> {
                             ),
                           ),
                           SizedBox(height: 25),
-                          CustomTextField(
+                          ClientCustomTextField(
                             title: "Email",
                             controller: mailController,
+                            prefixIcon: Icon(
+                              Icons.email_outlined,
+                              color: AppColors.red.withOpacity(0.7),
+                            ),
+                            keyboardType: TextInputType.emailAddress,
                             validator: AppValidators.validateEmail,
                           ),
                           SizedBox(height: 25),
-                          CustomTextField(
+                          ClientCustomTextField(
                             title: "Password",
                             isPassword: true,
                             controller: passwordController,
+                            prefixIcon: Icon(
+                              Icons.lock_outline_rounded,
+                              color: AppColors.red.withOpacity(0.7),
+                            ),
                             validator: AppValidators.validatePassword,
                           ),
                           SizedBox(height: 8),
@@ -152,20 +161,26 @@ class _LoginViewState extends State<LoginView> {
                                 color: AppColors.red,
                                 action: () async {
                                   if (formKey.currentState!.validate()) {
-                                    String? nextRoute = await provider.loginAndGetRoute(
-                                      context: context,
-                                      mailController: mailController,
-                                      passwordController: passwordController,
-                                    );
+                                    String? nextRoute = await provider
+                                        .loginAndGetRoute(
+                                          context: context,
+                                          mailController: mailController,
+                                          passwordController:
+                                              passwordController,
+                                        );
 
                                     if (nextRoute != null) {
-                                      SnackbarService.showSuccessNotification("Welcome Back!");
+                                      SnackbarService.showSuccessNotification(
+                                        "Welcome Back!",
+                                      );
                                       // Navigator.of(context).pushReplacementNamed(
                                       //   nextRoute,
                                       // );
-                                      Navigator.of(context).pushNamedAndRemoveUntil(
+                                      Navigator.of(
+                                        context,
+                                      ).pushNamedAndRemoveUntil(
                                         nextRoute,
-                                            (route) => false,
+                                        (route) => false,
                                       );
                                     }
                                   }
@@ -203,33 +218,30 @@ class _LoginViewState extends State<LoginView> {
                         ),
                       ],
                     ),
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "If you don't have an account, Please ",
-                            style: theme.textTheme.bodySmall,
-                          ),
-                          Bounceable(
-                            onTap: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text(
-                              "Sign Up Now",
-                              style: theme.textTheme.bodyMedium!.copyWith(
-                                color: AppColors.red,
-                                decorationStyle: TextDecorationStyle.solid,
-                                decoration: TextDecoration.underline,
-                                decorationColor: AppColors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text(
+                          "If you don't have an account, Please ",
+                          style: theme.textTheme.bodySmall,
+                        ),
+                        Bounceable(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            "Sign Up Now",
+                            style: theme.textTheme.bodyMedium!.copyWith(
+                              color: AppColors.red,
+                              decorationStyle: TextDecorationStyle.solid,
+                              decoration: TextDecoration.underline,
+                              decorationColor: AppColors.red,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

@@ -127,7 +127,10 @@ class _ClientProfileViewState extends State<ClientProfileView> {
           onTap: onTap,
           borderRadius: BorderRadius.circular(16),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 14.0,
+            ),
             child: Row(
               children: [
                 Icon(icon, color: AppColors.red, size: 22),
@@ -143,7 +146,9 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                   ),
                 ),
                 Icon(
-                  isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                  isExpanded
+                      ? Icons.keyboard_arrow_up_rounded
+                      : Icons.keyboard_arrow_down_rounded,
                   color: AppColors.grey,
                 ),
               ],
@@ -156,7 +161,9 @@ class _ClientProfileViewState extends State<ClientProfileView> {
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
             child: child,
           ),
-          crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          crossFadeState: isExpanded
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
           duration: const Duration(milliseconds: 250),
           sizeCurve: Curves.easeInOut,
         ),
@@ -188,20 +195,31 @@ class _ClientProfileViewState extends State<ClientProfileView> {
     return ChangeNotifierProvider(
       create: (_) => ClientProfileViewModel(),
       child: Scaffold(
-        appBar: defaultAppBar(title: "Profile", context: context, showBackButton: widget.showBackButton),
+        appBar: defaultAppBar(
+          title: "Profile",
+          context: context,
+          showBackButton: widget.showBackButton,
+        ),
         body: Consumer<UserProvider>(
           builder: (context, userProvider, child) {
             final user = userProvider.currentUser;
 
             if (user == null) {
-              return Center(child: CircularProgressIndicator(color: AppColors.red));
+              return Center(
+                child: CircularProgressIndicator(color: AppColors.red),
+              );
             }
 
             return Center(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 40),
+                  padding: const EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    top: 20,
+                    bottom: 40,
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -210,7 +228,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                         delayMs: 0,
                         child: _buildProfileHeader(user, theme),
                       ),
-                      
+
                       // Expandable profile choices card
                       _buildAnimatedWidget(
                         delayMs: 150,
@@ -223,9 +241,12 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                 color: AppColors.black.withOpacity(0.04),
                                 blurRadius: 18,
                                 offset: const Offset(0, 6),
-                              )
+                              ),
                             ],
-                            border: Border.all(color: AppColors.grey.withOpacity(0.12), width: 1.5),
+                            border: Border.all(
+                              color: AppColors.grey.withOpacity(0.12),
+                              width: 1.5,
+                            ),
                           ),
                           child: Column(
                             children: [
@@ -234,65 +255,110 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                 title: "Edit Full Name",
                                 icon: Icons.person_outline_rounded,
                                 isExpanded: editUserNameFlag,
-                                onTap: () => setState(() => editUserNameFlag = !editUserNameFlag),
+                                onTap: () => setState(
+                                  () => editUserNameFlag = !editUserNameFlag,
+                                ),
                                 child: ClientCustomTextField(
-                                  title: user.name ?? "Name",
+                                  title: user.name,
                                   controller: nameController,
-                                  prefixIcon: Icon(Icons.person_rounded, color: AppColors.red.withOpacity(0.6)),
+                                  prefixIcon: Icon(
+                                    Icons.person_rounded,
+                                    color: AppColors.red.withOpacity(0.6),
+                                  ),
                                   validator: AppValidators.validateEmptyField,
                                 ),
                               ),
-                              Divider(color: AppColors.grey.withOpacity(0.15), thickness: 1, indent: 20, endIndent: 20, height: 1),
+                              Divider(
+                                color: AppColors.grey.withOpacity(0.15),
+                                thickness: 1,
+                                indent: 20,
+                                endIndent: 20,
+                                height: 1,
+                              ),
                               _buildExpandableField(
                                 context: context,
                                 title: "Edit Email Address",
                                 icon: Icons.mail_outline_rounded,
                                 isExpanded: editUserEmailFlag,
-                                onTap: () => setState(() => editUserEmailFlag = !editUserEmailFlag),
+                                onTap: () => setState(
+                                  () => editUserEmailFlag = !editUserEmailFlag,
+                                ),
                                 child: ClientCustomTextField(
-                                  title: user.email ?? "Email",
+                                  title: user.email,
                                   controller: emailController,
-                                  prefixIcon: Icon(Icons.email_rounded, color: AppColors.red.withOpacity(0.6)),
+                                  prefixIcon: Icon(
+                                    Icons.email_rounded,
+                                    color: AppColors.red.withOpacity(0.6),
+                                  ),
                                   keyboardType: TextInputType.emailAddress,
                                   validator: AppValidators.validateEmail,
                                 ),
                               ),
-                              Divider(color: AppColors.grey.withOpacity(0.15), thickness: 1, indent: 20, endIndent: 20, height: 1),
+                              Divider(
+                                color: AppColors.grey.withOpacity(0.15),
+                                thickness: 1,
+                                indent: 20,
+                                endIndent: 20,
+                                height: 1,
+                              ),
                               _buildExpandableField(
                                 context: context,
                                 title: "Edit Phone Number",
                                 icon: Icons.phone_android_rounded,
                                 isExpanded: editUserPhoneFlag,
-                                onTap: () => setState(() => editUserPhoneFlag = !editUserPhoneFlag),
+                                onTap: () => setState(
+                                  () => editUserPhoneFlag = !editUserPhoneFlag,
+                                ),
                                 child: ClientCustomTextField(
-                                  title: user.phone ?? "Phone",
+                                  title: user.phone,
                                   controller: phoneController,
-                                  prefixIcon: Icon(Icons.phone_rounded, color: AppColors.red.withOpacity(0.6)),
+                                  prefixIcon: Icon(
+                                    Icons.phone_rounded,
+                                    color: AppColors.red.withOpacity(0.6),
+                                  ),
                                   keyboardType: TextInputType.phone,
-                                  validator: AppValidators.validateEgyptianPhone,
+                                  validator:
+                                      AppValidators.validateEgyptianPhone,
                                 ),
                               ),
-                              Divider(color: AppColors.grey.withOpacity(0.15), thickness: 1, indent: 20, endIndent: 20, height: 1),
+                              Divider(
+                                color: AppColors.grey.withOpacity(0.15),
+                                thickness: 1,
+                                indent: 20,
+                                endIndent: 20,
+                                height: 1,
+                              ),
                               _buildExpandableField(
                                 context: context,
                                 title: "Edit Car Specifications",
                                 icon: Icons.car_rental_rounded,
                                 isExpanded: editUserCarDataFlag,
-                                onTap: () => setState(() => editUserCarDataFlag = !editUserCarDataFlag),
+                                onTap: () => setState(
+                                  () => editUserCarDataFlag =
+                                      !editUserCarDataFlag,
+                                ),
                                 child: Column(
                                   children: [
                                     ClientCustomTextField(
                                       title: user.carType ?? "Car Type",
                                       controller: carTypeController,
-                                      prefixIcon: Icon(Icons.commute_rounded, color: AppColors.red.withOpacity(0.6)),
-                                      validator: AppValidators.validateEmptyField,
+                                      prefixIcon: Icon(
+                                        Icons.commute_rounded,
+                                        color: AppColors.red.withOpacity(0.6),
+                                      ),
+                                      validator:
+                                          AppValidators.validateEmptyField,
                                     ),
                                     const SizedBox(height: 12),
                                     ClientCustomTextField(
                                       title: user.carModel ?? "Car Model",
                                       controller: carModelController,
-                                      prefixIcon: Icon(Icons.today_rounded, color: AppColors.red.withOpacity(0.6)),
-                                      validator: AppValidators.validateEmptyField,
+                                      prefixIcon: Icon(
+                                        Icons.today_rounded,
+                                        color: AppColors.red.withOpacity(0.6),
+                                      ),
+                                      validator:
+                                          AppValidators.validateEmptyField,
                                     ),
                                   ],
                                 ),
@@ -302,13 +368,14 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                         ),
                       ),
                       const SizedBox(height: 32),
-                      
+
                       _buildAnimatedWidget(
                         delayMs: 300,
                         child: ClientCustomButton(
                           color: AppColors.red,
                           action: () async {
-                            final viewModel = context.read<ClientProfileViewModel>();
+                            final viewModel = context
+                                .read<ClientProfileViewModel>();
                             bool success = await viewModel.updateUserData(
                               name: nameController?.text,
                               phone: phoneController?.text,
@@ -319,7 +386,10 @@ class _ClientProfileViewState extends State<ClientProfileView> {
 
                             if (success) {
                               if (context.mounted) {
-                                Provider.of<UserProvider>(context, listen: false).updateUserInfo(
+                                Provider.of<UserProvider>(
+                                  context,
+                                  listen: false,
+                                ).updateUserInfo(
                                   name: nameController?.text,
                                   phone: phoneController?.text,
                                   email: emailController?.text,
@@ -327,7 +397,9 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                   carModel: carModelController?.text,
                                 );
                               }
-                              SnackbarService.showSuccessNotification("Profile updated successfully");
+                              SnackbarService.showSuccessNotification(
+                                "Profile updated successfully",
+                              );
                               if (context.mounted) {
                                 Navigator.of(context).pop();
                               }
@@ -338,13 +410,18 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      
+
                       _buildAnimatedWidget(
                         delayMs: 450,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Divider(thickness: 1.2, color: AppColors.grey.withOpacity(0.15), indent: 40, endIndent: 40),
+                            Divider(
+                              thickness: 1.2,
+                              color: AppColors.grey.withOpacity(0.15),
+                              indent: 40,
+                              endIndent: 40,
+                            ),
                             const SizedBox(height: 20),
                             ClientCustomButton(
                               color: AppColors.pink,

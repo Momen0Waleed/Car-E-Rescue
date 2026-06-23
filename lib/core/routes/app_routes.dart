@@ -15,10 +15,8 @@ import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mu
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/view/client_current_request_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/request_history/view/request_history_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/view/user_request_view.dart';
-import 'package:car_e_rescue/modules/client/home/view/client_home_view.dart';
 import 'package:car_e_rescue/modules/client/home/view/client_main_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/available_requests/view/mechanic_available_requests_view.dart';
-import 'package:car_e_rescue/modules/mechanic/home/sub_modules/available_requests/view_model/mechanic_available_requests_view_model.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/current_request/view/mechanic_current_request_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_history/view/mechainc_history_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_profile/view/mechanic_profile_view.dart';

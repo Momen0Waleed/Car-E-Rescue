@@ -167,7 +167,7 @@ class _ProviderSignUpViewState extends State<ProviderSignUpView> {
                           CustomTextField(
                             title: "Password",
                             controller: passwordController,
-                            validator:AppValidators.validatePassword,
+                            validator: AppValidators.validatePassword,
                             isPassword: true,
                           ),
                           Consumer<SignUpViewModel>(
@@ -177,17 +177,27 @@ class _ProviderSignUpViewState extends State<ProviderSignUpView> {
                                 color: AppColors.red,
                                 action: () async {
                                   if (formKey.currentState!.validate()) {
-                                    bool value = await provider.mechanicSignUpActionButton(
-                                      mailController: mailController,
-                                      passwordController: passwordController,
-                                      nameController: nameController,
-                                      phoneController: phoneController,
-                                      workshopNameController: workshopController,
-                                      experienceController: experienceController,
-                                    );
+                                    bool value = await provider
+                                        .mechanicSignUpActionButton(
+                                          mailController: mailController,
+                                          passwordController:
+                                              passwordController,
+                                          nameController: nameController,
+                                          phoneController: phoneController,
+                                          workshopNameController:
+                                              workshopController,
+                                          experienceController:
+                                              experienceController,
+                                        );
                                     if (value) {
-                                      SnackbarService.showSuccessNotification("Provider is created Successfully");
-                                      Navigator.of(context).pushReplacementNamed(PageRoutesName.login);
+                                      SnackbarService.showSuccessNotification(
+                                        "Provider is created Successfully",
+                                      );
+                                      Navigator.of(
+                                        context,
+                                      ).pushReplacementNamed(
+                                        PageRoutesName.login,
+                                      );
                                     }
                                   }
                                 },
@@ -223,34 +233,32 @@ class _ProviderSignUpViewState extends State<ProviderSignUpView> {
                         ),
                       ],
                     ),
-                    FittedBox(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "If you already have an account, Please ",
-                            style: theme.textTheme.bodySmall,
-                          ),
-                          Bounceable(
-                            onTap: () {
-                              Navigator.of(
-                                context,
-                              ).pushReplacementNamed(PageRoutesName.login);
-                            },
-                            child: Text(
-                              "Login Now",
-                              style: theme.textTheme.bodyMedium!.copyWith(
-                                color: AppColors.red,
-                                decorationStyle: TextDecorationStyle.solid,
-                                decoration: TextDecoration.underline,
-                                decorationColor: AppColors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text(
+                          "If you already have an account, Please ",
+                          style: theme.textTheme.bodySmall,
+                        ),
+                        Bounceable(
+                          onTap: () {
+                            Navigator.of(
+                              context,
+                            ).pushReplacementNamed(PageRoutesName.login);
+                          },
+                          child: Text(
+                            "Login Now",
+                            style: theme.textTheme.bodyMedium!.copyWith(
+                              color: AppColors.red,
+                              decorationStyle: TextDecorationStyle.solid,
+                              decoration: TextDecoration.underline,
+                              decorationColor: AppColors.red,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 20),
                   ],

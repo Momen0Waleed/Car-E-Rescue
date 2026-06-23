@@ -267,8 +267,9 @@ class _SignUpViewState extends State<ClientSignUpView> {
                         ],
                       ),
                       const SizedBox(height: 30),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           Text(
                             "If you already have an account, Please ",
