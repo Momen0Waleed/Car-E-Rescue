@@ -400,9 +400,6 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                               SnackbarService.showSuccessNotification(
                                 "Profile updated successfully",
                               );
-                              if (context.mounted) {
-                                Navigator.of(context).pop();
-                              }
                             }
                           },
                           text: "Save Changes",
