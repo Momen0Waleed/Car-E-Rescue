@@ -389,7 +389,7 @@ class _ClientHomeViewState extends State<ClientHomeView> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 110),
                 ],
               ),
             ),
