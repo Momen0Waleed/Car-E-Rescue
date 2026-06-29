@@ -9,6 +9,7 @@ abstract class PageRoutesName{
   static const String mechanicHome = "/Mechanic-Home";
   static const String userRequest = "/User-Request";
   static const String userDiagnose = "/User-Diagnose";
+  static const String diagnosticCalibration = "/Diagnostic-Calibration";
   static const String createRequest = "/Create-Request";
   static const String requestHistory = "/Request-History";
   static const String availableMech = "/Available-Mech";

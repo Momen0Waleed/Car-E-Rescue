@@ -1,9 +1,16 @@
+import 'package:car_e_rescue/core/constants/services/snackbar_service.dart';
 import 'package:car_e_rescue/core/constants/theme/app_colors.dart';
+import 'package:car_e_rescue/core/diagnostics/state/diagnostic_session_state.dart';
+import 'package:car_e_rescue/core/providers/user_provider.dart';
+import 'package:car_e_rescue/core/routes/page_routes_name.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_diagnose/model/obd_sensor_data_model.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_diagnose/view/widgets/diagnosis_result_sheet.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_diagnose/view_model/user_diagnose_view_model.dart';
 import 'package:car_e_rescue/modules/client/home/view/widgets/client_custom_button.dart';
 import 'package:car_e_rescue/modules/widgets/default_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:provider/provider.dart';
 
 class UserDiagnoseView extends StatefulWidget {
   final bool showBackButton;
@@ -15,7 +22,7 @@ class UserDiagnoseView extends StatefulWidget {
 
 class _UserDiagnoseViewState extends State<UserDiagnoseView>
     with SingleTickerProviderStateMixin {
-  final UserDiagnoseViewModel _viewModel = UserDiagnoseViewModel();
+  UserDiagnoseViewModel? _viewModel;
   late AnimationController _pulseController;
 
   @override
@@ -25,65 +32,149 @@ class _UserDiagnoseViewState extends State<UserDiagnoseView>
       vsync: this,
       duration: const Duration(milliseconds: 1000),
     )..repeat(reverse: true);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => _setupViewModel());
+  }
+
+  void _setupViewModel() {
+    final user = context.read<UserProvider>().currentUser;
+    final vehicleId = user?.id ?? 'guest_vehicle';
+
+    final viewModel = UserDiagnoseViewModel(vehicleId: vehicleId);
+    _viewModel = viewModel;
+
+    viewModel.initialize();
+
+    viewModel.errorStream.listen((message) {
+      if (mounted) SnackbarService.showErrorNotification(message);
+    });
+
+    viewModel.loadingStream.listen((loading) {
+      if (!mounted) return;
+      if (loading) {
+        EasyLoading.show(status: 'Analyzing...');
+      } else {
+        EasyLoading.dismiss();
+      }
+    });
+
+    viewModel.diagnosisStream.listen((diagnosis) {
+      if (diagnosis != null && mounted) {
+        DiagnosisResultSheet.show(context, diagnosis);
+      }
+    });
+
+    setState(() {});
+  }
+
+  UserDiagnoseViewModel get viewModel {
+    final vm = _viewModel;
+    if (vm == null) {
+      throw StateError('ViewModel not initialized');
+    }
+    return vm;
+  }
+
+  Future<void> _openCalibration() async {
+    final result = await Navigator.of(context).pushNamed(
+      PageRoutesName.diagnosticCalibration,
+      arguments: viewModel,
+    );
+
+    if (result == true && mounted) {
+      SnackbarService.showSuccessNotification(
+        'Vehicle calibrated successfully. Ready for monitoring.',
+      );
+      await viewModel.refreshSessionState();
+    }
+  }
+
+  Future<void> _runDiagnose() async {
+    final state = await viewModel.isVehicleCalibrated();
+    if (!state) {
+      SnackbarService.showErrorNotification(
+        'Please calibrate your vehicle first.',
+      );
+      await _openCalibration();
+      return;
+    }
+    await viewModel.runWindowAnalysis();
+  }
+
+  Future<void> _runEmergencyCheck() async {
+    await viewModel.runEmergencyAnalysis();
   }
 
   @override
   void dispose() {
-    _viewModel.dispose();
+    _viewModel?.dispose();
     _pulseController.dispose();
+    EasyLoading.dismiss();
     super.dispose();
   }
 
   IconData _getMetricIcon(String label) {
     final l = label.toLowerCase();
-    if (l.contains("rpm")) return Icons.speed_rounded;
-    if (l.contains("speed")) return Icons.directions_car_rounded;
-    if (l.contains("coolant") || l.contains("temp"))
+    if (l.contains('rpm')) return Icons.speed_rounded;
+    if (l.contains('speed')) return Icons.directions_car_rounded;
+    if (l.contains('coolant') || l.contains('temp')) {
       return Icons.thermostat_rounded;
-    if (l.contains("battery") || l.contains("volt"))
+    }
+    if (l.contains('battery') || l.contains('volt')) {
       return Icons.offline_bolt_rounded;
-    if (l.contains("fuel")) return Icons.local_gas_station_rounded;
-    if (l.contains("throttle")) return Icons.settings_input_hdmi_rounded;
-    if (l.contains("ambient")) return Icons.cloud_queue_rounded;
-    if (l.contains("oil")) return Icons.oil_barrel_rounded;
-    if (l.contains("runtime")) return Icons.timer_outlined;
+    }
+    if (l.contains('fuel')) return Icons.local_gas_station_rounded;
+    if (l.contains('throttle')) return Icons.settings_input_hdmi_rounded;
+    if (l.contains('ambient')) return Icons.cloud_queue_rounded;
+    if (l.contains('oil')) return Icons.oil_barrel_rounded;
+    if (l.contains('runtime')) return Icons.timer_outlined;
     return Icons.analytics_outlined;
   }
 
   Color _getStatusColor(String status) {
     final s = status.toLowerCase();
-    if (s.contains("disconnected")) return AppColors.red;
-    if (s.contains("connected")) return AppColors.green;
-    if (s.contains("connecting") || s.contains("scanning"))
+    if (s.contains('disconnected')) return AppColors.red;
+    if (s.contains('connected')) return AppColors.green;
+    if (s.contains('connecting') || s.contains('scanning')) {
       return AppColors.yellow;
+    }
     return AppColors.grey;
   }
 
   @override
   Widget build(BuildContext context) {
-    Theme.of(context);
+    if (_viewModel == null) {
+      return Scaffold(
+        appBar: defaultAppBar(
+          title: 'OBD2 Diagnostics',
+          context: context,
+          showBackButton: widget.showBackButton,
+        ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
 
     return Scaffold(
       appBar: defaultAppBar(
-        title: "OBD2 Diagnostics",
+        title: 'OBD2 Diagnostics',
         context: context,
         showBackButton: widget.showBackButton,
       ),
       body: StreamBuilder<ObdSensorDataModel>(
-        stream: _viewModel.sensorDataStream,
+        stream: viewModel.sensorDataStream,
         initialData: ObdSensorDataModel(),
         builder: (context, snapshot) {
           final data = snapshot.data!;
           final metrics = [
-            _MetricItem("Engine RPM", data.rpm, "RPM"),
-            _MetricItem("Vehicle Speed", data.speed, "km/h"),
-            _MetricItem("Coolant Temp", data.coolantTemp, "°C"),
-            _MetricItem("Battery Voltage", data.voltage, "V"),
-            _MetricItem("Fuel Level", data.fuelLevel, "%"),
-            _MetricItem("Throttle Position", data.throttle, "%"),
-            _MetricItem("Ambient Air Temp", data.ambientTemp, "°C"),
-            _MetricItem("Oil Temp", data.oilTemp, "°C"),
-            _MetricItem("Runtime", data.runtime, "min"),
+            _MetricItem('Engine RPM', data.rpm, 'RPM'),
+            _MetricItem('Vehicle Speed', data.speed, 'km/h'),
+            _MetricItem('Coolant Temp', data.coolantTemp, '°C'),
+            _MetricItem('Battery Voltage', data.voltage, 'V'),
+            _MetricItem('Fuel Level', data.fuelLevel, '%'),
+            _MetricItem('Throttle Position', data.throttle, '%'),
+            _MetricItem('Ambient Air Temp', data.ambientTemp, '°C'),
+            _MetricItem('Oil Temp', data.oilTemp, '°C'),
+            _MetricItem('Runtime', data.runtime, 'min'),
           ];
 
           return SafeArea(
@@ -95,14 +186,59 @@ class _UserDiagnoseViewState extends State<UserDiagnoseView>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 10),
+                  StreamBuilder<DiagnosticSessionState>(
+                    stream: viewModel.sessionStateStream,
+                    builder: (context, sessionSnapshot) {
+                      final state = sessionSnapshot.data;
+                      if (state != DiagnosticSessionState.requiresCalibration) {
+                        return const SizedBox.shrink();
+                      }
 
-                  // Pulse status block
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: GestureDetector(
+                          onTap: _openCalibration,
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              color: AppColors.yellow.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(
+                                color: AppColors.yellow.withOpacity(0.5),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.tune, color: AppColors.yellow),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    'Vehicle not calibrated. Tap to run baseline setup.',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.black,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 14,
+                                  color: AppColors.grey,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                   StreamBuilder<String>(
-                    stream: _viewModel.statusStream,
-                    initialData: "Disconnected",
+                    stream: viewModel.statusStream,
+                    initialData: viewModel.currentStatus,
                     builder: (c, s) {
-                      final status = s.data ?? "Disconnected";
+                      final status = s.data ?? 'Disconnected';
                       final color = _getStatusColor(status);
 
                       return Container(
@@ -146,7 +282,7 @@ class _UserDiagnoseViewState extends State<UserDiagnoseView>
                             ),
                             const SizedBox(width: 12),
                             Text(
-                              "Sensor Status: $status",
+                              'Sensor Status: $status',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: color == AppColors.grey
@@ -161,8 +297,6 @@ class _UserDiagnoseViewState extends State<UserDiagnoseView>
                     },
                   ),
                   const SizedBox(height: 20),
-
-                  // Metrics Grid
                   Expanded(
                     child: GridView.builder(
                       physics: const BouncingScrollPhysics(),
@@ -177,12 +311,12 @@ class _UserDiagnoseViewState extends State<UserDiagnoseView>
                       itemBuilder: (context, index) {
                         final item = metrics[index];
                         final isAlert =
-                            item.value != "0" &&
-                            item.value != "N/A" &&
-                            ((item.label.contains("Temp") &&
+                            item.value != '0' &&
+                            item.value != 'N/A' &&
+                            ((item.label.contains('Temp') &&
                                     double.tryParse(item.value) != null &&
                                     double.parse(item.value) > 105) ||
-                                (item.label.contains("Voltage") &&
+                                (item.label.contains('Voltage') &&
                                     double.tryParse(item.value) != null &&
                                     double.parse(item.value) < 11.5));
 
@@ -246,7 +380,7 @@ class _UserDiagnoseViewState extends State<UserDiagnoseView>
                                   children: [
                                     FittedBox(
                                       child: Text(
-                                        "${item.value} ${item.unit}",
+                                        '${item.value} ${item.unit}',
                                         style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w800,
@@ -276,8 +410,6 @@ class _UserDiagnoseViewState extends State<UserDiagnoseView>
                     ),
                   ),
                   const SizedBox(height: 12),
-
-                  // Action buttons
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -286,8 +418,8 @@ class _UserDiagnoseViewState extends State<UserDiagnoseView>
                           Expanded(
                             child: ClientCustomButton(
                               color: AppColors.pink,
-                              action: () => _viewModel.startConnection(),
-                              text: "Connect Sensor",
+                              action: () => viewModel.startConnection(),
+                              text: 'Connect Sensor',
                               textColor: AppColors.red,
                             ),
                           ),
@@ -295,16 +427,26 @@ class _UserDiagnoseViewState extends State<UserDiagnoseView>
                           Expanded(
                             child: ClientCustomButton(
                               color: AppColors.red,
-                              action: () {},
-                              text: "Diagnose",
+                              action: _runDiagnose,
+                              text: 'Diagnose',
                               useGradient: true,
                             ),
                           ),
                         ],
                       ),
+                      const SizedBox(height: 10),
+                      ClientCustomButton(
+                        color: AppColors.pink,
+                        action: _runEmergencyCheck,
+                        text: 'Emergency Check',
+                        textColor: AppColors.red,
+                        icon: Icons.emergency_outlined,
+                      ),
                       const SizedBox(height: 14),
                       Text(
-                        "Please enable Bluetooth on your device before connecting to the sensor.",
+                        'Connect Bluetooth first. Calibrate once, then use '
+                        'Diagnose for window analysis or Emergency Check for '
+                        'immediate hard-fault detection.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 11,

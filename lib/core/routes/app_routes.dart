@@ -6,7 +6,9 @@ import 'package:car_e_rescue/modules/auth/sign_up/view/provider_sign_up_view.dar
 import 'package:car_e_rescue/modules/auth/user_type/view/user_type_screen.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/mechanic_live_location/view/mechanic_live_location_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/mechanic_live_location/view_model/mechanic_live_location_view_model.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_diagnose/view/calibration_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_diagnose/view/user_diagnose_view.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_diagnose/view_model/user_diagnose_view_model.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_profile/view/client_profile_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/available_mech_view/model/mechanic_data_model.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/available_mech_view/view/available_mech_view.dart';
@@ -57,6 +59,9 @@ abstract class AppRoutes {
         return _slideUpRoute(const UserRequestView());
       case PageRoutesName.userDiagnose:
         return _slideUpRoute(const UserDiagnoseView());
+      case PageRoutesName.diagnosticCalibration:
+        final viewModel = settings.arguments as UserDiagnoseViewModel;
+        return _slideUpRoute(CalibrationView(viewModel: viewModel));
       case PageRoutesName.createRequest:
         return _slideRoute(const CreateRequestView());
       case PageRoutesName.requestHistory:
