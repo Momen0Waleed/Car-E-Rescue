@@ -44,6 +44,7 @@ class AvailableMechViewModel extends ChangeNotifier{
           requestType: _selectedRequestType,
           token: token,
         );
+        mechanics.sort((a, b) => a.distanceInKm.compareTo(b.distanceInKm));
       }
     } catch (e) {
       errorMessage = e.toString();
