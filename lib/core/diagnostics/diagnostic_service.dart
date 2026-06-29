@@ -126,27 +126,8 @@ class DiagnosticService {
     }
   }
 
-  Future<Diagnosis> analyzeEmergency(OBDSnapshot snapshot) async {
-    try {
-      final response = await _dio.post(
-        ApiConstants.diagnosticsAnalyze,
-        data: snapshot.toJson(),
-        options: await _authOptions(),
-      );
 
-      return _parseDiagnosisResponse(response);
-    } on DioException catch (error) {
-      throw _mapDioException(error, 'Failed to run emergency analysis.');
-    } on SocketException {
-      throw const DiagnosticException(connectionOfflineMessage);
-    } catch (error) {
-      if (error is DiagnosticException) rethrow;
-      throw DiagnosticException(
-        'Failed to run emergency analysis.',
-        cause: error,
-      );
-    }
-  }
+
 
   Diagnosis _parseDiagnosisResponse(Response<dynamic> response) {
     if (response.statusCode == null ||

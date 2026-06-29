@@ -11,7 +11,6 @@ class ApiConstants {
 
   static const String diagnosticsBaseline = 'diagnostics/baseline';
   static const String diagnosticsAnalyzeWindow = 'diagnostics/analyze-window';
-  static const String diagnosticsAnalyze = 'diagnostics/analyze';
 
   static String calibrationKey(String vehicleId) => 'calibrated_$vehicleId';
 }

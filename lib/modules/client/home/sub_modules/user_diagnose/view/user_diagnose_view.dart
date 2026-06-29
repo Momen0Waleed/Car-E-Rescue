@@ -101,9 +101,7 @@ class _UserDiagnoseViewState extends State<UserDiagnoseView>
     await viewModel.runWindowAnalysis();
   }
 
-  Future<void> _runEmergencyCheck() async {
-    await viewModel.runEmergencyAnalysis();
-  }
+
 
   @override
   void dispose() {
@@ -434,19 +432,10 @@ class _UserDiagnoseViewState extends State<UserDiagnoseView>
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
-                      ClientCustomButton(
-                        color: AppColors.pink,
-                        action: _runEmergencyCheck,
-                        text: 'Emergency Check',
-                        textColor: AppColors.red,
-                        icon: Icons.emergency_outlined,
-                      ),
                       const SizedBox(height: 14),
                       Text(
                         'Connect Bluetooth first. Calibrate once, then use '
-                        'Diagnose for window analysis or Emergency Check for '
-                        'immediate hard-fault detection.',
+                        'Diagnose for window analysis.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 11,

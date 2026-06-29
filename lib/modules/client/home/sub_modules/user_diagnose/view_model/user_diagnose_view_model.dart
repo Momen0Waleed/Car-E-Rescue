@@ -183,23 +183,8 @@ class UserDiagnoseViewModel {
     }
   }
 
-  Future<Diagnosis?> runEmergencyAnalysis() async {
-    _setLoading(true);
-    try {
-      final snapshot = ObdSnapshotMapper.fromSensorData(
-        vehicleId: _vehicleId,
-        data: _latestSensorData,
-      );
-      final diagnosis = await _diagnosticService.analyzeEmergency(snapshot);
-      _diagnosisController.add(diagnosis);
-      return diagnosis;
-    } catch (error) {
-      _errorController.add(_messageFrom(error));
-      return null;
-    } finally {
-      _setLoading(false);
-    }
-  }
+
+
 
   void clearDiagnosis() {
     _diagnosisController.add(null);
