@@ -47,6 +47,17 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    // Add this block to rename the APK
+    applicationVariants.all {
+        val variant = this
+        outputs.all {
+            val output = this as? com.android.build.gradle.internal.api.ApkVariantOutputImpl
+            if (variant.buildType.name == "release") {
+                output?.outputFileName = "Car E-Rescue.apk"
+            }
+        }
+    }
 }
 
 flutter {
