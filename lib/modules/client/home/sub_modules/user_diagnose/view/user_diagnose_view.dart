@@ -414,11 +414,27 @@ class _UserDiagnoseViewState extends State<UserDiagnoseView>
                       Row(
                         children: [
                           Expanded(
-                            child: ClientCustomButton(
-                              color: AppColors.pink,
-                              action: () => viewModel.startConnection(),
-                              text: 'Connect Sensor',
-                              textColor: AppColors.red,
+                            child: StreamBuilder<String>(
+                              stream: viewModel.statusStream,
+                              initialData: viewModel.currentStatus,
+                              builder: (context, statusSnapshot) {
+                                final isConnected =
+                                    statusSnapshot.data == 'Connected';
+                                return ClientCustomButton(
+                                  color: isConnected
+                                      ? AppColors.red
+                                      : AppColors.pink,
+                                  action: () => isConnected
+                                      ? viewModel.disconnectSensor()
+                                      : viewModel.startConnection(),
+                                  text: isConnected
+                                      ? 'Disconnect Sensor'
+                                      : 'Connect Sensor',
+                                  textColor: isConnected
+                                      ? AppColors.white
+                                      : AppColors.red,
+                                );
+                              },
                             ),
                           ),
                           const SizedBox(width: 12),

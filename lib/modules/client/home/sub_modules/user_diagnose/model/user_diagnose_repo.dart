@@ -207,6 +207,13 @@ class UserDiagnoseRepo {
         .values.every((p) => p.isGranted);
   }
 
+  void disconnect() {
+    stopPolling();
+    _connection?.finish();
+    _connection = null;
+    _updateStatus("Disconnected");
+  }
+
   void stopPolling() => _pollingTimer?.cancel();
   void dispose() {
     stopPolling();

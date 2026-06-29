@@ -114,6 +114,10 @@ class UserDiagnoseViewModel {
     _repo.connect();
   }
 
+  void disconnectSensor() {
+    _repo.disconnect();
+  }
+
   Future<void> startCalibrationCollection() async {
     _snapshotBuffer.clear();
     _calibrationCollected = 0;
