@@ -33,6 +33,16 @@ subprojects {
             } catch (e: Exception) {
                 // Silently skip if the android extension doesn't support namespace yet
             }
+
+            // Force compileSdkVersion/compileSdk to 34 to resolve android:attr/lStar linking issues in older plugins
+            try {
+                val methods = androidExtension?.javaClass?.methods
+                val compileSdkMethod = methods?.find { it.name == "compileSdk" && it.parameterCount == 1 && (it.parameterTypes[0] == Int::class.javaPrimitiveType || it.parameterTypes[0] == Int::class.java) }
+                    ?: methods?.find { it.name == "compileSdkVersion" && it.parameterCount == 1 && (it.parameterTypes[0] == Int::class.javaPrimitiveType || it.parameterTypes[0] == Int::class.java) }
+                compileSdkMethod?.invoke(androidExtension, 34)
+            } catch (e: Exception) {
+                // Silently skip
+            }
         }
     }
 }

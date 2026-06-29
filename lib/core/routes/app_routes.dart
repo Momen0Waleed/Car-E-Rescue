@@ -6,7 +6,9 @@ import 'package:car_e_rescue/modules/auth/sign_up/view/provider_sign_up_view.dar
 import 'package:car_e_rescue/modules/auth/user_type/view/user_type_screen.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/mechanic_live_location/view/mechanic_live_location_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/mechanic_live_location/view_model/mechanic_live_location_view_model.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_diagnose/view/calibration_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_diagnose/view/user_diagnose_view.dart';
+import 'package:car_e_rescue/modules/client/home/sub_modules/user_diagnose/view_model/user_diagnose_view_model.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_profile/view/client_profile_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/available_mech_view/model/mechanic_data_model.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/available_mech_view/view/available_mech_view.dart';
@@ -15,10 +17,8 @@ import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mu
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/current_requests/view/client_current_request_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mudules/request_history/view/request_history_view.dart';
 import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/view/user_request_view.dart';
-import 'package:car_e_rescue/modules/client/home/view/client_home_view.dart';
 import 'package:car_e_rescue/modules/client/home/view/client_main_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/available_requests/view/mechanic_available_requests_view.dart';
-import 'package:car_e_rescue/modules/mechanic/home/sub_modules/available_requests/view_model/mechanic_available_requests_view_model.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/current_request/view/mechanic_current_request_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_history/view/mechainc_history_view.dart';
 import 'package:car_e_rescue/modules/mechanic/home/sub_modules/mechanic_profile/view/mechanic_profile_view.dart';
@@ -59,6 +59,9 @@ abstract class AppRoutes {
         return _slideUpRoute(const UserRequestView());
       case PageRoutesName.userDiagnose:
         return _slideUpRoute(const UserDiagnoseView());
+      case PageRoutesName.diagnosticCalibration:
+        final viewModel = settings.arguments as UserDiagnoseViewModel;
+        return _slideUpRoute(CalibrationView(viewModel: viewModel));
       case PageRoutesName.createRequest:
         return _slideRoute(const CreateRequestView());
       case PageRoutesName.requestHistory:
@@ -110,41 +113,18 @@ abstract class AppRoutes {
   static PageRouteBuilder _slideRoute(Widget page) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        const begin = Offset(1.0, 0.0);
-        const end = Offset.zero;
-        const curve = Curves.easeInOut;
-
-        var tween = Tween(
-          begin: begin,
-          end: end,
-        ).chain(CurveTween(curve: curve));
-        var offsetAnimation = animation.drive(tween);
-
-        return SlideTransition(position: offsetAnimation, child: child);
-      },
-      transitionDuration: const Duration(milliseconds: 400),
+      transitionDuration: Duration.zero,
+      reverseTransitionDuration: Duration.zero,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) => child,
     );
   }
 
   static PageRouteBuilder _slideUpRoute(Widget page) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        const begin = Offset(0.0, 1.0);
-        const end = Offset.zero;
-        const curve = Curves.easeInOut;
-
-        var tween = Tween(
-          begin: begin,
-          end: end,
-        ).chain(CurveTween(curve: curve));
-
-        var offsetAnimation = animation.drive(tween);
-
-        return SlideTransition(position: offsetAnimation, child: child);
-      },
-      transitionDuration: const Duration(milliseconds: 600),
+      transitionDuration: Duration.zero,
+      reverseTransitionDuration: Duration.zero,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) => child,
     );
   }
 }

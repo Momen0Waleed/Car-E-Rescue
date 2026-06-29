@@ -82,8 +82,29 @@ class _TwoValueCircleState extends State<TwoValueCircle> with SingleTickerProvid
           ],
         ),
         const SizedBox(height: 28),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: [
+        //     _buildModernLegend(
+        //       color: AppColors.red,
+        //       label: "Completed",
+        //       number: widget.completed,
+        //       icon: Icons.check_circle_outline_rounded,
+        //     ),
+        //     // const SizedBox(width: 24),
+        //     // Spacer(),
+        //     _buildModernLegend(
+        //       color: AppColors.grey,
+        //       label: "Canceled",
+        //       number: widget.canceled,
+        //       icon: Icons.cancel_outlined,
+        //     ),
+        //   ],
+        // )
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 16, // Horizontal space between items
+          runSpacing: 12, // Vertical space if they wrap
           children: [
             _buildModernLegend(
               color: AppColors.red,
@@ -91,7 +112,6 @@ class _TwoValueCircleState extends State<TwoValueCircle> with SingleTickerProvid
               number: widget.completed,
               icon: Icons.check_circle_outline_rounded,
             ),
-            const SizedBox(width: 24),
             _buildModernLegend(
               color: AppColors.grey,
               label: "Canceled",
@@ -100,6 +120,7 @@ class _TwoValueCircleState extends State<TwoValueCircle> with SingleTickerProvid
             ),
           ],
         )
+
       ],
     );
   }
@@ -198,4 +219,4 @@ class ProgressPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-}
+}

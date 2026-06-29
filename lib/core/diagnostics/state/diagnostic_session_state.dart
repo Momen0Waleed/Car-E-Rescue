@@ -1,0 +1,4 @@
+enum DiagnosticSessionState {
+  requiresCalibration,
+  readyForMonitoring,
+}
