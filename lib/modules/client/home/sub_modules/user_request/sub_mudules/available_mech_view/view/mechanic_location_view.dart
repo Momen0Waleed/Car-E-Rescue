@@ -5,6 +5,7 @@ import 'package:car_e_rescue/modules/client/home/sub_modules/user_request/sub_mu
 import 'package:car_e_rescue/modules/client/home/view/widgets/client_navigate_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,6 +28,7 @@ class _MechanicLocationViewState extends State<MechanicLocationView> {
   }
 
   Future<void> _loadUserLocation() async {
+    // 1. Try cached location from SharedPreferences (instant)
     final prefs = await SharedPreferences.getInstance();
     final lat = prefs.getDouble('user_lat');
     final lng = prefs.getDouble('user_lng');
@@ -34,6 +36,37 @@ class _MechanicLocationViewState extends State<MechanicLocationView> {
       setState(() {
         userLocation = LatLng(lat, lng);
       });
+      return;
+    }
+
+    // 2. Fallback: fetch from GPS
+    await _fetchGpsLocation();
+  }
+
+  Future<void> _fetchGpsLocation() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) return;
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied ||
+            permission == LocationPermission.deniedForever) return;
+      }
+
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      );
+      if (mounted) {
+        setState(() {
+          userLocation = LatLng(position.latitude, position.longitude);
+        });
+      }
+    } catch (e) {
+      debugPrint("Error fetching GPS location: $e");
     }
   }
 
@@ -44,13 +77,20 @@ class _MechanicLocationViewState extends State<MechanicLocationView> {
     );
   }
 
-  void _moveToUser() {
+  void _moveToUser() async {
+    if (userLocation == null) {
+      await _fetchGpsLocation();
+    }
     if (userLocation != null) {
       _mapController.move(userLocation!, 15.0);
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("User location not found")));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Could not determine your location. Please enable GPS."),
+          ),
+        );
+      }
     }
   }
 
