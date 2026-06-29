@@ -36,8 +36,9 @@ class MechanicLiveLocationViewModel extends ChangeNotifier {
 
       // 3. Fallback to current position (slow but accurate)
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 5),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
       );
       userLocation = LatLng(position.latitude, position.longitude);
       notifyListeners();

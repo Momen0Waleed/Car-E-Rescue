@@ -18,9 +18,8 @@ class MechanicLiveLocationRepo {
     final String path = '/ws/requests/$requestId';
 
     final uri = Uri(
-      scheme: 'ws',
-      host: '10.0.2.2',
-      port: 8000,
+      scheme: 'wss',
+      host: 'backend-carerescue-production.up.railway.app',
       path: path,
       queryParameters: {'token': token},
     );

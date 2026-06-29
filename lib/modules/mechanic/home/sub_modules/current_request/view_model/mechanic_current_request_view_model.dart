@@ -78,7 +78,9 @@ class MechanicCurrentRequestViewModel extends ChangeNotifier {
 
     try {
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
       );
       mechanicLocation = LatLng(position.latitude, position.longitude);
       notifyListeners();
